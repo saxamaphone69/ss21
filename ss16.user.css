@@ -354,6 +354,25 @@ hr:not(#unread-line), /* 3) */
 }
 
 /**
+ * support for custom board titles
+ * make it visually obvious you can edit the title
+ */
+
+.boardTitle,
+.boardSubtitle {
+  white-space: pre-line;
+}
+
+.boardTitle[title] {
+  cursor: help;
+}
+
+.boardTitle[contenteditable='true'],
+.boardSubtitle[contenteditable='true'] {
+  cursor: text;
+}
+
+/**
  * index
  */
 
@@ -440,6 +459,56 @@ hr:not(#unread-line), /* 3) */
 
 #index-search-clear:hover {
   color: #F44336;
+}
+
+/**
+ * support for 4chan x's navlinks, that is,
+ * being able navigate threads on the index;
+ * it is also used to go to the top and bottom
+ * of a thread, when in a thread
+ */
+
+#navlinks {
+  position: fixed;
+  top: 4rem;
+  right: 0;
+  z-index: 15;
+  font-size: 0;
+  display: block;
+  background-color: #2196F3;
+  box-shadow: .5rem .5rem 0 rgba(61, 61, 61, .5);
+}
+
+#navlinks a::after {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #FEFEFE;
+  display: inline-block;
+  padding: .5rem;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+#navlinks a:hover::after {
+  background-color: #1976D2;
+}
+
+#navlinks a:first-of-type::after {
+  content: 'keyboard_arrow_up';
+}
+
+#navlinks a:last-of-type::after {
+  content: 'keyboard_arrow_down';
 }
 
 .thread {
@@ -791,13 +860,15 @@ a.summary {
 
 /**
  * we mega footer now!
+ * if the 'hide bottom board list' option is checked,
+ * however, this won't display
  */
 
 #boardNavDesktopFoot {
   font-size: 0;
   display: block;
   background-color: #424242;
-  padding: 2rem 2rem 1rem 2rem;
+  padding: 2rem 2rem 0 2rem;
   max-width: 100%;
 }
 
@@ -848,13 +919,29 @@ a.summary {
   clear: both;
 }
 
+@media all and (max-width: 75rem) {
+  #boardNavDesktopFoot::before {
+    font-size: .8rem;
+  }
+  #boardNavDesktopFoot a::before {
+    font-size: .8rem;
+  }
+  #boardNavDesktopFoot a::after {
+    font-size: .8rem;
+  }
+}
+
+:root.hide-bottom-board-list #boardNavDesktopFoot {
+  display: none;
+}
+
 #navbotright, #footer-links { display: none; }
 
 .absBotText {
   font-size: .75rem;
   color: #9E9E9E;
   background-color: #424242;
-  padding: 0 2rem 2rem 2rem;
+  padding: 2rem;
 }
 
 .absBotDisclaimer::after {
@@ -894,6 +981,10 @@ a.summary {
   background-color: #2196F3;
 }
 
+#header-bar:not(.scrolled) {
+  background-color: #2196F3;
+}
+
 :root.top-header #header-bar.autohide:not(:hover) {
   margin-bottom: -1rem;
   transform: translateY(-100%);
@@ -903,8 +994,10 @@ a.summary {
   transform: translateY(100%);
 }
 
+#board-list,
 #custom-board-list {
   display: flex;
+  flex: 1 1 auto;
 }
 
 #board-list a {
@@ -944,11 +1037,6 @@ a.summary {
   font-family: circularMedium;
   font-weight: 400;
   border-bottom: 3px solid #F44336;
-}
-
-.boardList {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 #shortcuts {
