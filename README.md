@@ -1,7 +1,8 @@
 # ss16
 a fresh attempt at a 4chan userstyle
 
-![browser-2016-02-11](https://cloud.githubusercontent.com/assets/877480/12968691/61c75d0c-d0c9-11e5-8454-c626afc56848.png)
+![screenshot of ss16 1](browser-2016-02-23a.jpg)
+![screenshot of ss16 2](browser-2016-02-23b.jpg)
 
 following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in 2016!
 
