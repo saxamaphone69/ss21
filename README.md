@@ -10,7 +10,7 @@ this style is currently being actively developed for use with google chrome. you
 
 ##current plans
  - support as many 4chan x features as possible, for a greater "out of the box" experience
- - wait for css variables to be supported in chrome for better customisation
+ - ~~wait for css variables to be supported in chrome for better customisation~~ (now supported)
  - figure out how to get a css4 colour polyfill for better customisation
 
 ##future plans
