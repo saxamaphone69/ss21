@@ -2,7 +2,7 @@
 a fresh attempt at a 4chan userstyle
 
 ## early-2017 update
-ss16, even in 2017, is mainly the same as it was last year. a few minor changes to accommodate for 4chan x updates, (support for more settings)[support.md], additional rice added via `sidedish` - and that's about it, sadly
+ss16, even in 2017, is mainly the same as it was last year. a few minor changes to accommodate for 4chan x updates, [support for more settings](support.md), additional rice added via `sidedish` - and that's about it, sadly
 
 ## preview of userstyle applied
 ![screenshot of ss16](browser-2017-01-10a.png)
@@ -27,4 +27,4 @@ go to your adblock plus options, and locate where you can add your own filters. 
 if you know a nicer/cleaner way to write these filters, please let me know
 
 ## plans
- - (a standalone, es6-based 4chan chrome extension)[standalone.md]
+ - [a standalone, es6-based 4chan chrome extension](standalone.md)
