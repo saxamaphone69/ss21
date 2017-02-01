@@ -45,8 +45,11 @@ this is a list of what affect 4chan X's settings have on ss16's appearance
 
 ### capcodes
 `/Admin$/;highlight:poster--admin;op:yes` - admin posts are red
+
 `/Mod$/;highlight:poster--mod;op:yes` - mod posts are purple
+
 `/Manager$/;highlight:poster--manager;op:yes` - manager posts are fuchsia
+
 `/Developer$/;highlight:poster--developer;op:yes` - dev posts are blue
 
 ### pass dates
@@ -54,4 +57,5 @@ this is a list of what affect 4chan X's settings have on ss16's appearance
 
 ### filenames
 `/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
+
 `/.gif$/;highlight:file--gif;top:no;` - gif thumbnails display `GIF`
