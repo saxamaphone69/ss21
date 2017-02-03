@@ -1,10 +1,10 @@
 /**
  *
- * ss17 - a self-centered, fresh attempt at (user)styling 4chan
+ * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: December 16th, 2016
- * 4chan X version: ccd0 1.12 / https://github.com/ccd0/4chan-x
+ * last modified: February 3rd, 2017
+ * 4chan X version: ccd0 1.13.7.1 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
  *
@@ -756,6 +756,7 @@ s:hover {
 	user-select: none;
 	position: relative;
 	overflow: hidden;
+	text-align: center;
 }
 
 .boardTitle {
@@ -1397,6 +1398,62 @@ s:hover {
 }
 
 /**
+ * /f/ specific styling
+ */
+
+.flashListing {
+	background-color: var(--base-white);
+	margin: 0 auto 1rem;
+}
+
+.flashListing tr:not(:last-child) {
+	border-bottom: 1px solid var(--light-grey);
+}
+
+.flashListing tr:first-child {
+	font-weight: 500;
+	text-align: center;
+	text-transform: lowercase;
+	color: var(--base-white);
+	background-color: var(--base-primary);
+	border-bottom: 1px solid var(--dark-primary);
+}
+
+.flashListing tr:first-child td:not(:last-child) {
+	border-right: 1px solid var(--dark-primary);
+}
+
+.flashListing .highlightPost {
+	background-color: var(--very-light-primary);
+}
+
+.flashListing td {
+	text-align: center;
+	padding: 0.5rem 1rem;
+}
+
+.flashListing tr:not(:first-child) td:nth-child(3),
+.flashListing tr:not(:first-child) td:nth-child(5) {
+	text-align: left;
+}
+
+.flashListing tr:not(:first-child) td:not(last-child) {
+	border-right: 1px solid var(--light-grey);
+}
+
+.flashListing .file-col a {
+	color: var(--base-primary);
+}
+
+.flashListing .file-col a:hover {
+	color: var(--dark-primary);
+}
+
+.flashListing .subject::after {
+	display: none;
+}
+
+/**
  * 4chan x specific css, ordered as it appears on the page:
  * §A1 - header
  * §A2 - shortcuts
@@ -1486,6 +1543,26 @@ s:hover {
 
 .filtered {
   text-decoration: line-through;
+}
+
+/**
+ * support for anonymize settig
+ */
+
+:root.anonymize .name,
+:root.anonymize .post-author:not([class*=capcode]) {
+  font-size: 0;
+}
+
+:root.anonymize .postertrip,
+:root.anonymize .n-pu {
+  display: none;
+}
+
+:root.anonymize .name::before,
+:root.anonymize .post-author:not([class*=capcode])::before {
+  content: 'Anonymous';
+  font-size: 1rem;
 }
 
 /**
@@ -1648,6 +1725,10 @@ s:hover {
 #shortcuts .menu-button.active::after {
   opacity: 1;
   border-bottom: 3px solid var(--base-accent);
+}
+
+#shortcuts .fa-eye.replies-quoting-you::after {
+	color: var(--base-accent);
 }
 
 #shortcuts .ss16-shortcut {
@@ -1920,6 +2001,12 @@ s:hover {
 .navLinks .bottomlink {
 	display: none;
 }
+
+/**
+ * apparently `.navLinks` is used to determine the top of
+ * the index, so navigating pages with it being `fixed`
+ * never returns you to the top of the page
+ */
 
 .navLinks {
   color: var(--base-white);
@@ -2583,6 +2670,22 @@ s:hover {
  * specific styling for the sauce tab
  */
 
+/*
+#sauce-doc-expand:not(:checked) ~ #sauce-doc {
+  max-height: 130px;
+  overflow: auto;
+}
+
+#sauce-doc > label {
+  float: right;
+  margin: 0 5px;
+}
+
+#sauce-doc-expand + .riceCheck {
+  display: none;
+}
+*/
+
 .section-sauce ul {
   padding: 0;
   margin: 1rem 0;
@@ -2594,6 +2697,7 @@ s:hover {
 }
 
 .section-sauce textarea {
+	margin-top: 1rem;
   min-height: 20rem;
 }
 
