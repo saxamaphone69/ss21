@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ss16
-// @version      0.2
+// @version      0.3
 // @author       saxamaphone69
 // @match        *://boards.4chan.org/*
 // @grant        none
@@ -40,6 +40,7 @@
     init = function () {
         // remove the css added by 4chan x
         d.head.querySelector('#fourchanx-css').remove();
+        d.head.querySelector('link[title="switch"]').remove();
 
         // attempt to assign headerBar to the actual element
         var attempt, headerBar;
