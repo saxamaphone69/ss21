@@ -3,8 +3,8 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: February 3rd, 2017
- * 4chan X version: ccd0 1.13.7.1 / https://github.com/ccd0/4chan-x
+ * last modified: February 7th, 2017
+ * 4chan X version: ccd0 1.13.7.2 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
  *
@@ -752,7 +752,6 @@ s:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(45deg, #ff4081, #3d5afe);
 	user-select: none;
 	position: relative;
 	overflow: hidden;
@@ -775,7 +774,7 @@ s:hover {
 .boardBanner::after {
 	content: '';
 	width: calc(100% + 4rem);
-	background-color: red;
+	background-image: linear-gradient(45deg, #ff4081, #3d5afe);
 	display: block;
 	height: calc(100% + 4rem);
 	position: absolute;
@@ -1146,6 +1145,11 @@ s:hover {
 
 .fileThumb > .warning {
   clear: both;
+}
+
+.fa-download::after {
+	font-size: 1rem;
+	vertical-align: bottom;
 }
 
 /**
