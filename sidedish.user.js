@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ss16
-// @version      0.3
+// @version      0.4
 // @author       saxamaphone69
 // @match        *://boards.4chan.org/*
 // @grant        none
@@ -39,19 +39,32 @@
     });
     init = function () {
         // remove the css added by 4chan x
+        d.head.querySelector('style[type]').remove();
         d.head.querySelector('#fourchanx-css').remove();
         d.head.querySelector('link[title="switch"]').remove();
-
+        
+/*
+        document.dispatchEvent(new CustomEvent("AddSettingsSection", {
+            detail: {
+                title: "MAXIMUM SCRIPT",
+                open: function(section, g) {
+                    section.textContent = "MY SCRIPT IS SO COOL! Thank you 4chan X v" + g.VERSION;
+                }
+            }
+        }));
+*/
         // attempt to assign headerBar to the actual element
         var attempt, headerBar;
         attempt = (function() {
             if (!d.getElementById('header-bar')) {
+                // this.draw.bind(this)
+                // var requestId = requestAnimFrame(this.animate.bind(this));
                 window.requestAnimationFrame(attempt);
             }
             headerBar = d.getElementById('header-bar');
-            //console.log(headerBar + 'inside');
+            console.log(headerBar, 'inside');
         })();
-        //console.log(headerBar + 'outside');
+        console.log(headerBar, 'outside');
 
         // create a fancy menu to hide shortcuts on small res
         var newMenu = d.createElement('span');
@@ -91,6 +104,62 @@
         config = { childList: true };
         observer.observe(target, config);
 
+        /*
+        $.onExists = function(root, selector, cb) {
+            var el, observer;
+            if (el = $(selector, root)) {
+                return cb(el);
+            }
+            observer = new MutationObserver(function() {
+                if (el = $(selector, root)) {
+                    observer.disconnect();
+                    return cb(el);
+                }
+            });
+            return observer.observe(root, {
+                childList: true,
+                subtree: true
+            });
+        };
+
+        var i =1;
+function waitForElClass(data, cb){
+  var element = data.selected;
+  var index = data.index;
+
+  var findEl = document.getElementsByClassName(element)[index];
+  console.log(i);
+  i++;
+  var to = window.setInterval(function(){
+    if($(findEl).length){
+      console.log(findEl);
+      cb(findEl);
+      window.clearInterval(to);
+    }
+  },500)
+}
+*/
+        /*
+        var checkElementExists;
+        checkElementExists = function(el, cb) {
+            console.log('hey');
+            var element, to;
+            element = el;
+            console.log(element, el);
+            to = window.setInterval(function() {
+                console.log(element, el);
+                if (element.length) {
+                    console.log(element, el);
+                    cb(element);
+                    window.clearInterval(to);
+                }
+            }, 1000);
+        };
+
+        checkElementExists(d.getElementById('header-bar'), function() {
+            console.log('hello');
+        });
+*/
         // create the scroll progress element
         var scrollage;
         scrollage = d.createElement('progress');
@@ -148,6 +217,8 @@
             })();
         }
 
+
+
         window.addEventListener('scroll', function(e) {
             lastScrollY = window.scrollY;
             if (!ticking) {
@@ -157,6 +228,25 @@
                 });
             }
             ticking = true;
+        });
+
+        // add searching class to html when search bar has focus
+        var anotherAttempt, searchBar;
+        anotherAttempt = (function() {
+            if (!d.getElementById('index-search')) {
+                window.requestAnimationFrame(anotherAttempt);
+                return false;
+            }
+            searchBar = d.getElementById('index-search');
+        })();
+
+        searchBar.addEventListener('focus', function() {
+            d.documentElement.classList.add('is-searching');
+        });
+        searchBar.addEventListener('blur', function() {
+            if (searchBar.dataset.searching != 1) {
+                d.documentElement.classList.remove('is-searching');
+            }
         });
 
     };
