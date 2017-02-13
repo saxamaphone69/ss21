@@ -27,9 +27,12 @@ the fucking json files and create elements in es5](https://gist.github.com/saxam
 - if possible, a "mega-board" that is actually several boards combined into one (similar to multi subreddits)
 
 ## what to do
-- create a quick es6 dom library so that i can easily create elements and make
-json requests
+- create a quick es6 dom library so that i can easily create elements and make json requests
 - a function that builds posts, updates threads, etc
+- content fills in posts (which are their own objects), which fills threads, which fills boards
+ - use `template`s
+ - use promises
 
 ## what will happen
 __nothing__
+ - (02/02/17) i made a small thing that fetches the pokemon api, grabs all of a type of pokemon, then spits it into a page
