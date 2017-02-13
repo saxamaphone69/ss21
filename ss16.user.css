@@ -3,8 +3,8 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: February 7th, 2017
- * 4chan X version: ccd0 1.13.7.2 / https://github.com/ccd0/4chan-x
+ * last modified: February 13th, 2017
+ * 4chan X version: ccd0 1.13.8.3 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
  *
@@ -16,7 +16,8 @@
 /**
  * this userstyle utilises a lot of best practices
  * and sensible defaults inspired from a variety of
- * stylish and modern web frameworks and resources
+ * stylish and modern web frameworks and resources, mainly:
+ * https://github.com/twbs/bootstrap
  */
 
 /**
@@ -30,8 +31,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono|Material+Icons');
 
 /**
- * because these fonts are all the rage, we include circular
- * a data URI. not sure if `font-display` even works in userstyles
+ * because grotesque fonts are all the rage, we include circular
+ * as a data URI. not sure if `font-display` even works in userstyles
  * but https://css-tricks.com/font-display-masses/ explains it
  */
 
@@ -48,9 +49,11 @@
 }
 
 /**
- * we also finally have css variables!
+ * we also finally have css variables/custom properties!
  * these are mainly used to manage colours, which are based off
- * google's material design guidelines
+ * google's material design guidelines:
+ * https://material.io/guidelines/style/color.html
+ * https://www.materialui.co/colors
  */
 
 :root {
@@ -415,9 +418,10 @@ hr {
 
 /**
  * make placeholder text consistent across browsers
+ * https://css-tricks.com/almanac/selectors/p/placeholder/
  */
 
-::-webkit-placeholder {
+::-webkit-input-placeholder {
   color: var(--base-grey);
 }
 
@@ -886,11 +890,15 @@ s:hover {
  */
 
 #delform {
-	min-height: calc( 100vh - 42rem );
+	min-height: calc( 100vh - 35rem );
+}
+
+:root.paged-mode #delform {
+	min-height: calc( 100vh - 40.5rem );
 }
 
 :root.catalog-mode #delform {
-	min-height: calc( 100vh - 39.5rem );
+	min-height: calc( 100vh - 40.5rem );
 }
 
 .board {
@@ -1985,11 +1993,12 @@ s:hover {
 :root.catalog-mode .pagelist,
 :root:not(.catalog-mode) .indexlink,
 :root.catalog-mode .cataloglink,
-:root:not(.catalog-mode) #hidden-label,
+/*:root:not(.catalog-mode) #hidden-label,*/
 :root:not(.catalog-mode) #index-size {
   display: none;
 }
 
+#hidden-label,
 #index-search::-webkit-search-cancel-button {
   display: none;
 }
@@ -2012,6 +2021,103 @@ s:hover {
  * never returns you to the top of the page
  */
 
+/**
+ * until i decide a nice way to style this part of the page,
+ * i'm just gonna leave it
+ */
+
+.navLinks {
+	position: relative;
+	z-index: 5;
+	max-width: 75%;
+	padding: 0.5rem 1rem;
+	margin: -4rem auto 5rem;
+	color: var(--base-white);
+	background-color: var(--base-primary);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+@media (max-width: 75rem) {
+	.navLinks {
+	  max-width: 100%;
+		margin: -4rem 1.5rem 5rem;
+	}
+}
+
+#index-search {
+	flex: 1 1 auto;
+	color: var(--base-white);
+	background: none;
+	padding: 0.25rem 0.5rem;
+	border: 0;
+	border-bottom: 1px solid var(--base-white);
+	margin: 0 0.5rem;
+}
+
+#index-search::-webkit-input-placeholder {
+	color: var(--base-white);
+}
+
+#index-options select {
+	margin-left: 0.5rem;
+}
+
+/*
+#index-search {
+	position: absolute;
+	width: 15rem;
+	top: -10rem;
+	left: 50%;
+	margin-left: -7.5rem;
+	background-color: rgba(255, 255, 255, 0.5);
+	border: 0;
+	border-bottom: 1px solid var(--base-grey);
+	transition: border .25s;
+}
+
+#index-search:focus {
+	border-bottom-color: var(--base-primary);
+}
+*/
+/*
+:root.is-searching .board {
+	transform: scale3d(0.7, 0.7, 1);
+	perspective: 1200px;
+	perspective-origin: 50% -50%;
+}
+*/
+/*
+:root.is-searching body::after {
+	content: '';
+	position: fixed;
+	display: block;
+	width: 100%;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	background-color: rgba(33, 33, 33, 0.75);
+}
+*/
+/*
+.navLinks::before {
+	content: 'search';
+	line-height: 1.5;
+	position: absolute;
+	top: -10rem;
+}
+
+#index-search {
+	position: absolute;
+	top: -10rem;
+	left: calc( 50% - 10rem );
+	width: 20rem;
+	background: none;
+	border: 0;
+}
+*/
+/*
 .navLinks {
   color: var(--base-white);
   background-color: var(--base-primary);
@@ -2071,6 +2177,19 @@ s:hover {
 #index-size {
   float: right;
 }
+*/
+
+/**
+ * hides the clear button, unless searching
+ */
+
+#index-search:not([data-searching]) + #index-search-clear {
+  display: none;
+}
+
+/**
+ * makes the reverse order checkbox into an icon instead
+ */
 
 #index-rev {
 	visibility: hidden;
@@ -2088,8 +2207,12 @@ s:hover {
 }
 
 #index-rev:checked::after {
-	color: var(--base-white);
+	color: var(--base-accent);
 }
+
+/**
+ * stubs of hidden threads and posts
+ */
 
 .stub ~ * {
   display: none;
@@ -2119,7 +2242,7 @@ s:hover {
 /**
  * really? god damn 😂👌
  */
-
+/*
 .catalog-container:not(:hover) > * > .file,
 .catalog-container:not(:hover) > * > .postInfo > :not(.subject),
 .catalog-container:not(:hover) > * > .catalog-replies,
@@ -2140,38 +2263,135 @@ s:hover {
 .post:not(.catalog-post) > .catalog-replies {
   display: none;
 }
+*/
+
+:root:not(.catalog-mode) [class^=catalog] {
+	display: none;
+}
+
+/**
+ * when catalogue mode is switched to/from paged mode, some
+ * elements retain, so we need some ugly looking selectors to ensure
+ * things look like they should. some poor explanation, in order:
+ * - hide the original `.file`
+ * - if a post is no longer a catalogue post, hide catalogue elements
+ */
+
+.catalog-post .file,
+.post:not(.catalog-post) [class^=catalog] {
+	display: none;
+}
+
+/**
+ * create a semi-flexible grid for catalog threads to flow into.
+ * a masonry-esque version of this could look cool
+ */
 
 :root.catalog-mode .board {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
-	margin: 1rem 1.5rem;
+	margin: -4rem 1.5rem 1rem;
 }
 
+/**
+ * here is where the first headache begins! `.catalog-thread` elements
+ * still keep their `.thread` class, so we have to override the css
+ * given to them originally. this also applies to the individual post 
+ * itself
+ */
+
 .catalog-thread {
-	padding: 0;
-	margin: 0;
 	position: relative;
 	word-wrap: break-word;
+	flex-basis: 0;
+	flex-grow: 1;
+	flex-shrink: 1;
+	padding: 0;
+	margin: 0 0.25rem 1rem 0.25rem;
 }
 
 .catalog-small .catalog-thread {
-	width: calc( 100% / 6 );
+	min-width: 12.5%;
+	max-width: 20%;
+}
+
+.catalog-large .catalog-thread {
+	min-width: 17.5%;
+	max-width: 25%;
+}
+
+/**
+ * in the catalogue, the thumbnail is actually the link to the thread
+ */
+
+.catalog-link {
+	position: relative;
+	display: block;
+}
+
+.catalog-thumb {
+	width: 100% !important;
+	height: auto !important;
+}
+
+/**
+ * the primary menu is actually the one in `.catalog-stats`
+ */
+
+.catalog-post > .postInfo > .menu-button {
+	display: none;
+}
+
+.catalog-stats .menu-button {
+	display: none;
+}
+
+.catalog-stats {
+	font-size: 0.9rem;
+	color: var(--base-white);
+	background-color: var(--base-primary);
+	padding: 0.25rem 0.5rem;
+	text-align: center;
+	width: 75%;
+	margin: -1rem auto 0.5rem;
+	position: relative;
+}
+
+.catalog-stats > [title] {
+	cursor: help;
+}
+
+/**
+ * unset the 'Subject by Anonymous' styling
+ */
+
+.catalog-post > .postInfo > :not(.subject),
+.catalog-post .subject::after {
+	display: none;
+}
+
+.catalog-post .subject {
+	display: block;
+	text-align: center;
 }
 
 .catalog-post .postMessage {
+	font-size: 0.9rem;
+	margin: 0;
 	max-height: 10rem;
-	overflow-y: hidden;
+	overflow: hidden;
 }
 
 /**
  * fappe and werk tyme support
  */
 
-:root.fappeTyme .thread > .noFile,
-:root.werkTyme .postContainer:not(.noFile) .file {
+:root.werkTyme .postContainer:not(.noFile) .fileThumb,
+:root.werkTyme .catalog-thumb:not(.deleted-file):not(.no-file),
+:root:not(.werkTyme) .werkTyme-filename {
   display: none;
 }
 
@@ -2189,8 +2409,6 @@ s:hover {
   cursor: pointer;
   padding: 0 .25rem;
   min-width: 2rem;
-  min-height: 2rem;
-  line-height: 2rem;
 }
 
 /**
@@ -3549,6 +3767,18 @@ audio.controls-added {
   }
 }
 
+.file--wide .full-image {
+	display: block;
+	width: 95vw;
+	max-width: none !important;
+	position: relative;
+	margin: 0 calc( 2rem + 15% * -1 ) 0 calc( 2rem + 15% * -1 );
+	/*
+	left: 50%;
+	transform: translateX(-50%);
+	*/
+}
+
 /**
  * birthday and christmas hats
  */
@@ -3760,4 +3990,41 @@ audio.controls-added {
 
 .summary span {
 	font-weight: 500;
+}
+
+/**
+ * when searching, create a 'focus' on the content by sliding in
+ * a darker background
+ */
+
+#id_css {
+	display: block;
+	height: 100vh;
+	width: 100%;
+	pointer-events: none;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	transform: translateY(-100%);
+	background-image: linear-gradient(to bottom, rgba(33, 33, 33, 0.75), rgba(33, 33, 33, 0));
+	transition: transform .25s;
+}
+
+:root.is-searching #id_css {
+	transform: translateY(0);
+}
+
+/**
+ * in the event a search on the index provides no results,
+ * display a handy empty state
+ */
+
+:root.is-searching .board:empty::after {
+	content: 'No threads found; try searching again.';
+	color: var(--base-grey);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 40vh;
 }
