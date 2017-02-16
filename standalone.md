@@ -36,3 +36,4 @@ the fucking json files and create elements in es5](https://gist.github.com/saxam
 ## what will happen
 __nothing__
  - (02/02/17) i made a small thing that fetches the pokemon api, grabs all of a type of pokemon, then spits it into a page
+ - (17/02/17) [fetch looks dope](https://developers.google.com/web/updates/2015/03/introduction-to-fetch)
