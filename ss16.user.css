@@ -3,7 +3,7 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: February 13th, 2017
+ * last modified: February 20th, 2017
  * 4chan X version: ccd0 1.13.8.3 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
@@ -524,7 +524,6 @@ s:hover {
 .fa::after,
 .menu-button::after,
 .hide-announcement::after,
-.is_thread > .closed ~ #delform .op .postNum::after,
 .n-pu::after,
 #navlinks a::after,
 .navLinks::before,
@@ -713,10 +712,6 @@ s:hover {
   content: 'file_download';
 }
 
-.is_thread > .closed ~ #delform .op .postNum::after {
-  content: 'archive';
-}
-
 .n-pu::after {
   content: 'person';
   font-size: 1rem;
@@ -839,13 +834,24 @@ s:hover {
 	border-bottom: 1px solid;
 }
 
-.closed {
+.closed,
+.is_arclist .center {
   text-align: center;
   padding: 1rem 1.5rem;
   font-size: 1.25rem;
   color: var(--base-white);
   background-color: var(--base-red);
   position: relative;
+}
+
+/**
+ * normally, ads are given the `.center` class, but when browsing
+ * the archive, the announcement at the top of the page also
+ * uses this class, so we need to unset the `!important` used
+ */
+
+.is_arclist .center {
+	display: block !important;
 }
 
 /*
@@ -1026,6 +1032,37 @@ s:hover {
 .postNum > a:first-child::after {
   content: '#';
   font-size: 1rem;
+}
+
+/**
+ * replace 4chan icons with the appropriate svg icons from material icons
+ */
+
+.stickyIcon {
+	vertical-align: baseline;
+	height: 0;
+	width: 1rem;
+	padding-top: 1rem;
+	background-repeat: no-repeat;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+}
+
+.closedIcon {
+	vertical-align: baseline;
+	height: 0;
+	width: 1rem;
+	padding-top: 1rem;
+	background-repeat: no-repeat;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M0 0h24v24H0z" fill="none"/><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>');
+}
+
+.archivedIcon {
+	vertical-align: baseline;
+	height: 0;
+	width: 1rem;
+	padding-top: 1rem;
+	background-repeat: no-repeat;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
 }
 
 /**
@@ -1411,6 +1448,10 @@ s:hover {
 
 /**
  * /f/ specific styling
+ * unfortunately, the table that /f/ uses to display posts and the
+ * table that the archive uses both have the `.flashListing` class.
+ * the only difference is that the archive uses the `#arc-list` id.
+ * so there will be some overlap
  */
 
 .flashListing {
@@ -1418,11 +1459,11 @@ s:hover {
 	margin: 0 auto 1rem;
 }
 
-.flashListing tr:not(:last-child) {
+.board_f .flashListing tr:not(:last-child) {
 	border-bottom: 1px solid var(--light-grey);
 }
 
-.flashListing tr:first-child {
+.board_f .flashListing tr:first-child {
 	font-weight: 500;
 	text-align: center;
 	text-transform: lowercase;
@@ -1431,11 +1472,11 @@ s:hover {
 	border-bottom: 1px solid var(--dark-primary);
 }
 
-.flashListing tr:first-child td:not(:last-child) {
+.board_f .flashListing tr:first-child td:not(:last-child) {
 	border-right: 1px solid var(--dark-primary);
 }
 
-.flashListing .highlightPost {
+.board_f .flashListing .highlightPost {
 	background-color: var(--very-light-primary);
 }
 
@@ -1444,25 +1485,54 @@ s:hover {
 	padding: 0.5rem 1rem;
 }
 
-.flashListing tr:not(:first-child) td:nth-child(3),
-.flashListing tr:not(:first-child) td:nth-child(5) {
+.board_f .flashListing tr:not(:first-child) td:nth-child(3),
+.board_f .flashListing tr:not(:first-child) td:nth-child(5) {
 	text-align: left;
 }
 
-.flashListing tr:not(:first-child) td:not(last-child) {
+.board_f .flashListing tr:not(:first-child) td:not(last-child) {
 	border-right: 1px solid var(--light-grey);
 }
 
-.flashListing .file-col a {
+.board_f .flashListing .file-col a {
 	color: var(--base-primary);
 }
 
-.flashListing .file-col a:hover {
+.board_f .flashListing .file-col a:hover {
 	color: var(--dark-primary);
 }
 
-.flashListing .subject::after {
+.board_f .flashListing .subject::after {
 	display: none;
+}
+
+/**
+ * archive support
+ */
+
+#arc-list {
+	margin-top: 1rem;
+}
+
+#arc-list thead tr {
+	font-weight: 500;
+	text-align: center;
+	text-transform: lowercase;
+	color: var(--base-white);
+	background-color: var(--base-primary);
+	border-bottom: 1px solid var(--dark-primary);
+}
+
+#arc-list thead td:not(:last-child) {
+	border-right: 1px solid var(--dark-primary);
+}
+
+#arc-list tbody td:not(:last-child) {
+	border-right: 1px solid var(--light-grey);
+}
+
+#arc-list tbody tr:not(:last-child) {
+	border-bottom: 1px solid var(--light-grey);
 }
 
 /**
@@ -1509,9 +1579,14 @@ s:hover {
 #qp {
   position: fixed;
   z-index: 20;
+	background-color: var(--base-white);
   border: 1px solid var(--base-grey);
   box-shadow: var(--default-depth);
   margin: .5rem;
+}
+
+#qp.warning {
+	padding: .5rem;
 }
 
 #qp .post {
@@ -2026,7 +2101,7 @@ s:hover {
  * i'm just gonna leave it
  */
 
-.navLinks {
+.navLinks.json-index {
 	position: relative;
 	z-index: 5;
 	max-width: 75%;
@@ -2040,7 +2115,7 @@ s:hover {
 }
 
 @media (max-width: 75rem) {
-	.navLinks {
+	.navLinks.json-index {
 	  max-width: 100%;
 		margin: -4rem 1.5rem 5rem;
 	}
@@ -2286,7 +2361,7 @@ s:hover {
  * create a semi-flexible grid for catalog threads to flow into.
  * a masonry-esque version of this could look cool
  */
-
+/*
 :root.catalog-mode .board {
 	display: flex;
 	flex-direction: row;
@@ -2295,14 +2370,14 @@ s:hover {
 	align-items: center;
 	margin: -4rem 1.5rem 1rem;
 }
-
+*/
 /**
  * here is where the first headache begins! `.catalog-thread` elements
  * still keep their `.thread` class, so we have to override the css
  * given to them originally. this also applies to the individual post 
  * itself
  */
-
+/*
 .catalog-thread {
 	position: relative;
 	word-wrap: break-word;
@@ -2312,7 +2387,17 @@ s:hover {
 	padding: 0;
 	margin: 0 0.25rem 1rem 0.25rem;
 }
+*/
 
+.catalog-thread { float: left; min-height: 10rem; }
+.catalog-thread:hover { min-height: 12rem !important; }
+.catalog-small .catalog-thread {
+	width: 12.5%;
+}
+.catalog-large .catalog-thread {
+	width: 20%;
+}
+/*
 .catalog-small .catalog-thread {
 	min-width: 12.5%;
 	max-width: 20%;
@@ -2322,7 +2407,7 @@ s:hover {
 	min-width: 17.5%;
 	max-width: 25%;
 }
-
+*/
 /**
  * in the catalogue, the thumbnail is actually the link to the thread
  */
@@ -2565,7 +2650,7 @@ s:hover {
 
 .replies-quoting-you > a,
 #watcher-link.replies-quoting-you {
-  color: red !important;
+  color: var(--base-red) !important;
 }
 
 /**
@@ -3799,7 +3884,7 @@ audio.controls-added {
 #a-gallery {
   position: fixed;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   top: 0;
   right: 0;
   bottom: 0;
@@ -3807,6 +3892,10 @@ audio.controls-added {
   background-color: rgba(33, 33, 33, .5);
   z-index: 99;
 }
+
+/**
+ * this is where images are kept
+ */
 
 .gal-viewport {
   display: flex;
@@ -3821,7 +3910,7 @@ audio.controls-added {
   position: absolute;
   color: var(--base-white);
   top: 2rem;
-  right: 3rem;
+  right: 5rem;
 }
 
 .gal-close {
@@ -3850,7 +3939,7 @@ audio.controls-added {
   text-align: right;
   position: absolute;
   top: .5rem;
-  right: 3rem;
+  right: 5rem;
   left: auto;
 }
 
@@ -3867,6 +3956,11 @@ audio.controls-added {
 .gal-prev:hover,
 .gal-next:hover {
   background-color: rgba(33, 33, 33, .5);
+}
+
+.gal-prev::after,
+.gal-next::after {
+	font-size: 3rem;
 }
 
 .gal-image {
@@ -3896,14 +3990,15 @@ audio.controls-added {
 .gal-thumbnails {
   flex: 0 0 7rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  overflow-y: hidden;
+  overflow-x: hidden;
+	border-left: 1px solid rgba(33, 33, 33, .5);
 }
 
 .gal-thumb {
   flex: 0 0 auto;
-  margin-left: 1rem;
+  margin: .5rem 0;
   display: inline-block;
   vertical-align: middle;
 }
@@ -3917,7 +4012,7 @@ audio.controls-added {
 }
 
 /**
- *
+ * gallery thumbnail styling
  */
 
 .gal-thumb img,
@@ -3926,6 +4021,32 @@ audio.controls-added {
   width: auto;
   max-height: 5rem;
   height: auto;
+}
+
+/**
+ * if selected in gallery, make fit height/width work
+ */
+
+:root.gal-pdf .gal-image a {
+  width: 100%;
+  height: 100%;
+}
+
+:root.gal-fit-width .gal-image img,
+:root.gal-fit-width .gal-image video {
+  max-width: 100%;
+}
+
+:root.gal-fit-height .gal-image img,
+:root.gal-fit-height .gal-image video {
+  /* XXX https://code.google.com/p/chromium/issues/detail?id=168840, https://bugs.webkit.org/show_bug.cgi?id=94158 */
+  max-height: 95vh;
+  max-height: calc(100vh - 25px);
+}
+
+.gal-image iframe {
+  width: 100%;
+  height: 100%;
 }
 
 /**
@@ -4027,4 +4148,19 @@ audio.controls-added {
 	align-items: center;
 	justify-content: center;
 	height: 40vh;
+}
+
+/**
+ * tell oneechan users where to go
+ */
+
+:root.oneechan body::before {
+	content: 'Hey there Oneechan user!\AJust letting you know that ss16 does NOT work with this userscript!\APlease disable Oneechan to use this userstyle properly.\AIf you wish Oneechan worked with ss16, complain to me (sax) on GitHub.';
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	white-space: pre;
+	font-size: 1.5rem;
+	text-align: center;
 }
