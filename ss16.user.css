@@ -3,8 +3,8 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: February 20th, 2017
- * 4chan X version: ccd0 1.13.8.3 / https://github.com/ccd0/4chan-x
+ * last modified: March 7th, 2017
+ * 4chan X version: ccd0 1.13.8.4 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
  *
@@ -123,7 +123,7 @@
  */
 
 .mobile,
-.desktop:not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
+.desktop:not(#bannerCnt):not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
 hr:not(#unread-line),
 .qr-link-container,
 .postForm,
@@ -738,7 +738,8 @@ s:hover {
  */
 
 [color='red'],
-[style*='color:red'] {
+[style*='color:red'],
+[style*='color: red']{
   color: var(--base-red) !important;
 }
 
@@ -757,8 +758,28 @@ s:hover {
 	text-align: center;
 }
 
+/**
+ * in the event that you unironically enjoy the banners, and
+ * didn't block them like i requested, i will still make them look
+ * semi-decent. if you don't enjoy the pixelated look, change
+ * `image-rendering` with a value you'd prefer:
+ * https://developer.mozilla.org/en/docs/Web/CSS/image-rendering
+ */
+
+#bannerCnt > img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 30rem;
+	image-rendering: pixelated;
+}
+
 .boardTitle {
-  font-size: 5rem;
+	/*
+	font-size: calc(100% + 5vw); 
+	*/
+  font-size: calc(100% + 5vw);
   color: var(--base-white);
   text-transform: lowercase;
   /*
@@ -768,6 +789,21 @@ s:hover {
 	*/
   text-shadow: 1rem 1rem var(--base-primary);
 	margin-top: -3rem;
+	z-index: 2;
+	position: relative;
+}
+
+.boardBanner::before {
+	content: '';
+	display: block;
+	box-shadow: inset 0 0 10rem 5rem rgba(33, 33, 33, .5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 30rem;
+	z-index: 1;
+	pointer-events: none;
 }
 
 .boardBanner::after {
@@ -783,7 +819,6 @@ s:hover {
 	background-size: cover;
 	background-repeat: no-repeat;
 	filter: blur(2px);
-	box-shadow: inset 0 0 10rem 5rem rgba(33, 33, 33, .5);
 }
 
 .board_fit .boardBanner::after {
@@ -923,12 +958,6 @@ s:hover {
   margin: 0 auto 1.5rem;
 }
 
-@media (max-width: 75rem) {
-  .thread {
-    max-width: 100%;
-  }
-}
-
 /**
  * a modern, micro clearfix, as per:
  * http://cssmojo.com/latest_new_clearfix_so_far/
@@ -938,6 +967,13 @@ s:hover {
  *   display: table
  *   clear: both;
  * }
+ */
+
+/**
+ * coming chrome 58:
+ * http://caniuse.com/#feat=flow-root
+ * https://www.chromestatus.com/feature/5769454877147136
+ * https://css-tricks.com/display-flow-root/
  */
 
 .post::after {
@@ -1732,6 +1768,9 @@ s:hover {
   padding: 0 .5rem;
 	height: 3rem;
   min-width: 3rem;
+	white-space: nowrap;
+  overflow: hidden;
+	text-overflow: ellipsis;
   border-bottom: 3px solid transparent;
   transition: opacity .25s, border-bottom .25s;
 }
@@ -1775,6 +1814,9 @@ s:hover {
 
 .shortcut {
 	display: inline-flex;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #shortcuts .shortcut > a {
@@ -1816,10 +1858,6 @@ s:hover {
 
 #shortcuts .fa-eye.replies-quoting-you::after {
 	color: var(--base-accent);
-}
-
-#shortcuts .ss16-shortcut {
-  display: none;
 }
 
 :root:not(.fappeTyme) #shortcut-fappe,
@@ -1906,6 +1944,12 @@ s:hover {
 
 .notification .fa-times:hover::after {
   opacity: 1;
+}
+
+.message {
+	white-space: pre-line;
+	max-height: 10rem;
+	overflow: auto;
 }
 
 :root.tainted .report-error {
@@ -2114,12 +2158,7 @@ s:hover {
 	justify-content: space-between;
 }
 
-@media (max-width: 75rem) {
-	.navLinks.json-index {
-	  max-width: 100%;
-		margin: -4rem 1.5rem 5rem;
-	}
-}
+
 
 #index-search {
 	flex: 1 1 auto;
@@ -2307,8 +2346,14 @@ s:hover {
 .stub .fa::after,
 .stub .menu-button::after {
 	font-size: 1rem;
-	line-height: 1.5rem;
+	line-height: 1.5;
 }
+
+.stub .fa-plus-square-o::after {
+	vertical-align: text-bottom;
+}
+
+
 
 /**
  * catalogue support
@@ -2474,6 +2519,8 @@ s:hover {
  * fappe and werk tyme support
  */
 
+:root.fappeTyme .thread > .noFile,
+:root.fappeTyme .threadContainer > .noFile,
 :root.werkTyme .postContainer:not(.noFile) .fileThumb,
 :root.werkTyme .catalog-thumb:not(.deleted-file):not(.no-file),
 :root:not(.werkTyme) .werkTyme-filename {
@@ -2483,7 +2530,6 @@ s:hover {
 #shortcut-fappe,
 #shortcut-werk {
 	line-height: 3rem;
-	min-width: 3rem;
 	text-align: center;
 }
 
@@ -2492,7 +2538,7 @@ s:hover {
   color: var(--base-white);
   background-color: var(--base-accent);
   cursor: pointer;
-  padding: 0 .25rem;
+  padding: 0 0.25rem;
   min-width: 2rem;
 }
 
@@ -2516,8 +2562,7 @@ s:hover {
 .watch-thread-link::after {
   content: 'favorite_border';
   font-size: 1rem;
-	line-height: 1.5rem;
-  vertical-align: bottom;
+	vertical-align: text-top;
   opacity: .65;
   transition: opacity .25s, color .25s;
 }
@@ -3221,11 +3266,11 @@ div[data-checked='false'] > .suboption-list {
 
 /**
  * the qr is an absolute clusterfuck, so i will take the
- * time to explain what each of these declarations hide
+ * time to explain what each of these declarations hide.
  * please note, lines with an asterisk override the matching 4chan x setting
  *
  * 01) the body of the qr when it is autohidden or isn't focused
- * 02) the checkbox to make it autohide (click the label)
+ * 02) the checkbox to make it autohide (click the label/title)
  * 03)* the new thread options selector (just do it normally, lazy)
  * 04) the subject field when in a thread
  * 05)* the name field when board is forced anon (e.g. /b/)
@@ -3408,7 +3453,7 @@ body.board_b #qr .persona .field {
   flex-wrap: wrap;
   white-space: nowrap;
   overflow-y: auto;
-  width: 30rem;
+  max-width: 28rem;
   max-height: 10rem;
 }
 
@@ -3418,6 +3463,7 @@ body.board_b #qr .persona .field {
   height: 5rem;
   width: 5rem;
   opacity: .5;
+	margin: 0.1rem;
   transition: opacity .25s, transform .25s;
   background-size: cover;
   overflow: hidden;
@@ -3471,14 +3517,23 @@ body.board_b #qr .persona .field {
   color: var(--base-white);
 }
 
+/**
+ * if a post preview in the dump list hasn't got a file,
+ * make the text darker as opposed to lighter
+ */
+
+.qr-preview:not(.has-file) > span {
+	color: var(--base-black);
+}
+
 .qr-preview-spoiler,
 #add-post {
   font-size: 0;
 }
 
 .qr-preview > label {
-  background: rgba(0, 0, 0, .5);
-  color: #fff;
+  background: rgba(33, 33, 33, 0.5);
+  color: var(--base-white);
   right: 0;
   bottom: 0;
   left: 0;
@@ -3488,6 +3543,12 @@ body.board_b #qr .persona .field {
 
 .qr-preview > label > input {
   margin: 0;
+}
+
+#add-post {
+	position: absolute;
+	right: 0;
+	bottom: 0;
 }
 
 #add-post::after {
@@ -3585,10 +3646,6 @@ body.board_b #qr .persona .field {
   margin-right: .25rem;
 }
 
-#qr-file-spoiler:checked + .checkbox-letter::after {
-  opacity: .9;
-}
-
 #qr-oekaki-button .fa-edit:hover::after,
 #qr-filerm .fa-times-circle:hover::after,
 #url-button .fa-link:hover::after,
@@ -3598,17 +3655,27 @@ body.board_b #qr .persona .field {
   opacity: .75;
 }
 
-#qr-filerm .fa-times-circle::after {
-  color: var(--base-red);
-}
-
+#qr.dump #dump-button .fa-plus-square::after,
+#qr-file-spoiler:checked + .checkbox-letter::after,
 #custom-cooldown-button:not(.disabled) .fa-clock-o::after {
   opacity: .9;
 }
 
+#qr-filerm .fa-times-circle::after {
+  color: var(--base-red);
+}
+
 #add-post::after,
 #dump-button .fa-plus-square::after {
-  color: var(--base-blue);
+  color: var(--base-primary);
+}
+
+/**
+ * if there is no file, don't show the 'remove file' icon
+ */
+
+#file-n-submit:not(.has-file) #qr-filerm {
+	display: none;
 }
 
 #file-n-submit [type='submit'] {
@@ -3649,24 +3716,13 @@ body.board_b #qr .persona .field {
  * recaptcha and captcha related styling
  */
 
-/*
-#g-recaptcha {
-  min-height: 78px;
-  height: auto;
+.captcha-counter {
+	text-align: center;
 }
 
-#captchaContainerAlt td:nth-child(2) {
-  display: table-cell !important;
+.captcha-container > div {
+	margin: auto;
 }
-
-body > div:last-of-type {
-  transition: none !important;
-}
-
-body > div[style*=" top: -10000px;"] {
-  visibility: hidden !important;
-}
-*/
 
 /**
  * anti-autoplay audio, straight from 4chan X
@@ -3751,10 +3807,17 @@ audio.controls-added {
  * filters and highlights
  */
 
+/**
+ * non-variable colours, i know. applicable here because
+ * they are not used throughout the style and are, essentially,
+ * a one time deal
+ */
+
 .post:target,
 .highlight,
 .qphl,
-.yourPost .post {
+.yourPost .post,
+:root.highlight-own .yourPost .stub {
   background-color: #fffde7;
 }
 
@@ -3853,11 +3916,13 @@ audio.controls-added {
 }
 
 .file--wide .full-image {
+	
 	display: block;
 	width: 95vw;
 	max-width: none !important;
 	position: relative;
 	margin: 0 calc( 2rem + 15% * -1 ) 0 calc( 2rem + 15% * -1 );
+	
 	/*
 	left: 50%;
 	transform: translateX(-50%);
@@ -4062,6 +4127,40 @@ audio.controls-added {
 }
 
 /**
+ * media queries to accomodate for smaller screen sizes
+ */
+/*
+@media (max-width: 75rem) {
+	
+	#header-bar {
+											padding: 0 0.5rem;
+										}
+	
+	#board-list a {
+											font-size: .75rem;
+											min-width: 1rem;
+											padding: 0 0.25rem;
+											white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+										}
+	
+	.navLinks.json-index {
+	  max-width: 100%;
+		margin: -4rem 1.5rem 5rem;
+	}
+	
+  .thread {
+    max-width: 100%;
+	}
+	
+	#shortcuts .ss16-shortcut {
+											display: inline-flex !important;
+										}
+	
+}*/
+
+/**
  * elements added by companion userscript
  */
 
@@ -4114,9 +4213,22 @@ audio.controls-added {
 }
 
 /**
+ * sidedish adds an additional shortcut, which isn't needed unless the
+ * screen is <75rem
+ */
+
+#shortcuts .ss16-shortcut {
+  display: none;
+}
+
+/**
  * when searching, create a 'focus' on the content by sliding in
  * a darker background
  */
+
+:root.site-loading #id_css {
+	display: none;
+}
 
 #id_css {
 	display: block;
@@ -4151,9 +4263,125 @@ audio.controls-added {
 }
 
 /**
- * tell oneechan users where to go
+ * sidedish makes the board links scrollable if they occupy too much horizontal space
  */
 
+.scroll-indicator {
+	position: absolute;
+	top: 0;
+	line-height: 64px;
+	height: 64px;
+	width: 48px;
+	display: none;
+	margin-right: 0;
+	text-align: center;
+	cursor: pointer;
+	user-select: none;
+}
+
+.scroll-indicator--left {
+	left: 0;
+}
+
+.scroll-indicator--right {
+	right: 0;
+}
+
+:root.is-small-screen .scroll-indicator {
+	display: block;
+}
+
+.scroll-indicator.disabled {
+  opacity: 0.12;
+  cursor: default;
+}
+/*
+#board-list {
+	overflow: hidden;
+	position: absolute;
+	height: 64px;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+}
+
+:root.is-small-screen #board-list {
+	top: 0;
+	bottom: auto;
+	left: 48px;
+	width: calc(100% - 2 * 48px);
+	padding: 0!important;
+}
+
+#board-list > span:not([hidden]) {
+	box-shadow: none!important;
+	border: 0!important;
+	width: 100%;
+	height: 85px;
+	flex-shrink: 0;
+	padding: 0 16px 0 24px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	user-select: none;
+	margin-bottom: -16px;
+	display: flex;
+	flex-wrap: nowrap;
+	line-height: 64px;
+}
+
+:root.is-small-screen #board-list > span:not([hidden]) {
+	padding: 0;
+}
+
+#board-list > span:not([hidden]) a {
+	display: flex;
+	flex-shrink: 0;
+	height: 64px;
+	line-height: 64px;
+}
+
+#shortcuts {
+	display: none !important;
+}
+*/
+/**
+ * sidedish replaces the default `<select>` element with something
+ * a tad more stylable
+ */
+
+.ss16-select-dropdown {
+	text-transform: uppercase;
+	display: block;
+	overflow: hidden;
+	height: 2rem;
+	width: 8rem;
+	padding: 0;
+	border: 1px solid var(--base-white);
+	margin: 0;
+	list-style: none;
+	position: relative;
+	cursor: pointer;
+}
+
+.ss16-select-dropdown--item {
+	position: absolute;
+	width: 8rem;
+	text-align: center;
+	padding: 0.25rem 0.5rem;
+	transform: translateY(100%);
+	transition: transform .25s;
+}
+
+.ss16-select-dropdown--item.active {
+	transform: translateY(0);
+}
+
+/**
+ * tell oneechan users where to go;
+ * now achieved via sidedish (poorly)
+ */
+
+/*
 :root.oneechan body::before {
 	content: 'Hey there Oneechan user!\AJust letting you know that ss16 does NOT work with this userscript!\APlease disable Oneechan to use this userstyle properly.\AIf you wish Oneechan worked with ss16, complain to me (sax) on GitHub.';
 	display: flex;
@@ -4163,4 +4391,28 @@ audio.controls-added {
 	white-space: pre;
 	font-size: 1.5rem;
 	text-align: center;
+}
+*/
+
+:root.oneechan .fa-gears::after {
+  content: 'brush';
+}
+
+/**
+ * if you need an anime girl following you as you browse 4chan,
+ * seek professional mental help
+ */
+
+:root.oneechan #mascot {
+  display: none;
+}
+
+/**
+ * oneechan uses an imitation checkbox for posts to achieve nicer styling,
+ * but since we don't use these checkboxes, they just create an unnecessary
+ * newline due to being a block element
+ */
+
+:root.oneechan .riceCheck {
+  display: none;
 }
