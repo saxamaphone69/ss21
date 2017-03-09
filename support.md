@@ -42,6 +42,13 @@ this is a list of what affect 4chan X's settings have on ss16's appearance
 
 ---
 
+## advanced
+### quote backlinks formatting
+use `#%id`
+
+### custom css
+__this must be disabled__, or there will be adverse side effects
+
 ## filters
 ### post numbers
 `/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` - posts with dubs vibrate and are checked
