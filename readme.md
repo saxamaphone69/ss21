@@ -18,7 +18,7 @@ __please note:__ only the most recent version of chrome and firefox are supporte
   1. the easiest way to do this is to have one tab open on 4chan, and the raw version of `ss16.user.css` (found on this github repo)
   2. create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
     ![applying style](img/new style.png)
-  3.
+  3. 
   **chrome users:** copy everything from `ss16.user.css` and paste into the blank textarea and click save
   **firefox users:** you should be staring at something that looks like:
 
