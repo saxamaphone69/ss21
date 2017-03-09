@@ -19,6 +19,7 @@ __please note:__ only the most recent version of chrome and firefox are supporte
   2. create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
     ![applying style](img/new style.png)
   3.
+
   **chrome users:** copy everything from `ss16.user.css` and paste into the blank textarea and click save
 
   **firefox users:** you should be staring at something that looks like:
@@ -74,6 +75,7 @@ __please note:__ only the most recent version of chrome and firefox are supporte
 
   __note:__ sadly, there is no auto updating on styles that are not installed from userstyles.org, so you'll have to check manually (honestly, the style is updated once every 2 months at most)
   4. install 4chan X (you should already have it) and then navigate to the raw version of `sidedish.user.js` (found on this github repo). you should be automatically prompted to install with tampermonkey
+  5. speaking of 4chan X, have a read over [what is supported](support.md) and what you'll need to enable or disable
 
 
 ## adblock plus filters
