@@ -3,7 +3,7 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: March 10th, 2017
+ * last modified: March 20th, 2017
  * 4chan X version: ccd0 1.13.8.4 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
@@ -136,6 +136,10 @@ hr:not(#unread-line),
   display: none;
 }
 
+:root.side-loading body {
+	display: none;
+}
+
 /**
  * 1) changes the default font family
  * 2) give everything some SPACE
@@ -252,7 +256,7 @@ h6,
  * we override it with an `!important` (potentially expensive?)
  */
 
-[style*='weight:bo'] {
+[style*='weight:'] {
   font-weight: 500 !important;
 }
 
@@ -943,8 +947,8 @@ s:hover {
 */
 
 /**
- * this ensures that the pagelist and footer always stays at the
- * bottom of the window if the content isn't 'tall' enough
+ * this attempts to ensure that the pagelist and footer always stays at the
+ * bottom of the browser window if the content isn't 'tall' enough
  */
 
 #delform {
@@ -1116,24 +1120,6 @@ s:hover {
   padding-top: 1rem;
   background-repeat: no-repeat;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M2.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-}
-
-/**
- * firefox doesn't play well
- * with svg as a `background-image` for `img` replacement.
- * this reduces the quality of the icons considerably
- */
-
-:root.ua-gecko .stickyIcon {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMiAyQzguMTMgMiA1IDUuMTMgNSA5YzAgNS4yNSA3IDEzIDcgMTNzNy03Ljc1IDctMTNjMC0zLjg3LTMuMTMtNy03LTd6bTAgOS41Yy0xLjM4IDAtMi41LTEuMTItMi41LTIuNXMxLjEyLTIuNSAyLjUtMi41IDIuNSAxLjEyIDIuNSAyLjUtMS4xMiAyLjUtMi41IDIuNXoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+');
-}
-
-:root.ua-gecko .closedIcon {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOCA4aC0xVjZjMC0yLjc2LTIuMjQtNS01LTVTNyAzLjI0IDcgNnYySDZjLTEuMSAwLTIgLjktMiAydjEwYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWMTBjMC0xLjEtLjktMi0yLTJ6bS02IDljLTEuMSAwLTItLjktMi0ycy45LTIgMi0yIDIgLjkgMiAyLS45IDItMiAyem0zLjEtOUg4LjlWNmMwLTEuNzEgMS4zOS0zLjEgMy4xLTMuMSAxLjcxIDAgMy4xIDEuMzkgMy4xIDMuMXYyeiIvPgo8L3N2Zz4=');
-}
-
-:root.ua-gecko .archivedIcon {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0yMC41NCA1LjIzbC0xLjM5LTEuNjhDMTguODggMy4yMSAxOC40NyAzIDE4IDNINmMtLjQ3IDAtLjg4LjIxLTEuMTYuNTVMMy40NiA1LjIzQzMuMTcgNS41NyAzIDYuMDIgMyA2LjVWMTljMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY2LjVjMC0uNDgtLjE3LS45My0uNDYtMS4yN3pNMTIgMTcuNUw2LjUgMTJIMTB2LTJoNHYyaDMuNUwxMiAxNy41ek01LjEyIDVsLjgxLTFoMTJsLjk0IDFINS4xMnoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+');
 }
 
 /**
@@ -1625,7 +1611,7 @@ s:hover {
 }
 
 .new {
-  color: var(--base-green);
+  color: var(--light-green);
 }
 
 /**
@@ -1668,6 +1654,12 @@ s:hover {
   max-height: 80vh;
   max-width: 50vw;
 }
+
+/*
+ * while something fancy such as `text-decoration: underline wavy` could be used
+ * i actually don't mind the dashed border to indicate a `.forwardlink`
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration
+ */
 
 .forwardlink {
   border-bottom: 1px dashed;
@@ -2020,12 +2012,13 @@ s:hover {
  */
 
 #updater {
+	font-family: roboto mono;
   font-size: .75rem;
 }
 
 #shortcut-updater {
   line-height: 3rem;
-  margin-right: .5rem;
+  margin-right: 1rem;
 }
 
 /**
@@ -2050,7 +2043,7 @@ s:hover {
 }
 
 #update-status:not(.empty) {
-  margin-right: .25rem;
+  margin-right: .5rem;
 }
 
 #update-timer {
@@ -2062,7 +2055,9 @@ s:hover {
  */
 
 #thread-stats {
+	font-family: roboto mono;
   font-size: .75rem;
+	color: rgba(254, 254, 254, .5);
 }
 
 #shortcut-stats {
@@ -2081,6 +2076,10 @@ s:hover {
   background-color: var(--base-primary);
   padding: .5rem;
   box-shadow: var(--default-depth);
+}
+
+#thread-stats span {
+	color: var(--base-white);
 }
 
 :root.float #thread-stats span:not(#page-count) {
@@ -2856,16 +2855,6 @@ s:hover {
 }
 
 /**
- * firefox doesn't allow pseudo elements for input elements,
- * so instead of being fancy with the material icon, we go back to the
- * intended checkbox
- */
-
-:root.ua-gecko .entry input[type='checkbox'] {
-    visibility: visible;
-  }
-
-/**
  * because we want 'thread watcher' to be lowercased,
  * it means the menu for it gets lowercased too.
  * reverse it here
@@ -3011,16 +3000,7 @@ s:hover {
 .section-container {
   flex: 1;
   overflow: auto;
-  padding: 0 1rem;
-}
-
-/**
- * firefox collapses the bottom padding, so this should alleviate that issue
- * while maintaining the same functionality in chrome
- */
-
-.section-container > section {
-  padding: .5rem 0 1rem;
+  padding: .5rem 1rem;
 }
 
 #fourchanx-settings button {
@@ -3977,19 +3957,28 @@ audio.controls-added {
     transform: translateX(-2px) rotate(-.5deg);
   }
 }
+/*
+.file--wide .full-image {
+	width: calc( 100vw - 17px );
+	max-width: none !important;
+	position: relative;
+	margin-left: calc( -1 * 12.5% - 17px );
+}
+*/
 
 .file--wide .full-image {
   display: block;
-  width: 95vw;
+  width: 90vw;
   max-width: none !important;
   position: relative;
   margin: 0 calc(2rem + 15% * -1) 0 calc(2rem + 15% * -1);
+}
 
   /*
 	left: 50%;
 	transform: translateX(-50%);
 	*/
-}
+
 
 /**
  * birthday and christmas hats
@@ -4441,6 +4430,31 @@ audio.controls-added {
  * now achieved via sidedish (poorly)
  */
 
+/**
+ * also, re-declaring icons here as to not pollute
+ * the original and intended styling
+ */
+
+:root.oneechan .options-close .options-button::after {
+  font-family: material icons;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.5rem;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+  /* only additional declaration to this style */
+  color: inherit;
+}
+
 /*
 :root.oneechan body::before {
 	content: 'Hey there Oneechan user!\AJust letting you know that ss16 does NOT work with this userscript!\APlease disable Oneechan to use this userstyle properly.\AIf you wish Oneechan worked with ss16, complain to me (sax) on GitHub.';
@@ -4459,7 +4473,120 @@ audio.controls-added {
 }
 
 /**
- * if you need an anime girl following you as you browse 4chan,
+ * styles the oneechan settings
+ */
+
+#oneechan-options {
+  position: fixed;
+  z-index: 16;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--base-white);
+  display: flex;
+  flex-direction: column;
+  width: 75rem;
+  max-width: 90%;
+  height: 60rem;
+  max-height: 90%;
+  margin: auto;
+  box-shadow: var(--default-depth);
+  contain: paint;
+}
+
+#options-tabs {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	font-family: circular;
+	text-transform: lowercase;
+	color: var(--base-white);
+	background-color: var(--base-primary);
+	padding: 0 1rem;
+}
+
+#options-tabs .tab-item {
+	display: inline-block;
+}
+
+#options-tabs .tab-label {
+	display: block;
+	line-height: 3rem;
+	height: 3rem;
+	padding: 0 .5rem;
+  opacity: .65;
+  border-bottom: 3px solid transparent;
+  transition: opacity .25s, border-bottom .25s;
+}
+
+#options-tabs .tab-label:hover {
+  opacity: .85;
+  border-bottom: 3px solid var(--light-accent);
+}
+
+#options-tabs .selected {
+  font-weight: 500;
+  border-bottom: 3px solid var(--base-accent);
+  opacity: 1;
+}
+
+/**
+ * if the oneechan tab is not the one selected,
+ * hide the content
+ */
+
+#oneechan-options .tab-select:not(:checked) + .options-section {
+	display: none;
+}
+
+#oneechan-options .options-section {
+	height: 57rem;
+	overflow-y: auto;
+}
+
+#oneechan-options .options-section .option {
+	display: block;
+}
+
+#oneechan-options .options-close {
+	position: absolute;
+	right: 1rem;
+	top: 0;
+}
+
+#oneechan-options .options-close .options-button {
+	font-size: 0;
+	color: var(--base-white);
+}
+
+#oneechan-options .options-close .options-button::after {
+	font-size: 1.5rem;
+	cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 .5rem;
+	border-bottom: 3px solid transparent;
+  height: 3rem;
+  opacity: .65;
+  transition: opacity .25s, border-bottom .25s;
+}
+
+#oneechan-options .options-close .options-button:hover::after {
+	opacity: .85;
+	border-bottom: 3px solid var(--light-accent);
+}
+
+#oneechan-options .options-close .options-button[name='save']::after {
+	content: 'save';
+}
+
+#oneechan-options .options-close .options-button[name='cancel']::after {
+	content: 'close';
+}
+
+/**
+ * if you need an anime girl/boy following you as you browse 4chan,
  * seek professional mental help
  */
 
