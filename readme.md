@@ -19,7 +19,7 @@ __please note:__ only the most recent version of chrome and firefox are supporte
   the easiest way to do this is to have one tab open on 4chan, and the raw version of `ss16.user.css` (found on this github repo)
 2.
   create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
-  ![applying style](img/new style.png)
+  ![applying style](img/new-style.png)
 3.
   **chrome users:** copy everything from `ss16.user.css` and paste into the blank textarea and click save
 
@@ -94,7 +94,7 @@ go to your adblock plus options, and locate where you can add your own filters. 
 | `@@||s.4cdn.org/css/painter.*.css` | adds an exception to the earlier rule, so that the painter file is still downloaded |
 
 in firefox, this should look something like this:
-![preview of adblock filters](img/adblock options.png)
+![preview of adblock filters](img/adblock-options.png)
 
 if you know a nicer/cleaner way to write these filters, please let me know
 
