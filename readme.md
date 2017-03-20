@@ -15,70 +15,70 @@ firefox is also supported
 
 ## installation
 __please note:__ only the most recent version of chrome and firefox are supported. at the time of this commit, that is 52 and 58, respectively
-  1. 
-    the easiest way to do this is to have one tab open on 4chan, and the raw version of `ss16.user.css` (found on this github repo)
-  2. 
-    create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
-    ![applying style](img/new style.png)
-  3. 
-    **chrome users:** copy everything from `ss16.user.css` and paste into the blank textarea and click save
+1.
+  the easiest way to do this is to have one tab open on 4chan, and the raw version of `ss16.user.css` (found on this github repo)
+2.
+  create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
+  ![applying style](img/new style.png)
+3.
+  **chrome users:** copy everything from `ss16.user.css` and paste into the blank textarea and click save
 
-    **firefox users:** you should be staring at something that looks like:
+  **firefox users:** you should be staring at something that looks like:
 
-    ```css
-    @namespace url(http://www.w3.org/1999/xhtml);
+  ```css
+  @namespace url(http://www.w3.org/1999/xhtml);
 
-    @-moz-document domain("boards.4chan.org") {
+  @-moz-document domain("boards.4chan.org") {
 
-    }
-    ```
+  }
+  ```
 
-    you will need to copy everything from `ss16.user.css` and paste it into the `@document` query
+  you will need to copy everything from `ss16.user.css` and paste it into the `@document` query
 
-    ```css
-    @namespace url(http://www.w3.org/1999/xhtml);
+  ```css
+  @namespace url(http://www.w3.org/1999/xhtml);
 
-    @-moz-document domain("boards.4chan.org") {
-      /**
-       *
-       * ss16 - a self-centered, fresh attempt at (user)styling 4chan
-       *
-       */
-       ...
-    }
-    ```
+  @-moz-document domain("boards.4chan.org") {
+    /**
+     *
+     * ss16 - a self-centered, fresh attempt at (user)styling 4chan
+     *
+     */
+     ...
+  }
+  ```
 
-    you are then going to cut line 31:
+  you are then going to cut line 31:
 
-    `@import url('https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono|Material+Icons');
-    `
+  `@import url('https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono|Material+Icons');
+  `
 
-    and paste it over
+  and paste it over
 
-    `@namespace url(http://www.w3.org/1999/xhtml);`
+  `@namespace url(http://www.w3.org/1999/xhtml);`
 
-    which should leave ss16 looking like (while you're at it change the double quotes to single quotes):
+  which should leave ss16 looking like (while you're at it change the double quotes to single quotes):
 
-    ```css
-    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono|Material+Icons');
+  ```css
+  @import url('https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono|Material+Icons');
 
-    @-moz-document domain('boards.4chan.org') {
-      /**
-       *
-       * ss16 - a self-centered, fresh attempt at (user)styling 4chan
-       *
-       */
-       ...
-    }
-    ```
+  @-moz-document domain('boards.4chan.org') {
+    /**
+     *
+     * ss16 - a self-centered, fresh attempt at (user)styling 4chan
+     *
+     */
+     ...
+  }
+  ```
 
-    and then click save
+  and then click save
 
-    __note:__ sadly, there is no auto updating on styles that are not installed from userstyles.org, so you'll have to check manually (honestly, the style is updated once every 2 months at most)
-  4. 
-    install 4chan X (you should already have it) and then navigate to the raw version of `sidedish.user.js` (found on this github repo). you should be automatically prompted to install with tampermonkey
-  5. 
-    speaking of 4chan X, have a read over [what is supported](support.md) and what you'll need to enable or disable
+  __note:__ sadly, there is no auto updating on styles that are not installed from userstyles.org, so you'll have to check manually (honestly, the style is updated once every 2 months at most)
+4.
+  install 4chan X (you should already have it) and then navigate to the raw version of `sidedish.user.js` (found on this github repo). you should be automatically prompted to install with tampermonkey
+5.
+  speaking of 4chan X, have a read over [what is supported](support.md) and what you'll need to enable or disable
 
 
 ## adblock plus filters

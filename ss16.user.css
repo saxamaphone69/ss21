@@ -137,7 +137,7 @@ hr:not(#unread-line),
 }
 
 :root.side-loading body {
-	display: none;
+  display: none;
 }
 
 /**
@@ -1101,7 +1101,7 @@ s:hover {
   width: 1rem;
   padding-top: 1rem;
   background-repeat: no-repeat;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+  background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
 }
 
 .closedIcon {
@@ -1110,7 +1110,7 @@ s:hover {
   width: 1rem;
   padding-top: 1rem;
   background-repeat: no-repeat;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M0 0h24v24H0z" fill="none"/><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>');
+  background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M0 0h24v24H0z" fill="none"/><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>');
 }
 
 .archivedIcon {
@@ -1119,7 +1119,25 @@ s:hover {
   width: 1rem;
   padding-top: 1rem;
   background-repeat: no-repeat;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M2.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+  background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#212121" height="18" viewBox="0 0 24 24" width="18"><path d="M2.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+}
+
+/**
+ * firefox doesn't play well
+ * with svg as a `background-image` for `img` replacement.
+ * this reduces the quality of the icons considerably
+ */
+
+:root.ua-gecko .stickyIcon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMiAyQzguMTMgMiA1IDUuMTMgNSA5YzAgNS4yNSA3IDEzIDcgMTNzNy03Ljc1IDctMTNjMC0zLjg3LTMuMTMtNy03LTd6bTAgOS41Yy0xLjM4IDAtMi41LTEuMTItMi41LTIuNXMxLjEyLTIuNSAyLjUtMi41IDIuNSAxLjEyIDIuNSAyLjUtMS4xMiAyLjUtMi41IDIuNXoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+');
+}
+
+:root.ua-gecko .closedIcon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOCA4aC0xVjZjMC0yLjc2LTIuMjQtNS01LTVTNyAzLjI0IDcgNnYySDZjLTEuMSAwLTIgLjktMiAydjEwYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWMTBjMC0xLjEtLjktMi0yLTJ6bS02IDljLTEuMSAwLTItLjktMi0ycy45LTIgMi0yIDIgLjkgMiAyLS45IDItMiAyem0zLjEtOUg4LjlWNmMwLTEuNzEgMS4zOS0zLjEgMy4xLTMuMSAxLjcxIDAgMy4xIDEuMzkgMy4xIDMuMXYyeiIvPgo8L3N2Zz4=');
+}
+
+:root.ua-gecko .archivedIcon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0yMC41NCA1LjIzbC0xLjM5LTEuNjhDMTguODggMy4yMSAxOC40NyAzIDE4IDNINmMtLjQ3IDAtLjg4LjIxLTEuMTYuNTVMMy40NiA1LjIzQzMuMTcgNS41NyAzIDYuMDIgMyA2LjVWMTljMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY2LjVjMC0uNDgtLjE3LS45My0uNDYtMS4yN3pNMTIgMTcuNUw2LjUgMTJIMTB2LTJoNHYyaDMuNUwxMiAxNy41ek01LjEyIDVsLjgxLTFoMTJsLjk0IDFINS4xMnoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+');
 }
 
 /**
@@ -2012,7 +2030,7 @@ s:hover {
  */
 
 #updater {
-	font-family: roboto mono;
+  font-family: roboto mono;
   font-size: .75rem;
 }
 
@@ -2055,9 +2073,9 @@ s:hover {
  */
 
 #thread-stats {
-	font-family: roboto mono;
+  font-family: roboto mono;
   font-size: .75rem;
-	color: rgba(254, 254, 254, .5);
+  color: rgba(254, 254, 254, .5);
 }
 
 #shortcut-stats {
@@ -2079,7 +2097,7 @@ s:hover {
 }
 
 #thread-stats span {
-	color: var(--base-white);
+  color: var(--base-white);
 }
 
 :root.float #thread-stats span:not(#page-count) {
@@ -2855,6 +2873,16 @@ s:hover {
 }
 
 /**
+ * firefox doesn't allow pseudo elements for input elements,
+ * so instead of being fancy with the material icon, we go back to the
+ * intended checkbox
+ */
+
+:root.ua-gecko .entry input[type='checkbox'] {
+  visibility: visible;
+}
+
+/**
  * because we want 'thread watcher' to be lowercased,
  * it means the menu for it gets lowercased too.
  * reverse it here
@@ -3000,7 +3028,16 @@ s:hover {
 .section-container {
   flex: 1;
   overflow: auto;
-  padding: .5rem 1rem;
+  padding: 0 1rem;
+}
+
+/**
+  * firefox collapses the bottom padding, so this should alleviate that issue
+  * while maintaining the same functionality in chrome
+  */
+
+.section-container > section {
+  padding: .5rem 0 1rem;
 }
 
 #fourchanx-settings button {
@@ -3974,7 +4011,7 @@ audio.controls-added {
   margin: 0 calc(2rem + 15% * -1) 0 calc(2rem + 15% * -1);
 }
 
-  /*
+/*
 	left: 50%;
 	transform: translateX(-50%);
 	*/
@@ -4495,25 +4532,24 @@ audio.controls-added {
 }
 
 #options-tabs {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	font-family: circular;
-	text-transform: lowercase;
-	color: var(--base-white);
-	background-color: var(--base-primary);
-	padding: 0 1rem;
+  padding: 0 1rem;
+  margin: 0;
+  list-style: none;
+  font-family: circular;
+  text-transform: lowercase;
+  color: var(--base-white);
+  background-color: var(--base-primary);
 }
 
 #options-tabs .tab-item {
-	display: inline-block;
+  display: inline-block;
 }
 
 #options-tabs .tab-label {
-	display: block;
-	line-height: 3rem;
-	height: 3rem;
-	padding: 0 .5rem;
+  display: block;
+  line-height: 3rem;
+  height: 3rem;
+  padding: 0 .5rem;
   opacity: .65;
   border-bottom: 3px solid transparent;
   transition: opacity .25s, border-bottom .25s;
@@ -4536,53 +4572,53 @@ audio.controls-added {
  */
 
 #oneechan-options .tab-select:not(:checked) + .options-section {
-	display: none;
+  display: none;
 }
 
 #oneechan-options .options-section {
-	height: 57rem;
-	overflow-y: auto;
+  height: 57rem;
+  overflow-y: auto;
 }
 
 #oneechan-options .options-section .option {
-	display: block;
+  display: block;
 }
 
 #oneechan-options .options-close {
-	position: absolute;
-	right: 1rem;
-	top: 0;
+  position: absolute;
+  right: 1rem;
+  top: 0;
 }
 
 #oneechan-options .options-close .options-button {
-	font-size: 0;
-	color: var(--base-white);
+  font-size: 0;
+  color: var(--base-white);
 }
 
 #oneechan-options .options-close .options-button::after {
-	font-size: 1.5rem;
-	cursor: pointer;
+  font-size: 1.5rem;
+  cursor: pointer;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   padding: 0 .5rem;
-	border-bottom: 3px solid transparent;
+  border-bottom: 3px solid transparent;
   height: 3rem;
   opacity: .65;
   transition: opacity .25s, border-bottom .25s;
 }
 
 #oneechan-options .options-close .options-button:hover::after {
-	opacity: .85;
-	border-bottom: 3px solid var(--light-accent);
+  opacity: .85;
+  border-bottom: 3px solid var(--light-accent);
 }
 
 #oneechan-options .options-close .options-button[name='save']::after {
-	content: 'save';
+  content: 'save';
 }
 
 #oneechan-options .options-close .options-button[name='cancel']::after {
-	content: 'close';
+  content: 'close';
 }
 
 /**
