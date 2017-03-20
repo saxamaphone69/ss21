@@ -5,7 +5,7 @@ a fresh attempt at a 4chan userstyle
 ss16, even in 2017, is mainly the same as it was last year. a few minor changes to accommodate for 4chan x updates, [support for more settings](support.md), additional rice added via `sidedish` - and that's about it, sadly
 
 ## preview of userstyle applied
-![screenshot of ss16](img/browser-2017-01-10a.png)
+![screenshot of ss16](img/browser-2017-03-21.jpg)
 
 following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in 2017!
 

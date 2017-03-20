@@ -3,8 +3,8 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: March 20th, 2017
- * 4chan X version: ccd0 1.13.8.4 / https://github.com/ccd0/4chan-x
+ * last modified: March 21st, 2017
+ * 4chan X version: ccd0 1.13.8.5 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
  *
@@ -2363,6 +2363,7 @@ s:hover {
   display: inline-block;
   height: 1.5rem;
   width: 1.5rem;
+  margin-right: .5rem;
   vertical-align: middle;
 }
 
@@ -4434,7 +4435,7 @@ audio.controls-added {
  * sidedish replaces the default `<select>` element with something
  * a tad more stylable
  */
-
+/*
 .ss16-select-dropdown {
   text-transform: uppercase;
   display: block;
@@ -4460,6 +4461,44 @@ audio.controls-added {
 
 .ss16-select-dropdown--item.active {
   transform: translateY(0);
+}
+*/
+
+.ss16-hide-select {
+  display: none;
+}
+
+.ss16-new-select {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: hidden;
+  height: 2rem;
+  cursor: pointer;
+  user-select: none;
+  color: var(--base-white);
+  border: 1px solid;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.ss16-new-select--option {
+  transition: transform .1s;
+  padding: .25rem .5rem;
+}
+
+.ss16-new-select:active .ss16-new-select--option {
+  transform: scale(.9);
+}
+
+.ss16-new-select[data-id='index-sort'] {
+  margin-right: 1rem;
+}
+
+.ss16-new-select[data-id='index-size'] {
+  display: none;
 }
 
 /**
