@@ -3,7 +3,7 @@
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
  * created on: December 10th, 2016
- * last modified: March 21st, 2017
+ * last modified: March 30th, 2017
  * 4chan X version: ccd0 1.13.8.5 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
  * coding style: https://github.com/necolas/idiomatic-css
@@ -278,7 +278,10 @@ pre,
  * fix spacing of media objects
  */
 
-audio,
+audio {
+  vertical-align: middle;
+}
+
 embed,
 iframe,
 img,
@@ -551,7 +554,8 @@ s:hover {
 .close::after,
 .jump::after,
 .file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
-.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after {
+.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
+.linkify::after {
   font-family: material icons;
   font-weight: normal;
   font-style: normal;
@@ -725,6 +729,12 @@ s:hover {
   color: var(--base-green);
   line-height: inherit;
   vertical-align: bottom;
+}
+
+.linkify::after {
+  content: 'open_in_new';
+  font-size: 1rem;
+  margin-left: .25rem;
 }
 
 /**
@@ -1062,10 +1072,7 @@ s:hover {
  */
 
 .dateTime,
-.page-num {
-  color: var(--base-grey);
-}
-
+.page-num,
 .abbr {
   color: var(--base-grey);
 }
@@ -1075,7 +1082,7 @@ s:hover {
  */
 
 .dateTime {
-  margin: 0 .5rem;
+  margin: 0 .25rem;
 }
 
 /**
@@ -2369,6 +2376,7 @@ s:hover {
 
 #index-rev::after {
   content: 'swap_vert';
+  color: var(--base-white);
   visibility: visible;
   cursor: pointer;
   transition: color .25s;
@@ -4498,6 +4506,20 @@ audio.controls-added {
 }
 
 .ss16-new-select[data-id='index-size'] {
+  display: none;
+}
+
+/**
+ * mason button for catalog mode
+ */
+
+.mason-button {
+  vertical-align: middle;
+  margin-left: .5rem;
+  cursor: pointer;
+}
+
+:root:not(.catalog-mode) .mason-button--container {
   display: none;
 }
 

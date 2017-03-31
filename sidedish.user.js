@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         sidedish
-// @version      0.5
+// @version      0.6
 // @author       saxamaphone69
 // @match        *://boards.4chan.org/*
 // @grant        GM_xmlhttpRequest
@@ -257,14 +257,17 @@ function waitForElClass(data, cb){
             });
         };
 
-
-        var converter = d.createElement('button');
-        converter.style.cssText = 'position:fixed;bottom:0;left:0;z-index:5;';
-        converter.textContent = 'MASON';
-        converter.addEventListener('click', letsgomason, true);
+        var masonButton;
+        masonButton = d.createElement('span');
+        masonButton.classList.add('mason-button--container');
+        masonButton.innerHTML = '<i class="material-icons mason-button">dashboard</i>';
         if (view === 'index') {
-            d.body.appendChild(converter);
+            d.querySelector('.navLinks').appendChild(masonButton);
         }
+        masonButton.addEventListener('click', function(e) {
+            letsgomason();
+        }, false);
+
 
         window.addEventListener('scroll', function(e) {
             lastScrollY = window.scrollY;
