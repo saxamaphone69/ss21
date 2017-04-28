@@ -15,12 +15,18 @@ this style is currently being actively developed for use with chrome first, with
 __please note:__ only the most recent version of each browser is properly supported.
 
 __1.__
+
 the easiest way to do this is to have one tab open on 4chan, and the raw version of `ss16.user.css` (found on this github repo)
+
 __2.__
+
 create a new userstyle (named ss16) that applies to URLs on the domain `boards.4chan.org`
 ![applying style](img/new-style.png)
+
 __3.__
+
  __chrome users:__ copy everything from `ss16.user.css` and paste into the blank textarea and click save
+ 
 __firefox users:__ you should be staring at something that looks like:
 ```css
 @namespace url(http://www.w3.org/1999/xhtml);
@@ -65,9 +71,13 @@ which should leave ss16 looking like (while you're at it change the double quote
 ```
 and then click save
 __note:__ sadly, there is no auto updating on styles that are not installed from userstyles.org, so you'll have to check manually (honestly, the style is updated once every 2 months at most)
+
 __4.__
+
 install 4chan X (you should already have it) and then navigate to the raw version of `sidedish.user.js` (found on this github repo). you should be automatically prompted to install with tampermonkey
+
 __5.__
+
 speaking of 4chan X, have a read over [what is supported](support.md) and what you'll need to enable or disable
 
 ## adblock filters
@@ -76,11 +86,11 @@ go to your adblock-of-choice options, and locate where you can add your own filt
 
 | filter | description |
 |---|---|
-| `\||s.4cdn.org/css^$domain=boards.4chan.org` | block all css files, but only when they are on the `boards.4chan.org` subdomain (meaning `4chan.org` is unaffected) |
+| `\|\|s.4cdn.org/css^$domain=boards.4chan.org` | block all css files, but only when they are on the `boards.4chan.org` subdomain (meaning `4chan.org` is unaffected) |
 | `*//s.4cdn.org/image/title/*` | i never liked the banner images, so block them instead of loading them. technically, you can skip this one as i support it in ss16 |
 | `*//s.4cdn.org/js/prettify/prettify.*.css` | code on /g/ is prettified, and we use a custom theme, so don't download the one 4chan uses |
-| `@@||s.4cdn.org/css/flags.*.css` | adds an exception to the earlier rule, so that the flags file is still downloaded |
-| `@@||s.4cdn.org/css/painter.*.css` | adds an exception to the earlier rule, so that the painter file is still downloaded |
+| `@@\|\|s.4cdn.org/css/flags.*.css` | adds an exception to the earlier rule, so that the flags file is still downloaded |
+| `@@\|\|s.4cdn.org/css/painter.*.css` | adds an exception to the earlier rule, so that the painter file is still downloaded |
 
 in firefox, this should look something like this:
 ![preview of adblock filters](img/adblock-options.png)
