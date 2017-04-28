@@ -2,14 +2,17 @@
  *
  * ss16 - a self-centered, fresh attempt at (user)styling 4chan
  *
- * created on: December 10th, 2016
- * last modified: March 30th, 2017
+ * created on: February 11th, 2016
+ * last modified: April 27th, 2017
  * 4chan X version: ccd0 1.13.8.5 / https://github.com/ccd0/4chan-x
  * created by: @saxamaphone69
- * coding style: https://github.com/necolas/idiomatic-css
+ * (loose) coding style: https://github.com/necolas/idiomatic-css
  *
- * in an attempt to make the style as user-friendly as possible,
- * i will comment most of the css to explain what it all does
+ * in an attempt to make the style as user-friendly as possible, i will
+ * comment most of the css to explain what it all does
+ *
+ * please leave any comments, suggestions, or feedback on github:
+ * https://github.com/saxamaphone69/ss16
  *
  */
 
@@ -262,14 +265,15 @@ h6,
 
 /**
  * fix some weird stuff that happens with these elements
- * in all browsers, and while we're here, set tripcodes to
- * use a monospace font too
+ * in all browsers, and while we're here, set tripcodes and user
+ * ids to use a monospace font too
  */
 
 code,
 kbd,
 pre,
-.postertrip {
+.postertrip,
+.posteruid {
   font-family: roboto mono, monospace;
   font-size: 1em;
 }
@@ -536,7 +540,6 @@ s:hover {
 .hide-announcement::after,
 .n-pu::after,
 #navlinks a::after,
-.navLinks::before,
 #index-rev::after,
 .pagelist .prev a::after,
 .pagelist .next a::after,
@@ -806,7 +809,7 @@ s:hover {
 	-webkit-text-fill-color: transparent;
 	*/
   text-shadow: 1rem 1rem var(--base-primary);
-  margin-top: -3rem;
+  /*margin-top: -3rem;*/
   z-index: 2;
   position: relative;
 }
@@ -918,6 +921,7 @@ s:hover {
 
 .is_arclist .center {
   display: block !important;
+  margin: 0;
 }
 
 /*
@@ -961,16 +965,19 @@ s:hover {
  * bottom of the browser window if the content isn't 'tall' enough
  */
 
-#delform {
-  min-height: calc(100vh - 35rem);
+/**
+ * measurements include:
+ * `.boardBanner`: 30rem;
+ * `#boardNavDesktopFoot`: 2.5rem;
+ * `.absBotText`: 5.25rem;
+ */
+
+.board {
+  min-height: calc(100vh - 40.75rem - 1px);
 }
 
-:root.paged-mode #delform {
-  min-height: calc(100vh - 4.5rem);
-}
-
-:root.catalog-mode #delform {
-  min-height: calc(100vh - 4.5rem);
+:root:not(.paged-mode) .board {
+  min-height: calc(100vh - 37.25rem - 1px);
 }
 
 .board {
@@ -1184,6 +1191,14 @@ s:hover {
 
 .painted {
   padding: .25rem .5rem;
+}
+
+/**
+ * by default, exif data on /p/ should be hidden
+ */
+
+.exif {
+  display: none;
 }
 
 /**
@@ -1424,7 +1439,7 @@ s:hover {
 #boardNavDesktopFoot {
   background-color: var(--dark-grey);
   max-width: 100%;
-  padding: 1rem 1.5rem 0;
+  padding: 1rem 1rem 0;
 }
 
 #boardNavDesktopFoot::before {
@@ -1451,7 +1466,7 @@ s:hover {
 }
 
 #boardNavDesktopFoot.is-active .boardList {
-  margin-top: .5rem;
+  margin-top: 1rem;
   height: calc(2rem * 19);
   overflow-x: auto;
 }
@@ -1488,14 +1503,9 @@ s:hover {
   font-size: .75rem;
   color: var(--base-grey);
   background-color: var(--dark-grey);
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   position: relative;
   user-select: none;
-}
-
-.absBotDisclaimer {
-  display: block;
-  padding-right: 1.5rem;
 }
 
 .absBotText::after {
@@ -1513,7 +1523,7 @@ s:hover {
   font-size: 0;
   display: flex;
   flex-direction: row;
-  margin-top: .75rem;
+  margin-top: 1rem;
 }
 
 #footer-links a {
@@ -1900,6 +1910,11 @@ s:hover {
   text-align: center;
 }
 
+/**
+ * XXX: text shortcuts are 3px higher when 'active' due to
+ * `line-height` and `height` stuff
+ */
+
 #shortcuts .fa-eye:not(.disabled)::after,
 :root.gallery-open #shortcuts .fa-picture-o::after,
 #shortcuts .fa-comment-o:not(.disabled)::after,
@@ -2107,6 +2122,14 @@ s:hover {
   color: var(--base-white);
 }
 
+/**
+ * because of ID, need to redefine the red warning class
+ */
+
+#thread-stats .warning {
+  color: var(--base-red);
+}
+
 :root.float #thread-stats span:not(#page-count) {
   pointer-events: none;
 }
@@ -2207,7 +2230,7 @@ s:hover {
   position: relative;
   z-index: 5;
   max-width: 75%;
-  padding: .5rem 1rem;
+  padding: 1rem;
   margin: -4rem auto 5rem;
   color: var(--base-white);
   background-color: var(--base-primary);
@@ -2396,8 +2419,13 @@ s:hover {
 
 .stub {
   background-color: var(--base-white);
+  display: flex;
+  align-items: center;
+  justify-content: left;
   padding: 1rem;
   margin-bottom: 1px;
+  height: 3.5rem;
+  line-height: 3.5rem;
 }
 
 /**
@@ -2405,14 +2433,21 @@ s:hover {
  * perhaps if they ever get revamped, they might get improved
  */
 
-.stub .fa::after,
-.stub .menu-button::after {
-  font-size: 1rem;
-  line-height: 1.5;
+.show-thread-button,
+.fa-plus-square,
+.stub .menu-button {
+  display: inline-flex;
 }
 
-.stub .fa-plus-square-o::after {
-  vertical-align: text-bottom;
+.stub .fa::after,
+.stub .menu-button::after {
+  display: inline-flex;
+  height: 3.5rem;
+  line-height: 3.5rem;
+}
+
+.stub .fa-plus-square::after {
+  margin-right: .5rem;
 }
 
 /**
@@ -2713,6 +2748,11 @@ s:hover {
   display: none;
 }
 
+#watched-threads {
+  border: 1px solid var(--base-grey);
+  border-top: 0;
+}
+
 #watched-threads:empty::after {
   content: 'No threads being watched.';
   display: block;
@@ -2763,7 +2803,11 @@ s:hover {
 
 .replies-quoting-you > a,
 #watcher-link.replies-quoting-you {
-  color: var(--base-red) !important;
+  color: var(--dark-red) !important;
+}
+
+.replies-unread {
+  color: var(--dark-blue);
 }
 
 /**
@@ -3434,6 +3478,8 @@ body:not(.board_sci) #tex-preview-button,
 #qr form {
   padding: 1rem;
   max-height: 85vh;
+  border: 1px solid var(--base-grey);
+  border-top: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -4233,8 +4279,6 @@ audio.controls-added {
   }
 
   #board-list a {
-    font-size: .75rem;
-    min-width: 1rem;
     padding: 0 .25rem;
     white-space: nowrap;
     overflow: hidden;
@@ -4252,6 +4296,21 @@ audio.controls-added {
 
   #shortcuts .ss16-shortcut {
     display: inline-flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 0 .5rem;
+    height: 3rem;
+    opacity: .65;
+    transition: opacity .25s;
+    cursor: pointer;
+  }
+
+  #shortcuts .ss16-shortcut:hover {
+    opacity: .85;
+  }
+
+  #shortcuts:not(.ss16-menu-active) .shortcut:not(.ss16-shortcut):not(#shortcut-updater):not(#shortcut-stats) {
+    transform: translateX(100%);
   }
 }
 
@@ -4351,6 +4410,9 @@ audio.controls-added {
 :root.is-searching .board:empty::after {
   content: 'No threads found; try searching again.';
   color: var(--base-grey);
+  background-color: var(--base-white);
+  max-width: 75%;
+  margin: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4699,4 +4761,25 @@ audio.controls-added {
 
 :root.oneechan .riceCheck {
   display: none;
+}
+
+/**
+ * if for whatever reason 4chan x is not running, display a little reminder
+ */
+
+:root.no-fourchan-x #id_css {
+  all: unset;
+}
+
+:root.site-loading #id_css {
+  display: none !important;
+}
+
+:root.no-fourchan-x #id_css::before {
+  content: 'Hey, it seems you haven\'t got 4chan X running - please turn it on for ss16 to work properly.';
+  display: block;
+  text-align: center;
+  font-size: 2rem;
+  padding: 4rem;
+  background-color: var(--base-white);
 }

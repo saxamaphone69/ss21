@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         sidedish
-// @version      0.6
+// @version      0.6.2
 // @author       saxamaphone69
 // @match        *://boards.4chan.org/*
 // @grant        GM_xmlhttpRequest
@@ -13,7 +13,7 @@
     console.time('Initialising ss16');
     var d, view, init;
     d = document;
-    d.documentElement.classList.add('site-loading');
+    d.documentElement.classList.add('site-loading');//, 'no-fourchan-x');
     view = (function () {
         switch (location.pathname.split('/')[2]) {
             case 'thread':
@@ -26,7 +26,7 @@
         if (d.readyState == "complete") {
             //d.head.querySelector('#fourchanx-css').remove();
             //console.log('readystate fired');
-            //d.documentElement.classList.remove('site-loading');
+            d.documentElement.classList.remove('site-loading');
             // make the navbottom togglable, so it can look cooler
             var navBot;
             navBot = d.querySelector('#boardNavDesktopFoot');
@@ -43,7 +43,7 @@
     //});
     d.addEventListener('4chanXInitFinished', function() {
         //console.log('4chan x init fired');
-        d.documentElement.classList.remove('site-loading');
+        d.documentElement.classList.remove('site-loading');//, 'no-fourchan-x');
         init();
         setTimeout(function() {
             if (document.documentElement.classList.contains('oneechan')) {
@@ -59,7 +59,12 @@
             }
         }, 500);
     });
-
+    /*
+    d.addEventListener('4chanMainInit', function() {
+        d.documentElement.classList.remove('site-loading', 'no-fourchan-x');
+        d.documentElement.classList.add('fourchan-extension');
+    });
+*/
     init = function () {
         // remove the css added by 4chan x
         d.head.querySelector('style[type]').remove();
@@ -279,6 +284,35 @@ function waitForElClass(data, cb){
             }
             ticking = true;
         });
+        /*
+        this needs a test to see if the scale makes text too small
+var resizePreviews = function() {
+
+        var target = d.querySelector('#hoverUI');
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.target.id == 'qp') {
+                    var winHeight = window.innerHeight;
+                    //console.log(winHeight);
+                    function func() {
+                        var qpHeight = mutation.target.offsetHeight;
+                        //console.log(qpHeight);
+                        if (qpHeight > winHeight) {
+                            var scaledHeight = winHeight / qpHeight;
+                            mutation.target.style.transformOrigin = 'top left';
+                            mutation.target.style.transform = 'scale(' + scaledHeight + ')';
+                        }
+                    }
+                    setTimeout(func, 500);
+                }
+            });
+        });
+        var config = { attributes: false, childList: true, characterData: true, subtree: true };
+        observer.observe(target, config);
+};
+
+        resizePreviews();
+        */
 
         // add searching class to html when search bar has focus
         var anotherAttempt, searchBar;
