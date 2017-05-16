@@ -46,7 +46,7 @@ html {
 }
 
 .hero {
-  font-family: circular, sans-serif;
+  font-family: karla, sans-serif;
   height: 30rem;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ html {
 
 .heading--main {
   font-size: calc(8rem + 2vw);
-  font-weight: 500;
+  font-weight: 700;
   text-shadow: 0.5rem 0.5rem 0 #fefefe;
 }
 
@@ -77,7 +77,8 @@ html {
 }
 
 .heading--section {
-  font-family: circular, sans-serif;
+  font-family: karla, sans-serif;
+  font-weight: 700;
   font-size: 3rem;
   text-transform: lowercase;
   position: relative;
