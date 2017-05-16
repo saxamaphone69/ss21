@@ -65,6 +65,14 @@ __this must be disabled__, or there will be adverse side effects
 ### pass dates
 `/./;highlight:poster--pass;top:no;` - pass users are green
 
+### subject
+`/./;op:only;top:no;highlight:thread--subject` - threads that have a subject are given a class
+
+### comment
+`/[\s\S]{200,299}/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
+
+`/[\s\S]{300,}/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
+
 ### filenames
 `/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
 
@@ -72,3 +80,6 @@ __this must be disabled__, or there will be adverse side effects
 
 ### image dimensions
 `/\d{4}x/;highlight:file--wide;top:no;` - files that are at least 1000px wide, take up the whole screen
+
+### filesize
+`/MB/;op:yes;highlight:file--huge;top:no;` - files that are over a MB are given a discerning class (thanks, australia)
