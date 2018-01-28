@@ -1,15 +1,15 @@
 # ss16
-a fresh attempt at a 4chan userstyle
+a self-centered, fresh attempt at (user)styling 4chan
 
-## early-2017 update
-ss16, even in 2017, is mainly the same as it was last year. a few minor changes to accommodate for 4chan X updates, [support for more settings](support.md), additional rice added via `sidedish` - and that's about it, sadly
+## early-2018 update
+ss16 is now `2.0.0`, the ss18 release. install instructions are slightly different this time around, but there is a lot of work to still be done, so perhaps wait for a `2.1.0` release until things work themselves out
 
 ## preview of userstyle applied
-![screenshot of ss16](img/browser-2017-03-21.jpg)
+![screenshot of ss16 applied](img/preview.png)
 
-following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan X](https://ccd0.github.io/4chan-x/) in 2017!
+following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan X](https://ccd0.github.io/4chan-x/) in 2018!
 
-this style is currently being actively developed for use with chrome first, with firefox and other browsers as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) (you should make the switch if you're still using stylish as it now collects user data and browsing habits), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and an adblocking extension such as [adblock plus](https://chrome.google.com/webstore/detail/adblock-plus/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en).
+this style is currently being actively developed for chrome first, with firefox as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) (don't use stylish anymore), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and an adblocking extension such as [adblock plus](https://chrome.google.com/webstore/detail/adblock-plus/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en).
 
 ## installation
 __please note:__ only the most recent version of each browser is properly supported.
@@ -26,7 +26,7 @@ create a new userstyle (named ss16) that applies to URLs on the domain `boards.4
 __3.__
 
  __chrome users:__ copy everything from `ss16.user.css` and paste into the blank textarea and click save
- 
+
 __firefox users:__ you should be staring at something that looks like:
 ```css
 @namespace url(http://www.w3.org/1999/xhtml);
@@ -99,3 +99,4 @@ if you know a nicer/cleaner way to write these filters, please let me know
 
 ## plans
  - [a standalone, es6-based 4chan chrome extension](standalone.md)
+ - i'll make a roadmap thing in the issue tracker for future plans
