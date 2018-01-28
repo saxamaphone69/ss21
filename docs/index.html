@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en-AU">
   <head>
     <meta charset="utf-8">
     <title>ss16 - a userstyle for 4chan</title>
@@ -7,11 +7,40 @@
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
+    <nav class="navigation">
+      <a class="navigation--link" href="#new">New</a>
+      <a class="navigation--link" href="#overview">Overview</a>
+      <a class="navigation--link" href="#preview">Preview</a>
+      <a class="navigation--link" href="#features">Features</a>
+      <a class="navigation--link" href="#installation">Installation</a>
+      <a class="navigation--link" href="#information">Information</a>
+    </nav>
     <header class="hero">
       <h1 class="heading--main">ss16</h1>
       <h2 class="heading--sub">a self-centered, fresh attempt at (user)styling 4chan</h2>
     </header>
     <main class="content">
+      <section class="section section--new">
+        <h3 id="new" class="heading--section">What&rsquo;s New</h3>
+        <p><span class="code">v2.0.0</span> a.k.a. <span class="code">ss18</span> has now been released.</p>
+        <p>Fortunately (or unfortunately, depending on your view), <span class="code">ss16</span>, remains much the same after 2 years. A conflict with CCleaner and Stylus meant that <span class="code">ss18</span> had to be completely rewritten. But, this lead itself to some small improvements.</p>
+        <p>Since Stylus is now the prefered userstyle manager, we can make use of UserCSS, so <span class="code">ss16</span> can now be auto-updated. One caveat is it does not allow the use of <span class="code">@import</span>, so for font loading to work, users must also install the complimentary font userstyle.</p>
+        <p>Some changes include:</p>
+        <ul class="change-list">
+          <li>Better Custom Property naming, meaning variables make more sense.</li>
+          <li>The catalogue now makes use of <span class="code">display:grid</span> as opposed to Masonry. Good in one way, bad in another.</li>
+          <li><span class="code">sidedish</span> uses <span class="code">ES6</span> to try and be different.</li>
+          <li>Board banners are supported via, again, an additional userstyle.</li>
+        </ul>
+        <p><a href="https://github.com/saxamaphone69/ss16/issues">Future versions</a> should hopefully include:</p>
+        <ul class="change-list">
+          <li>OneeChan support, meaning your favourite anime &ldquo;girl&rdquo; can follow you as you browse.</li>
+          <li>Complete 4chan X support (all settings).</li>
+          <li>Catalogue support (expand on hover).</li>
+          <li><span class="code">sidedish</span> is just better overall.</li>
+        </ul>
+        <p>It is still suggested you <a href="https://github.com/saxamaphone69/ss16">read the install instructions</a> found in the README on the GitHub repo, as it outlines AdBlock/uBlock Origin filters and what is needed/required for <span class="code">ss16</span> to function correctly.</p>
+      </section>
       <section class="section section--overview">
         <h3 id="overview" class="heading--section">Overview</h3>
         <p>Created by <b>saxamaphone</b> <span class="trip">!3.saxN0DHY</span>, who has been making userstyles for <a href="https://4chan.org">4chan</a> since 2009 with styles such as <a href="https://userstyles.org/styles/23586/3-shades-of-4chan">3 Shades of 4chan</a> (which only exists as Midnight Caek in App/OneeChan now), <a href="https://github.com/saxamaphone69/curabitr">curabitr</a>, and <a href="https://github.com/saxamaphone69/xl">xl</a>.</p>
@@ -20,38 +49,16 @@
       </section>
       <section class="section section--preview">
         <h3 id="preview" class="heading--section">Video Preview</h3>
-        <video src="assets/output.webm" poster="assets/poster.jpg" controls></video>
+        <video src="assets/browser-2018-01-28.webm" poster="assets/browser.png" controls></video>
       </section>
       <section class="section section--features">
         <h3 id="features" class="heading--section">Features</h3>
-        <!--<div class="feature--card">
-          <div class="feature--card-icon">
-            <i class="material-icons">code</i>
-          </div>
-          <div class="feature--card-title">
-            <span class="feature--card-title-text">Commented Code</span>
-          </div>
-          <div class="feature--card-desc">
-            <span>The uniminified version of <span class="code">ss16</span> contains commented CSS, explaining what it does, and why it does it.</span>
-          </div>
-        </div>
-        <div class="feature--card">
-          <div class="feature--card-icon">
-            <i class="material-icons">assignment</i>
-          </div>
-          <div class="feature--card-title">
-            <span class="feature--card-title-text">CSS Custom Properties</span>
-          </div>
-          <div class="feature--card-desc">
-            <span>Variables come to CSS in the form of Custom Properties; <span class="code">ss16</span> gives you the option to choose not only a primary and accent colour, but every other colour - only needing to change it once.</span>
-          </div>
-        </div>-->
         <div class="feature--grid">
           <div class="feature--grid-lcol">
             <span class="feature--heading">Documented Code</span>
             <p>The uniminified version of <span class="code">ss16</span> contains commented CSS, explaining what it does, and why it does it.</p>
             <span class="feature--heading">CSS Custom Properties</span>
-            <p>Variables come to CSS in the form of Custom Properties; <span class="code">ss16</span> gives you the option to choose not only a primary and accent colour, but every other colour - only needing to change it once.</p>
+            <p>Variables come to CSS in the form of Custom Properties; <span class="code">ss16</span> gives you the option to choose not only a primary and secondary colour, but every other colour - only needing to change it once.</p>
             <span class="feature--heading">Sidedish of Rice</span>
             <p>Unlike normal userstyles, <span class="code">ss16</span> requires a companion userscript for additional rice and features, not found in 4chan X or App/OneeChan.</p>
             <span class="feature--heading">Fully Featured</span>
@@ -61,7 +68,7 @@
           </div>
           <div class="feature--grid-rcol">
             <span class="feature--heading">Web Fonts</span>
-            <p><span class="code">ss16</span> uses <span class="code">@font-face</span> and <span class="code">@import</span> to load fonts such as Roboto, no longer needing you to download and install fonts locally, or use a Flash loader.</p>
+            <p><span class="code">ss16</span> uses <span class="code">@import</span> to load fonts such as Roboto, no longer needing you to download and install fonts locally, or use a Flash loader.</p>
             <span class="feature--heading">Sensible Defaults</span>
             <p><span class="code">ss16</span> utilises code from well-established web projects such as Bootstrap, H5BP, Normalize, and the Material Design Guidelines to ensure elements render consistently and correctly across browsers.</p>
             <span class="feature--heading">No <span class="code">!important;</span>s</span>
@@ -82,5 +89,6 @@
         <p>Need help or suggestions in improving your own userstyle? I&rsquo;m also happy to help in that regard.</p>
       </section>
     </main>
+    <script src="script.js"></script>
   </body>
 </html>

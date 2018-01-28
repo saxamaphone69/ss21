@@ -45,6 +45,32 @@ html {
   box-sizing: inherit;
 }
 
+.navigation {
+  position: fixed;
+  display: flex;
+  height: 3rem;
+  padding: 0 1.5rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3;
+  background-color: transparent;
+  transition: all .25s;
+}
+
+.navigation.navigation--scrolled {
+  background-color: rgba(255, 137, 147, 1);
+}
+
+.navigation--link {
+  font-family: karla;
+  color: #fafafa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
 .hero {
   font-family: karla, sans-serif;
   height: 30rem;
@@ -57,6 +83,8 @@ html {
   user-select: none;
   pointer-events: none;
   cursor: default;
+  z-index: 1;
+  position: relative;
 }
 
 .heading--main {
@@ -69,7 +97,9 @@ html {
   background-color: #fefefe;
   max-width: 70rem;
   padding: 1rem;
-  margin: 1rem auto;
+  margin: -2rem auto 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 .section {
@@ -108,6 +138,21 @@ p {
 .code {
   font-family: roboto mono, monospace;
   color: #545454;
+}
+
+.button--download {
+  font-size: 125%;
+  font-family: roboto mono, monospace;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fafafa;
+  background-color: #ff8993;
+  padding: .5rem 1rem;
+  border: 0;
+  border-radius: 3px;
+  margin: 0 .5rem;
+  cursor: pointer;
 }
 
 video {
