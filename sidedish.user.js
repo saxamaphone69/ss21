@@ -1,132 +1,224 @@
 // ==UserScript==
-// @name         sidedish
-// @version      0.6.2
-// @author       saxamaphone69
-// @match        *://boards.4chan.org/*
-// @grant        GM_xmlhttpRequest
-// @require      https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js
-// @run-at       document-start
+// @name        ss16 sidedish
+// @version     0.5
+// @description A companion userscript for the ss16 userstyle.
+// @author      saxamaphone69
+// @namespace   https://saxamaphone69.github.io/ss16/
+// @match       *://boards.4chan.org/*
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_xmlhttpRequest
+// @run-at      document-start
 // ==/UserScript==
 
-(function() {
-    'use strict';
-    console.time('Initialising ss16');
-    var d, view, init;
-    d = document;
-    d.documentElement.classList.add('site-loading');//, 'no-fourchan-x');
-    view = (function () {
-        switch (location.pathname.split('/')[2]) {
-            case 'thread':
-                return 'thread';
-            default:
-                return 'index';
-        }
-    })();
-    d.onreadystatechange = function () {
-        if (d.readyState == "complete") {
-            //d.head.querySelector('#fourchanx-css').remove();
-            //console.log('readystate fired');
-            d.documentElement.classList.remove('site-loading');
-            // make the navbottom togglable, so it can look cooler
-            var navBot;
-            navBot = d.querySelector('#boardNavDesktopFoot');
-            navBot.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.toggle('is-active');
-                }
-            }, false);
-        }
-    };
-    //d.addEventListener('DOMContentLoaded', function() {
-    //console.log('domcontentloaded');
-    //d.head.querySelector('#fourchanx-css').remove();
-    //});
-    d.addEventListener('4chanXInitFinished', function() {
-        //console.log('4chan x init fired');
-        d.documentElement.classList.remove('site-loading');//, 'no-fourchan-x');
-        init();
-        setTimeout(function() {
-            if (document.documentElement.classList.contains('oneechan')) {
-                document.dispatchEvent(new CustomEvent('CreateNotification', {
-                    detail: {
-                        type: 'warning', // info, warning, error
-                        content: 'Please disable OneeChan in order to use ss16.',
-                        lifetime: 0
-                    }
-                }));
-                d.head.querySelector('#fourchanx-bgcolor-css').remove();
-                d.head.querySelector('#ch4SS').remove();
-            }
-        }, 500);
-    });
-    /*
-    d.addEventListener('4chanMainInit', function() {
-        d.documentElement.classList.remove('site-loading', 'no-fourchan-x');
-        d.documentElement.classList.add('fourchan-extension');
-    });
-*/
-    init = function () {
-        // remove the css added by 4chan x
-        d.head.querySelector('style[type]').remove();
-        d.head.querySelector('#fourchanx-css').remove();
-        d.head.querySelector('link[title="switch"]').remove();
-        //d.head.querySelector('#ch4SS').remove();
+// http://ryanmorr.com/using-mutation-observers-to-watch-for-element-availability/
+// https://stackoverflow.com/questions/37355888/capturing-class-changes-using-a-mutationobserver
+// https://stackoverflow.com/questions/35097520/mutationobserver-for-class-not-for-id
 
-        /*
-        document.dispatchEvent(new CustomEvent("AddSettingsSection", {
-            detail: {
-                title: "MAXIMUM SCRIPT",
-                open: function(section, g) {
-                    section.textContent = "MY SCRIPT IS SO COOL! Thank you 4chan X v" + g.VERSION;
+(() => {
+    'use strict';
+
+    console.time('Initialising ss16 sidedish...');
+
+    /*! ready v1.2.0 | https://github.com/ryanmorr/ready */
+    !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n;n="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,n.ready=e()}}(function(){return function e(n,r,t){function o(i,u){if(!r[i]){if(!n[i]){var d="function"==typeof require&&require;if(!u&&d)return d(i,!0);if(f)return f(i,!0);var l=new Error("Cannot find module '"+i+"'");throw l.code="MODULE_NOT_FOUND",l}var c=r[i]={exports:{}};n[i][0].call(c.exports,function(e){var r=n[i][1][e];return o(r||e)},c,c.exports,e,n,r,t)}return r[i].exports}for(var f="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}({1:[function(e,n,r){"use strict";function t(e,n){for(var r=l.querySelectorAll(e),t=0,o=r.length;t<o;t++){var f=r[t];f.ready||(f.ready=!0,n.call(f,f))}}function o(){d.forEach(function(e){return t(e.selector,e.fn)})}function f(e,n){for(var r=d.length;r--;){var t=d[r];t.selector===e&&t.fn===n&&(d.splice(r,1),!d.length&&u&&(u.disconnect(),u=null))}}function i(e,n){return u||(u=new c(o),u.observe(l.documentElement,{childList:!0,subtree:!0})),d.push({selector:e,fn:n}),t(e,n),function(){return f(e,n)}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=i;var u=void 0,d=[],l=window.document,c=window.MutationObserver||window.WebKitMutationObserver;n.exports=r.default},{}]},{},[1])(1)});
+
+    const d = document,
+          doc = d.documentElement,
+          config = (() => {
+              switch (location.pathname.split('/')[2]) {
+                  case 'thread':
+                      return 'thread';
+                  case 'catalog':
+                      return 'catalog';
+                  case 'archive':
+                      return 'archive';
+                  default:
+                      return 'index';
+              }
+          })();
+
+    //let options = {'Dark Mode': [false, 'Inverts the colours of ss16 so you don\'t burn your eyes while in your parents\' basement.']};
+
+    doc.classList.add('site-loading');
+
+    function $(sel, root) {
+        return (root || d).querySelector(sel);
+    }
+
+    function $$(sel, root) {
+        return [...(root || d).querySelectorAll(sel)];
+    }
+
+    function on(sel, events, cb) {
+        sel = Array.isArray(sel) ? sel : [sel];
+        let event = events.split(/\s+/);
+        sel.forEach(sel => {
+            event.forEach(ev => {
+                sel.addEventListener(ev, cb, {passive: true});
+            });
+        });
+    }
+
+    function make(obj) {
+        let key,
+            el = document.createElement(obj.el);
+        if (obj.cl4ss) { el.className = obj.cl4ss; }
+        if (obj.html) { el.innerHTML = obj.html; }
+        if (obj.attr) {
+            for (key in obj.attr) {
+                if (obj.attr.hasOwnProperty(key)) {
+                    el.setAttribute(key, obj.attr[key]);
                 }
+            }
+        }
+        if (obj.appendTo) {
+            let parent = obj.appendTo;
+            //console.log(parent);
+            if (typeof parent === 'string') {
+                $(parent).appendChild(el);
+            } else {
+                parent.appendChild(el);
+            }
+            //parent.appendChild(el);
+        }
+        return el;
+    }
+    /*
+    function extend(object, properties) {
+        for (let key in properties) {
+            const val = properties[key];
+            object[key] = val;
+        }
+    }
+
+    function el(tag, properties, properties2) {
+        const el = d.createElement(tag);
+        if (properties) { extend(el, properties); }
+        if (properties2) { extend(el, properties2); }
+        return el;
+    }
+    appendTo(Target){
+    if(Target.Element) Target = Target.Element
+    if(typeof Target === 'string'){
+      Target = document.body.querySelector(Target)
+    }
+    if(Target){
+      Target.appendChild(this.Element)
+    }
+    return this
+  }
+
+  function make(obj) {
+    let key,
+      el = document.createElement(obj.el);
+    if (obj.cl4ss) { el.className = obj.cl4ss; }
+    if (obj.html) { el.innerHTML = obj.html; }
+    if (obj.attr) {
+      for (key in obj.attr) {
+        if (obj.attr.hasOwnProperty(key)) {
+          el.setAttribute(key, obj.attr[key]);
+        }
+      }
+    }
+    if (obj.appendTo) {
+      $(obj.appendTo).appendChild(el);
+    }
+    return el;
+  }
+  */
+    /*
+    function ready(fn) {
+        if (d.readyState !== 'loading') {
+            fn();
+        } else {
+            on(d, 'DOMContentLoaded', fn);
+        }
+    }*/
+    /*
+    function gmGet(name) {
+    var theValue = GM_getValue(name);
+    return theValue;
+}
+
+function gmSet(name, valuee) {
+    GM_setValue(name, valuee);
+}
+
+$("a#linkid").click(function(){
+    //setValue
+    gmSet("foo", 123);
+
+   //getValue
+   gmGet("foo");
+});
+
+      $.GM_getValue = function(key) {
+    var err;
+    try {
+      return $.currentValue[key] = GM_getValue(key);
+    } catch (_error) {
+      err = _error;
+      return $.currentValue[key];
+    }
+  };
+
+  $.GM_setValue = function(key, val) {
+    $.currentValue[key] = val;
+    return GM_setValue(key, val);
+  };
+
+    function getStoredValues(init) {
+    data = GM_getValue("data", defaults);
+    try {
+      data = JSON.parse(data);
+      if (!Object.keys(data).length || ({}).toString.call(data) !== "[object Object]") {
+        throw new Error();
+      }
+    } catch(err) { // compat
+      data = GM_getValue("data", defaults);
+    }
+  }
+
+  function setStoredValues(reset) {
+    data.processedCss = $style.textContent;
+    GM_setValue("data", JSON.stringify(reset ? defaults : data));
+    updatePanel();
+  }
+  */
+    function getValue(key) {
+        let val = GM_getValue(key);
+        return val;
+    }
+
+    function setValue(key, val) {
+        GM_setValue(key, val);
+    }
+
+    function removeStyle(sel) {
+        if (sel) {
+            console.log('%c ss16 sidedish is removing this stylesheet: ', 'color:green;', sel);
+            sel.remove();
+        } else {
+            console.log('%c ss16 sidedish was unable to find: ', 'color:red;', sel);
+        }
+    }
+
+    function removeStyles() {
+        removeStyle($('style[type]', d.head)); // this removes the inline mobile css
+        removeStyle($('#fourchanx-css', d.head)); // this removes the css required by 4chan x
+    }
+
+    function sendNotification(type, content) {
+        d.dispatchEvent(new CustomEvent('CreateNotification', {
+            detail: {
+                type: type, // success, info, warning, error
+                content: content,
+                lifetime: 0
             }
         }));
-*/
-        // attempt to assign headerBar to the actual element
-        var attempt, headerBar;
-        attempt = (function() {
-            if (!d.getElementById('header-bar')) {
-                // this.draw.bind(this)
-                // var requestId = requestAnimFrame(this.animate.bind(this));
-                window.requestAnimationFrame(attempt);
-            }
-            headerBar = d.getElementById('header-bar');
-            //console.log(headerBar, 'inside');
-        })();
-        //console.log(headerBar, 'outside');
-
-        // create a fancy menu to hide shortcuts on small res
-
-        var newMenu = d.createElement('span');
-        newMenu.classList.add('shortcut', 'ss16-shortcut');
-        newMenu.innerHTML = '<i class="material-icons">menu</i>';
-        //parent.insertBefore(el, parent.firstChild);
-        //headerBar.querySelector('#shortcuts').appendChild(newMenu);
-        headerBar.querySelector('#shortcuts').insertBefore(newMenu, headerBar.querySelector('#shortcuts').firstChild);
-        newMenu.addEventListener('click', function(e) {
-            this.parentNode.classList.toggle('ss16-menu-active');
-        }, false);
-
-
-        // wrap numbers in thread summaries in `<span>`'s
-        var summaryConvert;
-        summaryConvert = function() {
-            var summaries, i, j;
-            summaries = d.querySelectorAll('.summary');
-            i = 0;
-            j = summaries.length;
-
-            for (i; i < j; i++) {
-                var oldText, newText;
-                oldText = summaries[i].innerHTML;
-                newText = oldText.replace(/(\d+)/g, '<span>$1</span>');
-                summaries[i].innerHTML = newText;
-            }
-
-        };
-
-        summaryConvert();
-
+    }
+    /*
         var target, observer, config;
         target = d.querySelector('.board');
         observer = new MutationObserver(function(mutations) {
@@ -136,185 +228,503 @@
         });
         config = { childList: true };
         observer.observe(target, config);
+        */
+    /*
+    function onExists(sel, fn) {
+        let observer;
+        observer = new MutationObserver(function(mutations) {
+            console.log(mutations);
+        });
+        observer.observe($('.board'), {
+            childList: true
+        });
+    }
+*/
+    /*
+    let onExists = function(root, selector, cb) {
+  let el;
+  if (el = $(selector, root)) {
+    return cb(el);
+  }
+  var observer = new MutationObserver(function() {
+    if (el = $(selector, root)) {
+      observer.disconnect();
+      return cb(el);
+    }
+  });
+  return observer.observe(root, {childList: true, subtree: true});
+};
+*/
 
-        /*
-        $.onExists = function(root, selector, cb) {
-            var el, observer;
-            if (el = $(selector, root)) {
+    function onExists(root, sel, cb) {
+        let el, observer;
+        if (el = $$(sel, root)) {
+            return cb(el);
+        }
+        observer = new MutationObserver(function() {
+            if (el = $$(sel, root)) {
+                observer.disconnect();
                 return cb(el);
             }
-            observer = new MutationObserver(function() {
-                if (el = $(selector, root)) {
-                    observer.disconnect();
-                    return cb(el);
-                }
-            });
-            return observer.observe(root, {
-                childList: true,
-                subtree: true
-            });
-        };
-
-        var i =1;
-function waitForElClass(data, cb){
-  var element = data.selected;
-  var index = data.index;
-
-  var findEl = document.getElementsByClassName(element)[index];
-  console.log(i);
-  i++;
-  var to = window.setInterval(function(){
-    if($(findEl).length){
-      console.log(findEl);
-      cb(findEl);
-      window.clearInterval(to);
-    }
-  },500)
-}
-*/
-        /*
-        var checkElementExists;
-        checkElementExists = function(el, cb) {
-            console.log('hey');
-            var element, to;
-            element = el;
-            console.log(element, el);
-            to = window.setInterval(function() {
-                console.log(element, el);
-                if (element.length) {
-                    console.log(element, el);
-                    cb(element);
-                    window.clearInterval(to);
-                }
-            }, 1000);
-        };
-
-        checkElementExists(d.getElementById('header-bar'), function() {
-            console.log('hello');
         });
-*/
-        // create the scroll progress element
-        var scrollage;
-        scrollage = d.createElement('progress');
-        scrollage.id = 'scroll-progress';
-        scrollage.value = 0;
-        scrollage.max = 100;
-        headerBar.appendChild(scrollage);
+        return observer.observe(root, {childList:true});
+    }
 
-        var boardBannerHeight = 480,
-            //scrolled = window.pageYOffset,
-            lastScrollY = 0,
-            ticking = false;
-
-        var boardBanner, boardTitle, docStyles, primary;
-
-        boardBanner = d.querySelector('.boardBanner');
-        boardTitle = d.querySelector('.boardTitle');
-        docStyles = window.getComputedStyle(d.documentElement);
-        primary = docStyles.getPropertyValue('--base-primary');
-        //https://codepen.io/wesbos/pen/adQjoY/
-        //https://www.broken-links.com/2014/08/28/css-variables-updating-custom-properties-javascript/
-        //https://eager.io/blog/communicating-between-javascript-and-css-with-css-variables/
-        function doSomething(scroll_pos) {
-            var newScrolled;
-            newScrolled = (lastScrollY / 2.5) * 0.1;
-            if (lastScrollY >= boardBannerHeight) {
-                //d.documentElement.classList.add('scrolled');
-                headerBar.classList.add('scrolled');
-                boardTitle.style.textShadow = '0 0 ' + primary;
-            } else {
-                //d.documentElement.classList.remove('scrolled');
-                headerBar.classList.remove('scrolled');
-                boardTitle.style.textShadow = (16 + -newScrolled) + 'px ' + (16 + -newScrolled) + 'px ' + primary;
-            }
-            var progressScroll;
-            progressScroll = function() {
-                var dHeight = d.body.clientHeight, wHeight = window.innerHeight, scrollPercent;
-                scrollPercent = (lastScrollY / (dHeight - wHeight)) * 100;
-                //pos = scrollPercent;
-                scrollage.value = scrollPercent.toFixed(2);
-            };
-            progressScroll();
-
-            var parBG;
-            parBG = (function() {
-                var oVal, maxVal, currentVal;
-                oVal = lastScrollY / 3;
-                maxVal = 300;
-                if (oVal < maxVal) {
-                    currentVal = oVal;
-                } else {
-                    currentVal = maxVal;
-                };
-                boardBanner.style.transform = 'translate3d(0,' + currentVal + 'px, 0)';
-            })();
-        }
-        var letsgomason = function() {
-            var boardForMason = d.querySelector('.board');
-
-            var msnry = new Masonry( boardForMason, {
-                // options
-                itemSelector: '.catalog-thread',
-                columnWidth: '.catalog-thread',
-                animate: true
-                //gutter: 16,
-                //percentPosition: true
+    function setupSettings() {
+        $('.settings-link').addEventListener('click', function(event) {
+            let settingsDialog, settingsTab, settingsSection, settingsSectionOld;
+            settingsDialog = $('#fourchanx-settings');
+            settingsTab = make({
+                el: 'span',
+                html: ` | <a class="tab-ss16" href="javascript:;">ss16</a>`
             });
-        };
+            settingsSection = make({
+                el: 'section',
+                cl4ss: 'section-ss16',
+                html: `<fieldset>
+<legend>ss16</legend>
+<div class="warning">Some changes will take affect upon the next page refresh.</div>
+<div data-name="darkMode" data-checked="${getValue('darkMode')}">
+<label><input type="checkbox" name="darkMode" ${(getValue('darkMode') === true ? 'checked' : '')}>Dark Mode</label>
+<span class="description">Inverts the colours of ss16 so you don't burn your eyes while in your parents' basement.</span>
+</div>
+<div data-name="judgementMode" data-checked="${getValue('judgementMode')}">
+<label><input type="checkbox" name="judgementMode" ${(getValue('judgementMode') === true ? 'checked' : '')}>Judgement Mode</label>
+<span class="description">Leaves a snark comment about your 4chan X Settings.</span>
+</div>
+<div data-name="fileHoverMode" data-checked="${getValue('fileHoverMode')}">
+<label><input type="checkbox" name="fileHoverMode" ${(getValue('fileHoverMode') === true ? 'checked' : '')}>Always Display File Information</label>
+<span class="description">When enabled, instead of hovering over a file to see it's information, it will always be displayed.</span>
+</div>
+<div data-name="yotsubaMode" data-checked="${getValue('yotsubaMode')}">
+<label><input type="checkbox" name="yotsubaMode" ${(getValue('yotsubaMode') === true ? 'checked' : '')}>Yotsuba Theme</label>
+<span class="description">Some people prefer the traditional Yotsuba theme, so re-enable it.</span>
+</div>
+</fieldset>`
+            });
+            on($$('input', settingsSection), 'click', function(e) {
+                let currentVal = (() => {
+                    if (this.checked) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })();
+                let currentKey = this.getAttribute('name');
+                setValue(currentKey, currentVal);
+                if (this.getAttribute('name') === 'darkMode') {
+                    doc.classList.toggle('ss16--invert');
+                }
+                if (this.getAttribute('name') === 'judgementMode') {
+                    doc.classList.toggle('ss16--judgement');
+                }
+                if (this.getAttribute('name') === 'fileHoverMode') {
+                    doc.classList.toggle('ss16--fileInfoAlwaysDisplayed');
+                }
+                if (this.getAttribute('name') === 'yotsubaMode') {
+                    doc.classList.toggle('ss16--yotsuba');
+                }
+            });
+            settingsSectionOld = $('.section-container');
+            $('.sections-list', settingsDialog).appendChild(settingsTab);
+            on($('.tab-ss16'), 'click', function() {
+                $('.sections-list > .tab-selected').classList.remove('tab-selected');
+                this.classList.add('tab-selected');
+                settingsSectionOld.lastChild.style.display = 'block';
+                settingsSectionOld.firstChild.style.display = 'none';
+                settingsSectionOld.appendChild(settingsSection);
+                on($$('.sections-list > a'), 'click', function() {
+                    $('.tab-ss16').classList.remove('tab-selected');
+                    settingsSectionOld.lastChild.style.display = 'none';
+                    settingsSectionOld.firstChild.style.display = 'block';
+                });
+            });
+            //}, {once: true});
+        });
+    }
 
-        var masonButton;
-        masonButton = d.createElement('span');
-        masonButton.classList.add('mason-button--container');
-        masonButton.innerHTML = '<i class="material-icons mason-button">dashboard</i>';
-        if (view === 'index') {
-            d.querySelector('.navLinks').appendChild(masonButton);
+    function init() {
+        //ready(function() { doc.classList.remove('site-loading'); });
+
+        on(d, 'IndexBuild', doc.classList.remove('site-loading'));
+
+        on(d, 'OpenSettings', function() {
+            let settingDescriptions = $$('.description');
+            for (let settingDescription of settingDescriptions) {
+                let content = settingDescription.textContent;
+                content = content.slice(2);
+                settingDescription.textContent = content;
+            }
+        });
+
+        removeStyles();
+
+        if (getValue('darkMode') === true) {
+            doc.classList.add('ss16--invert');
         }
-        masonButton.addEventListener('click', function(e) {
-            letsgomason();
-        }, false);
 
+        if (getValue('judgementMode') === true) {
+            doc.classList.add('ss16--judgement');
+        }
 
-        window.addEventListener('scroll', function(e) {
-            lastScrollY = window.scrollY;
+        if (getValue('fileHoverMode') === true) {
+            doc.classList.add('ss16--fileInfoAlwaysDisplayed');
+        }
+
+        if (getValue('yotsubaMode') === true) {
+            doc.classList.add('ss16--yotsuba');
+        }
+
+        function getBoardType() {
+            let type = style_group;
+            type = type.slice(0, -6);
+            doc.classList.add(type);
+        }
+
+        getBoardType();
+
+        function toggleFooter() {
+            const navBot = $('#boardNavDesktopFoot');
+            on(navBot, 'click', function(e) {
+                if (e.target === this) {
+                    this.classList.toggle('is-active');
+                }
+            });
+        }
+
+        toggleFooter();
+
+        setupSettings();
+
+        // this should return the `#header-bar` element
+        const headerBar = $('#header-bar');
+
+        const scrollProgress = make({
+            el: 'progress',
+            attr: {
+                id: 'scroll-progress',
+                value: 0,
+                max: 100
+            }
+        });
+
+        headerBar.appendChild(scrollProgress);
+
+        const hero = $('.boardBanner'),
+              heroHeight = 480,
+              boardTitle = $('.boardTitle'),
+              //primaryColour = getComputedStyle(doc).getPropertyValue('--base-primary'),
+              //primaryColour = window.getComputedStyle(doc).getPropertyValue('--base-primary'),
+              mVal = 300;
+
+        /*
+        function fitText(el) {
+            el.style.fontSize = Math.max(Math.min(el.clientWidth / 11)) + 'px';
+        }
+
+        fitText(boardTitle);
+*/
+        let ticking = false;
+
+        function rAF(cb, args) {
             if (!ticking) {
                 window.requestAnimationFrame(function() {
-                    doSomething(lastScrollY);
+                    cb(args);
                     ticking = false;
                 });
             }
             ticking = true;
-        });
-        /*
-        this needs a test to see if the scale makes text too small
-var resizePreviews = function() {
+        }
 
-        var target = d.querySelector('#hoverUI');
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.target.id == 'qp') {
-                    var winHeight = window.innerHeight;
-                    //console.log(winHeight);
-                    function func() {
-                        var qpHeight = mutation.target.offsetHeight;
-                        //console.log(qpHeight);
-                        if (qpHeight > winHeight) {
-                            var scaledHeight = winHeight / qpHeight;
-                            mutation.target.style.transformOrigin = 'top left';
-                            mutation.target.style.transform = 'scale(' + scaledHeight + ')';
-                        }
-                    }
-                    setTimeout(func, 500);
+        function fancyShadow(el) {
+            let oVal = window.scrollY,
+                nVal = (oVal / 2.5) * 0.1;
+            if (oVal >= heroHeight) {
+                headerBar.classList.add('scrolled');
+                el.style.textShadow = '0 0 var(--primary-500)';
+                //el.style.textShadow = '0 0 ' + primaryColour;
+            } else {
+                headerBar.classList.remove('scrolled');
+                el.style.textShadow = (16 + -nVal) + 'px ' + (16 + -nVal) + 'px var(--primary-500)';
+                //el.style.textShadow = (16 + -nVal) + 'px ' + (16 + -nVal) + 'px ' + primaryColour;
+            }
+        }
+
+        function parallaxHero(el) {
+            let oVal, cVal;
+            oVal = Math.round(window.scrollY / 3);
+            if (oVal < mVal) {
+                cVal = oVal;
+            } else {
+                cVal = mVal;
+            }
+            el.style.transform = 'translate3d(0, ' + cVal + 'px, 0)';
+        }
+
+        function progressScroll(el) {
+            let dHeight = d.body.clientHeight,
+                wHeight = window.innerHeight,
+                scrollPercent = (window.scrollY / (dHeight - wHeight)) * 100;
+            //console.log(el, scrollPercent);
+            el.value = scrollPercent.toFixed(2);
+            //progressScroll = function() {
+            //var dHeight = d.body.clientHeight, wHeight = window.innerHeight, scrollPercent;
+            //scrollPercent = (lastScrollY / (dHeight - wHeight)) * 100;
+            //pos = scrollPercent;
+            //scrollage.value = scrollPercent.toFixed(2);
+            //};
+        }
+
+        on(window, 'scroll', function(e) {
+            rAF(parallaxHero(hero));
+            rAF(fancyShadow(boardTitle));
+            rAF(progressScroll(scrollProgress));
+        });
+
+        function countBacks() {
+            let posts = $$('.post');
+            for (let post of posts) {
+                let backlinks = $$('.backlink', post);
+                post.setAttribute('data-backlinks-length', backlinks.length);
+                if (backlinks.length > 8) {
+                    post.parentNode.classList.add('post--hot');
+                }
+            }
+        }
+
+        function convertSummaries() {
+            let summaries = $$('.summary');
+            for (let summary of summaries) {
+                let oldText, newText;
+                oldText = summary.innerHTML;
+                newText = oldText.replace(/(\d+(?=\ ))/g, '<b>$1</b>');
+                summary.innerHTML = newText;
+            }
+        }
+
+        function swapInfo() {
+            let ops = $$('.op');
+            for (let op of ops) {
+                let opPostInfo = $('.postInfo', op);
+                op.prepend(opPostInfo);
+            }
+        }
+
+        /*
+
+*/
+
+        if (config === 'index') {
+                    const target = $('.board');
+const config = {
+    childList: true
+};
+function subscriber(mutations) {
+    //console.log('hey i mutated');
+    convertSummaries();
+    swapInfo();
+}
+const observer = new MutationObserver(subscriber);
+observer.observe(target, config);
+        }
+
+        if (config === 'index') {
+            on(d, 'IndexRefresh', convertSummaries);
+            on(d, 'IndexRefresh', swapInfo);
+        }
+
+        if (config === 'thread') {
+            countBacks();
+            swapInfo();
+        }
+
+        function boardDrawer() {
+            //let boardNav = $('#header-bar > span');
+            let boardDrawer = make({
+                el: 'aside',
+                cl4ss: 'ss16--board-drawer-background',
+                appendTo: 'body',
+                html: `<nav class="ss16--board-drawer"></nav>`
+            });
+            ready('#board-list', (element) => {
+                let _this = element;
+                make({
+                    el: 'a',
+                    cl4ss: 'material-icons ss16--board-drawer-toggle',
+                    appendTo: _this,
+                    html: `menu`
+                });
+
+            });
+            let boardNavToggle = $('.ss16--board-drawer-toggle');
+            //on(boardNavToggle, 'click', );
+            let url = '../../../../../boards.json';
+            // ???
+
+            function createNode(element) {
+                return d.createElement(element);
+            }
+
+            function append(parent, el) {
+                return parent.appendChild(el);
+            }
+            /*
+            boardMenuIcon.addEventListener('click', function() {
+                boardDrawer.classList.add('drawer-open');
+            });
+*/
+            boardDrawer.addEventListener('click', function(e) {
+                if (e.target === boardDrawer) {
+                    boardDrawer.classList.remove('drawer-open');
                 }
             });
-        });
-        var config = { attributes: false, childList: true, characterData: true, subtree: true };
-        observer.observe(target, config);
-};
 
-        resizePreviews();
+            on(boardNavToggle, 'click', function() {
+                boardDrawer.classList.add('drawer-open');
+                fetch(url)
+                    .then(resp => resp.json())
+                    .then(function(data) {
+                    let boards = data.boards;
+                    return boards.map(function(board) {
+                        let anchor = createNode('a');
+                        anchor.classList.add('board-list-entry');
+                        anchor.href = `https://boards.4chan.org/${board.board}/`;
+                        anchor.textContent = `/${board.board}/ - ${board.title}`;
+                        if (board.ws_board === 0) {
+                            anchor.classList.add('board--nws');
+                        } else {
+                            anchor.classList.add('board--ws');
+                        }
+                        append($('.ss16--board-drawer'), anchor);
+                    });
+                });
+            });
+        }
+
+        boardDrawer();
+        /*
+        ready('#qr', (element) => {
+            let _this = element;
+            let fuckme = d.querySelectorAll('.persona input');
+            let qrInputs = $$('.persona input', _this);
+            let textArea = $$('textarea', _this);
+            qrInputs.push(textArea[0]);
+            for (let i = 0, j = qrInputs.length; i < j; i++) {
+                console.log(qrInputs[i].nodeType);
+            }
+            //console.log('list of floating label inputs we want', qrInputs);
+            function wrap(el, wrapper) {
+                el.parentNode.insertBefore(wrapper, el);
+                wrapper.appendChild(el);
+            }
+            fuckme.forEach(fuck => {
+                //console.log(fuck);
+            });
+            for (let qrInput of qrInputs) {
+                let currentLabel = qrInput.getAttribute('placeholder');
+                let newWrapper = document.createElement('div');
+                let newLabel = document.createElement('label');
+                newWrapper.classList.add('floating-label--wrapper');
+                newLabel.classList.add('floating-label--text');
+                newLabel.setAttribute('for', currentLabel.toLowerCase());
+                newLabel.textContent = currentLabel;
+                wrap(qrInput, newWrapper);
+                newWrapper.appendChild(newLabel);
+                //console.log(newWrapper.firstChild);
+                //console.log(qrInput[0]);
+
+                if (qrInput.value) {
+                    qrInput.parentNode.classList.add('floating-label--filled');
+                }
+
+                            qrInput.addEventListener('focus', function() {
+                qrInput.parentNode.classList.add('floating-label--active');
+            });
+            qrInput.addEventListener('blur', function() {
+            qrInput.parentNode.classList.remove('floating-label--active');
+                if (qrInput.value !== 0) {
+                    qrInput.parentNode.classList.add('floating-label--filled');
+                }
+            });
+
+                //onblur = function(){ console.log('Blurred textarea'); };
+                //qrInput.onfocus = function(){ qrInput.parentNode.classList.add('floating-label--active'); };
+                //qrInput.onblur = function(){ qrInput.parentNode.classList.remove('floating-label--active'); };
+                //console.log(qrInput);
+                //qrInput.onblur = function(){ this.parentNode.classList.toggle('floating-label--active'); };
+                //wrap(qrInput, d.createElement('
+
+
+
+                // example: wrapping an anchor with class "wrap_me" into a new div element
+                //wrap(document.querySelector('a.wrap_me'), document.createElement('div'));
+
+            //}
+            //on(qrInputs, 'focus', this.parentNode.classList.toggle('floating-label--active'));
+        });*/
+        /*
+        function floatingLabels() {
+            //read
+            let qrInputs = $$('.pesona input', qr);
+            for (let qrInput of qrInputs) {
+                //org_html = document.getElementById("slidesContainer").innerHTML;
+                //new_html = "<div id='slidesInner'>" + org_html + "</div>";
+                //document.getElementById("slidesContainer").innerHTML = new_html;
+                qrInput.getAttribute('placeholder');
+                console.log(qrInput);
+            }
+        }*/
+        /*
+        new MutationObserver( mutation => {
+    if (!mutation.addedNodes) return;
+    mutation.addedNodes.forEach( node => {
+        // do stuff with node
+    });
+});
+*/
+
+        //convertSummaries();
+
+        //onExists($$('.summary'), convertSummaries());
+
+        //onExists(doc, '.summary', console.log('hi?'));
+
+        function resizeQuotePreviews() {
+            ready('#qp', (element) => {
+                let _this = element;
+                let winHeight = window.innerHeight;
+                let qpHeight = _this.offsetHeight + 32;
+                if (qpHeight > winHeight) {
+                    let scaledHeight = (winHeight / qpHeight);
+                    _this.style.transformOrigin = 'top left';
+                    _this.style.transform = 'scale(' + scaledHeight + ')';
+                }
+            });
+        }
+
+        resizeQuotePreviews();
+        /*
+        function warn(string) {
+            const toast = make({
+                el: 'div',
+                cl4ss: 'ss16--toast',
+                html: `<span class="ss16--toast-text">${string}</span>`,
+                appendTo: 'body'
+            });
+        }
+*/
+        /*
+        if (doc.classList.contains('oneechan')) {
+            make({
+                el: 'aside',
+                cl4ss: 'ss16--dialog',
+                appendTo: 'body',
+                html: `<div class="ss16--dialog-window"><header class="ss16--dialog-header">Slight Problem...</header><section class="ss16--dialog-description">It would seem that OneeChan is running. You don't actually need that for ss18, so turn it off baka~</section></div>`
+            });
+            doc.classList.add('unscroll');
+        }
         */
-
-        // add searching class to html when search bar has focus
+        /*
         var anotherAttempt, searchBar;
         if (view === 'index') {
             anotherAttempt = (function() {
@@ -334,312 +744,129 @@ var resizePreviews = function() {
                 }
             });
         };
-
-        if (view === 'index') {
-            var selectSwitch;
-
-            selectSwitch = function() {
-
-                /*
-                 * if i knew what i was doing, i'm sure this function could actually be really useful and probably usable across the web...
-                 * pity i'm not that intelligent
-                 * http://mnmly.github.io/select-switch/
-                 * https://github.com/mikemaccana/styleselect/blob/master/js/styleselect.js (http://mikemaccana.github.io/styleselect/)
-                 */
-
-                var insertAfter;
-                function insertAfter(newEl, oldEl) {
-                    oldEl.parentNode.insertBefore(newEl, oldEl.nextSibling);
+                function resizeQuotePreviews() {
+            ready('#qp', (element) => {
+                let _this = element;
+                let winHeight = window.innerHeight;
+                let qpHeight = _this.offsetHeight + 32;
+                if (qpHeight > winHeight) {
+                    let scaledHeight = (winHeight / qpHeight);
+                    _this.style.transformOrigin = 'top left';
+                    _this.style.transform = 'scale(' + scaledHeight + ')';
                 }
-
-                var insertBefore;
-                function insertBefore(newEl, oldEl) {
-                    // Get a reference to the element in which we want to insert a new node
-                    //var parentElement = document.getElementById('parentElement');
-                    // Get a reference to the first child
-                    //var theFirstChild = parentElement.firstChild;
-
-                    // Create a new element
-                    //var newElement = document.createElement("div");
-
-                    // Insert the new element before the first child
-                    //parentElement.insertBefore(newElement, theFirstChild);
-                    oldEl.insertBefore(newEl, oldEl.firstChild);
-                }
-
-                var createCloneSelect;
-                createCloneSelect = function(oldSelect, oldID) {
-                    var newSelect = document.createElement('ul');
-                    newSelect.classList.add('ss16-new-select');
-                    newSelect.setAttribute('data-id', oldID);
-                    insertAfter(newSelect, oldSelect);
-                };
-
-                var oldSelects;
-                oldSelects = document.querySelectorAll('select');
-
-                for (var oldSelect of oldSelects) {
-                    var reSelf = oldSelect;
-                    var oldSelectValue;
-                    oldSelectValue = oldSelect.value;
-                    //console.log(oldSelect, oldSelectValue);
-                    oldSelect.classList.add('ss16-hide-select');
-                    createCloneSelect(oldSelect, oldSelect.id);
-                    var newSelect;
-                    newSelect = oldSelect.nextSibling;
-                    var optionsList;
-                    optionsList = oldSelect.querySelectorAll('option:not([disabled])');
-                    for (var option of optionsList) {
-                        var listItem;
-                        listItem = document.createElement('li');
-                        listItem.classList.add('ss16-new-select--option');
-                        if (option.hasAttribute('value')) {
-                            listItem.setAttribute('data-value', option.value);
-                        }
-                        listItem.textContent = option.textContent;
-                        newSelect.appendChild(listItem);
-                        if (option.getAttribute('value') === oldSelectValue) {
-                            newSelect.insertBefore(listItem, newSelect.firstChild);
-                        }
-                    }
-                    newSelect.onclick = function() {
-                        var self = this;
-                        var listItems = self.querySelectorAll('li');
-                        var newValue = listItems[1].getAttribute('data-value');
-                        var originalSelect;
-                        originalSelect = this.previousElementSibling;
-                        originalSelect.value = newValue;
-                        originalSelect.dispatchEvent(new CustomEvent('change'));
-                        this.appendChild(listItems[0]);
-                    };
-                }
-
-            };
-
-            selectSwitch();
-            /*
-
-            var selectSwitch;
-            selectSwitch = function() {
-                var oldSelect, oldSelectValue, newSelect, newSelectValue, sortOrder;
-                oldSelect = document.getElementById('index-sort');
-                oldSelectValue = oldSelect.value;
-
-                newSelect = d.createElement('ul');
-                newSelect.className = 'ss16-select-dropdown';
-                newSelect.innerHTML = '<li class="ss16-select-dropdown--item" data-value="bump">Bump Order</li>\
-<li class="ss16-select-dropdown--item" data-value="replycount">Reply Count</li>\
-<li class="ss16-select-dropdown--item" data-value="filecount">File Count</li>';
-
-                //newSelect.querySelector('[data-value="' + oldSelectValue + '"]').classList.add('active');
-                newSelect.querySelector('[data-value="' + oldSelectValue + '"]').classList.add('active');
-
-
-                newSelect.addEventListener('click', function() {
-*/
-            /*
-                    sortOrder = newSelect.querySelectorAll('.ss16-select-dropdown--item');
-                    console.log(sortOrder);
-                    var newSortOrder;
-                    //
-                    //sortOrder.push.apply(sortOrder, sortOrder.splice(0,1));
-                    sortOrder = sortOrder.concat(sortOrder.splice(0,2));
-                    console.log(sortOrder);
-                    oldSelect.value = newSelect.children[1].getAttribute('data-value');
-                    oldSelect.dispatchEvent(new CustomEvent('change'));
-                    */
-            //});
-            /*
-wrapper.onclick = function() {
-				var newItem = newSelect.firstChild.cloneNode(true);
-				newSelect.appendChild(newItem);
-				oldSelect.value = newSelect.children[1].getAttribute('data-value');
-    		oldSelect.dispatchEvent(new CustomEvent('change'));
-    		//console.log(oldSelect.value);
-				newSelect.removeChild(newSelect.firstChild);
-			};
-			wrapper.appendChild(newSelect);
-
-                var sortOrder = newSelect.querySelectorAll('.ss16-sort-group--item');
-                for (var i = 0; i < sortOrder.length; ++i) {
-                    sortOrder[i].addEventListener('click', function() {
-                        newSelectValue = this.getAttribute('data-value');
-                        oldSelect.value = newSelectValue;
-                        oldSelect.dispatchEvent(new CustomEvent('change'));
-                        newSelect.querySelector('.active').classList.remove('active');
-                        newSelect.querySelector('[data-value="' + newSelectValue + '"]').classList.add('active');
-                    });
-                };
-                */
-            //d.querySelector('.navLinks').appendChild(newSelect);
-            //};
-            //selectSwitch();
-        };
-
-        /*
-        var selectSwitch;
-        // turn the index sorter into something a bit more fun
-        selectSwitch = (function () {
-            var oldSelect, oldSelectValue, newSelect, newSelectValue;
-            // grab which sort mode is selected
-            oldSelect = document.getElementById('index-sort');
-            oldSelectValue = oldSelect.value;
-
-            // create the new html that will replace it
-            newSelect = document.createElement('div');
-            newSelect.className = 'ss16-sort-group';
-            newSelect.innerHTML = '<button class="ss16-sort-group--item" data-value="bump">bump order</button><button class="ss16-sort-group--item" data-value="replycount">reply count</button><button class="ss16-sort-group--item" data-value="filecount">file count</button>';
-
-            newSelect.querySelector('[data-value="' + oldSelectValue + '"]').classList.add('active');
-
-            var sortButtons = newSelect.querySelectorAll('.ss16-sort-group--item');
-            for (var i = 0; i < sortButtons.length; ++i) {
-                sortButtons[i].addEventListener('click', function() {
-                    newSelectValue = this.getAttribute('data-value');
-                    oldSelect.value = newSelectValue;
-                    oldSelect.dispatchEvent(new CustomEvent('change'));
-                    newSelect.querySelector('.active').classList.remove('active');
-                    newSelect.querySelector('[data-value="' + newSelectValue + '"]').classList.add('active');
-                });
-            };
-
-            document.querySelector('.navLinks').appendChild(newSelect);
-
-
-        })();*/
-
-        // taken from: https://github.com/google/material-design-lite/blob/mdl-1.x/src/layout/layout.js
-        var screenSizeHandler, screenSizeMediaQuery;
-        screenSizeHandler = function() {
-            if (screenSizeMediaQuery.matches) {
-                d.documentElement.classList.add('is-small-screen');
-            } else {
-                d.documentElement.classList.remove('is-small-screen');
-            }
-        };
-
-        screenSizeMediaQuery = window.matchMedia('(max-width: 75rem)');
-        screenSizeMediaQuery.addListener(screenSizeHandler.bind(this));
-        screenSizeHandler();
-
-        var scrollNav = (function() {
-            var boardList;
-            boardList = d.querySelector('#header-bar');
-            var leftButton = d.createElement('i');
-            leftButton.classList.add('material-icons', 'scroll-indicator', 'scroll-indicator--left');
-            leftButton.textContent = 'chevron_left';
-            var rightButton = d.createElement('i');
-            rightButton.classList.add('material-icons', 'scroll-indicator', 'scroll-indicator--right');
-            rightButton.textContent = 'chevron_right';
-            boardList.appendChild(leftButton);
-            boardList.appendChild(rightButton);
-            (function() {
-                var n, c, l, i, e, t;
-                n = d.querySelector('.scroll-indicator--right');
-                c = d.querySelector('.scroll-indicator--left');
-                l = d.querySelector('#board-list > span:not([hidden])'); //#custom-board-list
-                i = 40;
-                e = function() {
-                    c.classList.remove('disabled');
-                    n.classList.remove('disabled');
-                    if (l.scrollLeft <=0) {
-                        c.classList.add('disabled');
-                    }
-                    if (l.scrollLeft + l.clientWidth + 5 >= l.scrollWidth) {
-                        n.classList.add('disabled');
-                    }
-                };
-                e();
-                t = function() {
-                    e();
-                    l.scrollLeft += i;
-                };
-                l.addEventListener('scroll', function() {
-                    e();
-                });
-                n.addEventListener('click', function() {
-                    l.scrollLeft += i;
-                });
-                c.addEventListener('click', function() {
-                    l.scrollLeft += -i;
-                });
-            })();
-            /*
-            (function() {
-                function e() {
-                    c.classList.remove("disabled"),
-                        n.classList.remove("disabled"),
-                        l.scrollLeft <= 0 && c.classList.add("disabled"),
-                        l.scrollLeft + l.clientWidth + 5 >= l.scrollWidth && n.classList.add("disabled");
-                }
-                function t(e) {
-                    l.scrollLeft += e;
-                }
-                var n = document.querySelector(".scroll-indicator--right"),
-                    c = document.querySelector(".scroll-indicator--left"),
-                    l = document.querySelector("#custom-board-list"),
-                    i = 40;
-                l.addEventListener("scroll", e),
-                    e(),
-                    n.addEventListener("click", t.bind(null, i)),
-                    c.addEventListener("click", t.bind(null, -i));
-            })();
-            */
-        })();
-
-        /*
-        if (window.matchMedia('(max-width: 75rem)').matches) {
-            d.documentElement.classList.add('is-small-screen');
-        } else {
-            d.documentElement.classList.remove('is-small-screen');
-        }
-*/
-        /*
-        var scrollNav;
-        scrollNav = function() {
-            var customBoardList, fullBoardList, windowWidth;
-            customBoardList = d.querySelector('#custom-board-list').offsetWidth;
-            fullBoardList = d.querySelector('#full-board-list').offsetWidth;
-            windowWidth = d.body.clientWidth;
-            window.addEventListener('resize', function(e){
-                customBoardList = d.querySelector('#custom-board-list').offsetWidth;
-                fullBoardList = d.querySelector('#full-board-list').offsetWidth;
-                windowWidth = d.body.clientWidth;
-                console.log(customBoardList, fullBoardList, windowWidth);
             });
-        };
-        scrollNav();
-        */
+        }
 
+        resizeQuotePreviews();
 
-    };
-    console.timeEnd('Initialising ss16');
-})();
-
-/*
-
-what getmdl.io uses when window too small
-
-!function() {
-    "use strict";
-    function e() {
-        c.classList.remove("disabled"),
-        n.classList.remove("disabled"),
-        l.scrollLeft <= 0 && c.classList.add("disabled"),
-        l.scrollLeft + l.clientWidth + 5 >= l.scrollWidth && n.classList.add("disabled")
-    }
-    function t(e) {
-        l.scrollLeft += e
-    }
-    var n = document.querySelector(".scrollindicator.scrollindicator--right")
-      , c = document.querySelector(".scrollindicator.scrollindicator--left")
-      , l = document.querySelector(".docs-navigation")
-      , i = 40;
-    l.addEventListener("scroll", e),
-    e(),
-    n.addEventListener("click", t.bind(null, i)),
-    n.addEventListener("tap", t.bind(null, i)),
-    c.addEventListener("click", t.bind(null, -i)),
-    c.addEventListener("tap", t.bind(null, -i))
-}(),
 */
+        function searchCurtain() {
+            ready('#index-search', (element) => {
+                let _this = element;
+                on(_this, 'focus', function() {
+                    doc.classList.add('ss16--index-searching');
+                    make({
+                        el: 'aside',
+                        cl4ss: 'ss16--index-searching-curtain',
+                        appendTo: 'body'
+                    });
+                });
+                on(_this, 'blur', function() {
+                    $('.ss16--index-searching-curtain').remove();
+                    if (_this.dataset.searching != 1) {
+                        doc.classList.remove('ss16--index-searching');
+                        $('.ss16--index-searching-curtain').remove();
+                    }
+                });
+            });
+        }
+
+        if (config === 'index') {
+            searchCurtain();
+        }
+
+        if (config === 'thread') {
+            function OPAsBanner() {
+                ready('.op .fileThumb', (element) => {
+                    let _this = element,
+                        banner = $('.boardBanner');
+                let OpFullFile = _this.href;
+                if (OpFullFile.endsWith('m')) {
+                    let OpVideo = document.createElement('video');
+                    OpVideo.classList.add('ss16--op-banner');
+                    OpVideo.loop = true;
+                    OpVideo.src = OpFullFile;
+var playPromise = OpVideo.play();
+
+  if (playPromise !== undefined) {
+    playPromise.then(_ => {
+      // Automatic playback started!
+      // Show playing UI.
+    })
+    .catch(error => {
+      // Auto-play was prevented
+      // Show paused UI.
+    });
+  }
+                    //OpVideo.setAttribute('autoplay', 'autoplay');
+                    //OpVideo.autoplay = true;
+                    //OpVideo.load();
+                    //OpVideo.load();
+                    //OpVideo.playsinline;
+                    //OpVideo.controls = false;
+                    OpVideo.muted = true;
+
+                    banner.appendChild(OpVideo);
+                } else {
+                    let OpImage = new Image();
+                    OpImage.classList.add('ss16--op-banner');
+                    OpImage.src = OpFullFile;
+                    banner.appendChild(OpImage);
+                }
+                });
+            }
+            OPAsBanner();
+        }
+
+        //sendNotification('info', 'Thanks for using ss16!');
+    }
+
+    on(d, '4chanXInitFinished', init);
+    /*
+    function backup() {
+        function removeStyleBackup(sels) {
+
+            //let sels;
+            //console.log('%c ss16 sidedish found this stylesheet and will remove it: ', 'color:orange;', sels);
+            //for (let sel in sels) {
+            //    sel.remove();
+            //}
+        }
+
+        function removeStylesBackup(sell) {
+            for (let sel of sell) {
+                console.log('%c ss16 sidedish found this stylesheet and will remove it: ', 'color:orange;', sel);
+                sel.remove();
+            }
+            //removeStyleBackup(); // this removes inline stylesheets
+        }
+
+        removeStylesBackup($$('style', d.head));
+
+        if (!doc.classList.contains('fourchan-x')) {
+            doc.classList.remove('site-loading');
+            doc.classList.add('no-fourchan-x');
+            make({
+                el: 'aside',
+                cl4ss: 'ss16--dialog',
+                appendTo: 'body',
+                html: `<div class="ss16--dialog-window"><header class="ss16--dialog-header">Slight Problem...</header><section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section></div>`
+            });
+            doc.classList.add('unscroll');
+        }
+    }
+
+    on(d, 'DOMContentLoaded', backup);
+*/
+    console.timeEnd('Initialising ss16 sidedish...');
+})();
