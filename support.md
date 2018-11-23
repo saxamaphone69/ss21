@@ -54,13 +54,17 @@ __this must be disabled__, or there will be adverse side effects
 `/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` - posts with dubs vibrate and are checked
 
 ### capcodes
-`/Admin$/;highlight:poster--admin;op:yes` - admin posts are red
+`/Founder$/;highlight:poster--founder;op:yes`
 
-`/Mod$/;highlight:poster--mod;op:yes` - mod posts are purple
+`/Admin$/;highlight:poster--admin;op:yes`
 
-`/Manager$/;highlight:poster--manager;op:yes` - manager posts are fuchsia
+`/Mod$/;highlight:poster--mod;op:yes`
 
-`/Developer$/;highlight:poster--developer;op:yes` - dev posts are blue
+`/Manager$/;highlight:poster--manager;op:yes`
+
+`/Developer$/;highlight:poster--developer;op:yes`
+
+`/Verified$/;highlight:poster--verified;op:yes`
 
 ### pass dates
 `/./;highlight:poster--pass;top:no;` - pass users are green
@@ -69,9 +73,9 @@ __this must be disabled__, or there will be adverse side effects
 `/./;op:only;top:no;highlight:thread--subject` - threads that have a subject are given a class
 
 ### comment
-`/[\s\S]{200,299}/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
+`/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
 
-`/[\s\S]{300,}/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
+`/^\W*(\w+\b\W*){91,}$/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
 
 ### filenames
 `/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
@@ -80,6 +84,8 @@ __this must be disabled__, or there will be adverse side effects
 
 ### image dimensions
 `/\d{4}x/;highlight:file--wide;top:no;` - files that are at least 1000px wide, take up the whole screen
+
+`/x\d{4}/;highlight:file--high;top:no;` - files that are at least 1000px high are given a class
 
 ### filesize
 `/MB/;op:yes;highlight:file--huge;top:no;` - files that are over a MB are given a discerning class (thanks, australia)
