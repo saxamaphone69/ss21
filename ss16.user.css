@@ -1,6 +1,6 @@
 /* ==UserStyle==
 @name           ss18
-@version        2.0.6
+@version        2.0.8
 @namespace      https://github.com/saxamaphone69/
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
@@ -8,7 +8,7 @@
 @supportURL     https://github.com/saxamaphone69/ss16/issues
 @license        CC-BY-SA-4.0
 ==/UserStyle== */
-@-moz-document domain('boards.4chan.org') {
+@-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*') {
   /**
 	 * after losing the real ss18 due to a corruption of stylus' database when chrome
 	 * didn't close properly, i've had to restart my attempt at ss18
@@ -110,14 +110,14 @@
     --font-family-compliment: karla, sans-serif;
     --font-family-monospace: inconsolata, roboto mono, monospace, monospace;
     --font-family-icon: material icons, font awesome;
-    --depth-material: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    --depth-material: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     --depth-default: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+		--depth-ss18: 0 2px 10px 0 rgba(33, 33, 33, .1);
   }
 
   /**
 	 * invert colours if enabled in sidedish settings
 	 */
-
   /*
 	:root.ss16--invert {
 		--background-primary: #3D3D3D;
@@ -138,7 +138,6 @@
     --text-secondary-on-background: rgba(138, 155, 161, .7);
     --text-hint-on-background: rgba(138, 155, 161, .5);
   }
-
   /**
 	 * when viewing a nsfw board, use a different primary and secondary colour
 	 */
@@ -254,7 +253,6 @@
     text-rendering: optimizeLegibility;
     overflow-y: scroll;
     box-sizing: border-box;
-
     /*
 		word-wrap: break-word;
 		overflow-wrap: break-word;
@@ -413,12 +411,10 @@
     vertical-align: baseline;
   }
 
-  sub {
-	  bottom: -.25em;
+  sub {    bottom: -.25em;
   }
 
-  sup {
-		top: -.5em;
+  sup {    top: -.5em;
   }
 
   /**
@@ -436,17 +432,16 @@
   /**
 	 * the exception of course, being linkified links
 	 */
-
   /*
 	.linkify {
 		border-bottom: 1px solid;
 	}
 */
-  .linkify {
+  .linkify,
+	.postMessage a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"]) {
     text-decoration: solid underline;
     text-decoration-skip: ink;
   }
-
   /**
 	 * correct some weird browser inconsistencies, and while we're here, set tripcodes
 	 * and user ids to use a monospace font too
@@ -593,7 +588,9 @@
   }
 
   /**
-	 * generally considered opinionated, we make `label` look clickable
+	 * generally considered opinionated, we make `label` look clickable (references:)
+	 * https://medium.com/simple-human/buttons-shouldnt-have-a-hand-cursor-b11e99ca374b
+	 * https://fvsch.com/styling-buttons/
 	 */
 
   .hand,
@@ -1174,6 +1171,27 @@
     cursor: text;
     border-bottom: 1px dashed;
   }
+	
+	/**
+	 * since you ignored my request to block the title cards, guess i'll still give
+	 * you some support
+	 */
+	
+	#bannerCnt {
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		width: 100%;
+	}
+	
+	#bannerCnt > img {
+		height: 100%;
+		width: 100%;
+		z-index: 0;
+		object-fit: cover;
+		filter: blur(3px) saturate(.5);
+	}
 
   /**
 	 * quoted text, a.k.a. >implying implications in current year, ishygddt
@@ -1214,10 +1232,26 @@
   .move:active {
     cursor: grabbing;
   }
+	
+	/**
+	 <span class="posteruid id_o+j9ieJ8">
+	(ID: <span class="hand" title="Highlight posts by this ID">o+j9ieJ8</span>)
+	</span>
+	
+	<span class="posteruid id_o+j9ieJ8">
+	(ID: <span class="hand painted" title="1 post by this ID" style="color: rgb(0, 0, 0); background-color: rgb(165, 132, 149);">o+j9ieJ8</span>)
+	</span>
+	
+	 */
 
   .posteruid {
     font-size: 0;
   }
+	
+	.posteruid > .hand:not(.painted) {
+		font-size: 1rem;
+		margin: 0 .25rem;
+	}
 
   .painted {
     font-size: 1rem;
@@ -1345,7 +1379,7 @@
   }
 
   #board-list a:not(.current) {
-    opacity: .7;
+    opacity: .70;
   }
 
   #board-list a:not(.current):hover {
@@ -1439,7 +1473,6 @@
     min-width: 3rem;
     height: 3rem;
     padding: 0 .5rem;
-    transition: opacity .25s;
   }
 
   .shortcut:hover {
@@ -1632,38 +1665,116 @@
   /*
 	 make announcement look like a snackbar/toast component
 	*/
+  /*
+	.globalMessage {
+		contain: content;
+		position: fixed;
+		bottom: 1.5rem;
+		left: 1.5rem;
+		max-width: 25vw;
+		z-index: 7;
+		background-color: var(--background-primary);
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 1rem 1rem .5rem 1.5rem;
+		border-radius: 2px;
+		box-shadow: 0 0 1.5rem rgba(33, 33, 33, .25);
+		transition: box-shadow .25s;
+	}
+	
+	.globalMessage:hover {
+		box-shadow: 0 0 1.75rem rgba(33, 33, 33, .5);
+	}
+	
+	.globalMessage .hide-announcement {
+		font-size: 0;
+		margin-left: .5rem;
+	}
+	
+	.globalMessage .hide-announcement > a {
+		font-size: 1rem;
+		color: var(--primary-500);
+		text-transform: uppercase;
+		display: inline-block;
+		padding: .25rem .5rem;
+		border-radius: 2px;
+		transition: all .25s;
+	}
+	
+	.globalMessage .hide-announcement > a:hover {
+		background-color: var(--primary-50);
+	}
+*/
+
+  /**
+	 * as per material spec, a banner would be the more appropriate component to use
+	 * https://material.io/design/components/banners.html
+	 * but because of the inconsistent method of heading levels, hard to do
+	 */
+
   .globalMessage {
     contain: content;
     position: fixed;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    max-width: 25vw;
     z-index: 7;
     background-color: var(--background-primary);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 1rem 1rem .5rem 1.5rem;
-    border-radius: 2px;
-    box-shadow: 0 0 1.5rem rgba(33, 33, 33, .25);
-    transition: box-shadow .25s;
+    width: 100%;
+    padding: 1rem .5rem .5rem 1rem;
+    top: 3rem;
+    box-shadow: 0 .25rem 1.5rem rgba(33, 33, 33, .25);
+    transition: top .25s;
   }
 
-  .globalMessage:hover {
-    box-shadow: 0 0 1.75rem rgba(33, 33, 33, .5);
+  #header-bar.scroll ~ .globalMessage {
+    top: 0;
+  }
+
+  #header-bar.scroll.scrolled ~ .globalMessage {
+    top: .25rem;
+  }
+
+  .globalMessage * {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .globalMessage > *:not(.hide-announcement) {
+    width: 75rem;
+    margin: 0 auto .25em;
+  }
+
+  .globalMessage a {
+    color: var(--primary-500);
+  }
+
+  .globalMessage a:hover {
+    color: var(--primary-700);
   }
 
   .globalMessage .hide-announcement {
     font-size: 0;
     margin-left: .5rem;
+    position: absolute;
+    bottom: .5rem;
+    right: calc(22.5% - calc(4rem / 2));
+    /*
+		 * this doesn't actually work because it can't hug the right of a container,
+		 * so once the window shrinks, the button will go off and overlap content
+		 */
   }
 
   .globalMessage .hide-announcement > a {
-    font-size: 1rem;
+    font-size: .875rem;
+    line-height: 1;
+    letter-spacing: .08929em;
     color: var(--primary-500);
     text-transform: uppercase;
-    display: inline-block;
-    padding: .25rem .5rem;
+    min-width: 4rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 .5rem;
     border-radius: 2px;
     transition: all .25s;
   }
@@ -1672,11 +1783,6 @@
     background-color: var(--primary-50);
   }
 
-  /**
-	 * as per material spec, a banner would be the more appropriate component to use
-	 * https://material.io/design/components/banners.html
-	 * but because of the inconsistent method of heading levels, hard to do
-	 */
   /*
 	.globalMessage {
 		contain: content;
@@ -1688,18 +1794,18 @@
 		top: 3.25rem;
 		box-shadow: 0 .25rem 1.5rem rgba(33, 33, 33, .25);
 	}
-
+	
 	.globalMessage * {
 		margin: 0;
 		float: left;
 	}
-
+	
 	.globalMessage .hide-announcement {
 		font-size: 0;
 		margin-left: .5rem;
 		float: right;
 	}
-
+	
 	.globalMessage .hide-announcement > a {
 		font-size: 1rem;
 		color: var(--primary-500);
@@ -1709,7 +1815,7 @@
 		border-radius: 2px;
 		transition: all .25s;
 	}
-
+	
 	.globalMessage .hide-announcement > a:hover {
 		background-color: var(--primary-50);
 	}
@@ -1915,13 +2021,11 @@
     }
 
     #board-list a {
-      font-size: 80%;
-      padding: 0 .25rem;
+      padding: 0 .5rem;
       min-width: 1rem;
     }
 
     .shortcut {
-      font-size: 80%;
       padding: 0 .25rem;
       min-width: 1rem;
     }
@@ -1965,7 +2069,11 @@
     margin: -2rem auto 0;
     position: relative;
     z-index: 1;
-    contain: layout;
+		/*
+		using `contain: layout;` here causes menus from posts to not align
+		with their intended post.
+		contain: layout;
+		*/
   }
 
   .thread {
@@ -2002,7 +2110,7 @@
     background-color: var(--background-primary);
     padding: .5rem 1rem;
     transition: background-color .25s;
-    box-shadow: 0 2px 10px 0 rgba(33, 33, 33, .1);
+		box-shadow: var(--depth-ss18);
     /* from twitch:
 		box-shadow: 0 10px 40px -10px rgba(100,65,164,.2);
 		*/
@@ -2024,9 +2132,9 @@
 			embed)
 		</a>
 	</span>
-
+	
 	or
-
+	
 	<s>
 		<a class="linkify" rel="noreferrer noopener" target="_blank" href="http://exhentai.org/g/801334/9febe8c2a0/">
 			http://exhentai.org/g/801334/9febe8
@@ -2053,7 +2161,10 @@
   .postInfo {
     display: flex;
     align-items: center;
+		/*
     padding: .5rem 1rem .275rem .5rem;
+		*/
+		padding: .25rem 1rem .275rem .5rem;
     background-color: rgba(117, 117, 117, .025);
   }
 
@@ -2065,6 +2176,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+		max-width: 60%;
   }
 
   .post {
@@ -2092,6 +2204,10 @@
     font-size: 1.125rem;
     margin: .5rem 1rem;
   }
+	
+	/**
+	 * redo: non-bottom backlinks
+	 */
 
   :root.bottom-backlinks .container {
     display: block;
@@ -2160,6 +2276,7 @@
     display: flow-root;
     box-shadow: 0 0 1rem rgba(33, 33, 33, .25);
     border-radius: 2px;
+		font-size: 1rem;
   }
 
   .postMessage .inline {
@@ -2267,6 +2384,26 @@
   .pagelist button {
     display: none;
   }
+	
+	/**
+	 * in the event json index is disabled, make the previous and next buttons
+	 * in the pagelist look a lil' nicer
+	 */
+	
+	.pagelist:not(.json-index) .prev input,
+	.pagelist:not(.json-index) .prev span,
+	.pagelist:not(.json-index) .next input,
+	.pagelist:not(.json-index) .next span {
+		font-size: 2rem;
+		line-height: 1;
+		width: 100%;
+		height: 3rem;
+		border-radius: 0;
+		padding: .375rem .75rem;
+		text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+	}
 
   /**
 	 * if enabled in the header menu, this will hide the bottom board navigation
@@ -2292,19 +2429,19 @@
   }
 
   #boardNavDesktopFoot {
-    font-size: 0;
+    /*font-size: 0;*/
     font-family: var(--font-family-compliment);
     color: var(--text-secondary-on-background);
     background-color: var(--background-primary);
     border-top: 1px solid var(--background-outline);
+		padding: 0 1.5rem;
   }
 
   #boardNavDesktopFoot .boardList {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    height: calc(2rem * 20);
-    padding: 1rem 1.5rem 2rem;
+    height: calc(2rem * 16);
     width: 100%;
     max-width: 75rem;
     margin: auto;
@@ -2317,35 +2454,44 @@
     padding: 0;
     overflow: hidden;
   }
+	
+	#boardNavDesktopFoot h3 {
+		font-size: 1rem;
+	}
+	
+	#boardNavDesktopFoot ul {
+		list-style: none;
+		padding: 0 0 0 .5rem;
+		margin: 0 0 .5rem;
+	}
+	
+	#boardNavDesktopFoot li {
+		margin-bottom: .25rem;
+	}
+	
+	#boardNavDesktopFoot sup {
+		color: var(--red-500);
+		margin-left: .25rem;
+	}
 
-  #boardNavDesktopFoot a {
-    display: block;
-    margin-right: 1rem;
-    margin-bottom: .25rem;
-  }
-
-  #boardNavDesktopFoot a:hover,
-  #boardNavDesktopFoot .current {
+  #boardNavDesktopFoot a:hover {
     color: var(--text-primary-on-background);
   }
+  /*
+	#boardNavDesktopFoot a::before {
+		content: attr(href);
+		font-size: 1rem;
+		display: inline-block;
+		margin-right: .5rem;
+		min-width: 5ch;
+	}
 
-  #boardNavDesktopFoot a::before {
-    content: attr(href);
-    font-size: 1rem;
-    display: inline-block;
-    margin-right: .5rem;
-    min-width: 5ch;
-  }
-
-  #boardNavDesktopFoot a::after {
-    content: attr(title);
-    font-size: 1rem;
-    display: inline;
-  }
-
-  #boardNavDesktopFoot a:hover::after {
-    border-bottom: 1px solid;
-  }
+	#boardNavDesktopFoot a::after {
+		content: attr(title);
+		font-size: 1rem;
+		display: inline;
+	}
+*/
 
   .absBotText {
     font-size: .85rem;
@@ -2359,7 +2505,7 @@
     max-width: 75rem;
     padding: 2rem 1.5rem 1rem;
     margin: auto;
-    border-top: 1px solid var(--background-outline);
+    /*border-top: 1px solid var(--background-outline);*/
   }
 
   #footer-links {
@@ -2423,7 +2569,7 @@
 	 */
 
   .dateTime {
-    margin: 0 .25rem;
+    margin: 0 .5rem;
   }
 
   /**
@@ -2525,7 +2671,7 @@
 		pointer-events: auto;
 		transform: scale(1);
 	}
-
+	
 			display: flex;
 		align-items: center;
 		padding: .5rem 1rem .275rem;
@@ -2550,39 +2696,39 @@
 		grid-template-rows: min-content 50px max-content auto;
 		background: yellow;
 	}
-
+	
 	.op .postInfo {
 		grid-area: postinfo;
 		background: red;
 	}
-
+	
 	.op .file {
 		background: purple;
 		grid-area: 2 / 1 / span 2;
 	}
-
+	
 	.op .fileText {
 		border-bottom: 0;
 		background: brown;
 	}
-
+	
 	.op .postMessage {
 		grid-area: 2 / 2 / span 2;
 		margin: 0;
 		padding: 0;
 		background: green;
 	}
-
+	
 	.op .postInfo {
 		order: -1;
 	}
-
+	
 	.op .file {
 		width: auto;
 		order: 0;
 		border-bottom: 1px solid var(--background-hint);
 	}
-
+	
 	.op .fileThumb {
 		clear: both;
 	}
@@ -2876,49 +3022,45 @@ table.exif td b {
     display: flex;
     flex-direction: column;
     contain: paint;
-    animation-name: bounceIn;
-    animation-duration: .75s;
-    animation-fill-mode: both;
+    /*
+		animation-name: bounceIn;
+		animation-duration: .75s;
+		animation-fill-mode: both;*/
   }
+  /*
+	@keyframes bounceIn {
+		from, 20%, 40%, 60%, 80%, to {
+			animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+		}
 
-  @keyframes bounceIn {
-    from,
-    20%,
-    40%,
-    60%,
-    80%,
-    to {
-      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    }
+		0% {
+			opacity: 0;
+			transform: translate(-50%, -50%) scale3d(.3, .3, .3);
+		}
 
-    0% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale3d(.3, .3, .3);
-    }
+		20% {
+			transform: translate(-50%, -50%) scale3d(1.1, 1.1, 1.1);
+		}
 
-    20% {
-      transform: translate(-50%, -50%) scale3d(1.1, 1.1, 1.1);
-    }
+		40% {
+			transform: translate(-50%, -50%) scale3d(.9, .9, .9);
+		}
 
-    40% {
-      transform: translate(-50%, -50%) scale3d(.9, .9, .9);
-    }
+		60% {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale3d(1.03, 1.03, 1.03);
+		}
 
-    60% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale3d(1.03, 1.03, 1.03);
-    }
+		80% {
+			transform: translate(-50%, -50%) scale3d(.97, .97, .97);
+		}
 
-    80% {
-      transform: translate(-50%, -50%) scale3d(.97, .97, .97);
-    }
-
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale3d(1, 1, 1);
-    }
-  }
-
+		to {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale3d(1, 1, 1);
+		}
+	}
+*/
   #fourchanx-settings nav {
     font-size: 0;
     font-family: var(--font-family-compliment);
@@ -3125,7 +3267,7 @@ table.exif td b {
     height: 1.5rem;
     left: -4.25rem;
     top: .75rem;
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   }
 
   .section-main div[data-checked='true'] > label::after {
@@ -3230,7 +3372,6 @@ table.exif td b {
 	 * https://github.com/ccd0/4chan-x/issues/1303
 	 * left here for future-proofness. however, it should also be noted i put
 	 * `overflow-y` on `:root`, not body, negating the effect.
-
 	 */
 
   .unscroll {
@@ -3246,7 +3387,7 @@ table.exif td b {
   #navlinks {
     position: fixed;
     z-index: 10;
-    top: 5rem;
+    top: 10rem;
     right: 0;
     font-size: 0;
     color: var(--text-secondary-on-primary);
@@ -3407,6 +3548,7 @@ table.exif td b {
   :root.fixed-watcher #thread-watcher {
     z-index: 10;
     position: fixed;
+		box-shadow: var(--depth-ss18);
   }
 
   #thread-watcher {
@@ -3432,13 +3574,16 @@ table.exif td b {
     display: inline-flex;
     align-items: center;
     margin-left: .5rem;
-    opacity: .7;
-    transition: opacity .25s;
   }
-
-  #thread-watcher > .move > .refresh:hover {
-    opacity: .85;
-  }
+	
+	#thread-watcher > .move > .refresh::after {
+		color: var(--text-icon-on-primary);
+		transition: .25s;
+	}
+	
+	#thread-watcher > .move > .refresh:hover::after {
+		color: var(--text-secondary-on-primary);
+	}
 
   #watcher-status {
     flex: 1;
@@ -3446,7 +3591,6 @@ table.exif td b {
 
   #thread-watcher > .move > .menu-button {
     font-family: var(--font-family-default);
-    text-transform: capitalize;
     display: inline-flex;
     align-items: center;
     margin-right: .5rem;
@@ -3455,6 +3599,27 @@ table.exif td b {
   #thread-watcher > .move > .close {
     font-size: 0;
   }
+	
+	#thread-watcher > .move > .menu-button::after,
+	#thread-watcher > .move > .close::after {
+		color: var(--text-icon-on-primary);
+		transition: .25s;
+	}
+	
+	#thread-watcher > .move > .menu-button:hover::after,
+	#thread-watcher > .move > .close:hover::after {
+		color: var(--text-secondary-on-primary);
+	}
+	
+	/**
+	 * because we have the whole 'lowercase' aesthetic going, when the menu
+	 * in the thread watcher is created, it inherits the lowercase nature of
+	 * `.move`, so we have to use `text-transform: capitalize` to fix it
+	 */
+	
+	#thread-watcher #menu {
+		text-transform: capitalize;
+	}
 
   #watched-threads {
     overflow-x: hidden;
@@ -3547,7 +3712,9 @@ table.exif td b {
   .watch-thread-link {
     position: relative;
     display: inline-block;
-    vertical-align: middle;
+		height: 1.5rem;
+		width: 1.5rem;
+		margin-right: .25rem;
   }
 
   .watch-thread-link::after {
@@ -3575,8 +3742,8 @@ table.exif td b {
     pointer-events: none;
     border-radius: 50%;
     background-color: rgba(222, 68, 44, .26);
-    height: 1.25rem;
-    width: 1.25rem;
+    height: 1.5rem;
+    width: 1.5rem;
     transform-origin: 50% 50%;
     transform: scale(.75);
     transition: opacity .25s, transform .25s;
@@ -3590,10 +3757,12 @@ table.exif td b {
   #embedding {
     position: fixed;
     z-index: 10;
+		box-shadow: var(--depth-ss18);
   }
 
   /**
-	 * embeddable links have (unembed) after it, so if it
+	 * embeddable links have (unembed) after it, so if it is embedded,
+	 * we want to hide the un prefix
 	 */
 
   .embedder:not(.embedded) > span,
@@ -3621,9 +3790,20 @@ table.exif td b {
     font-size: 1rem;
   }
 
-  #embedding .jump::after {
+  #embedding .jump {
     margin-right: .5rem;
   }
+	
+	#embedding .jump::after,
+	#embedding .close::after {
+		color: var(--text-icon-on-primary);
+		transition: color .25s;
+	}
+	
+	#embedding .jump:hover::after,
+	#embedding .close:hover::after {
+		color: var(--text-secondary-on-primary);
+	}
 
   #media-embed {
     background-color: var(--background-primary);
@@ -3682,7 +3862,7 @@ table.exif td b {
     min-width: 30rem;
     max-width: 50rem;
     contain: paint;
-    box-shadow: 0 2px 10px 0 rgba(33, 33, 33, .1);
+		box-shadow: var(--depth-ss18);
   }
 
   #qr > .move {
@@ -3703,6 +3883,15 @@ table.exif td b {
   #qr > .move > .close {
     font-size: 0;
   }
+	
+	#qr > .move > .close::after {
+		color: var(--text-icon-on-primary);
+		transition: color .25s;
+	}
+	
+	#qr > .move > .close:hover::after {
+		color: var(--text-secondary-on-primary);
+	}
 
   #qr > form {
     padding: 1rem;
@@ -3882,8 +4071,6 @@ table.exif td b {
     height: auto;
   }
 
-
-
   /**
 	 * dump list and general dumping ui
 	 */
@@ -3935,7 +4122,7 @@ table.exif td b {
 
   .qr-preview::before {
     content: counter(thumbnails);
-    position: aboslute;
+    position: absolute;
     top: 0;
     right: 0;
     display: inline-flex;
@@ -4197,6 +4384,16 @@ table.exif td b {
     background-size: auto 3px;
     background-repeat: repeat-x;
   }
+	
+	.filtered {
+  	text-decoration: line-through;
+		opacity: .5;
+	}
+
+	:root.hide-backlinks .backlink.filtered,
+	:root.hide-backlinks .backlink.filtered + .hashlink.filtered {
+		display: none;
+	}
 
   /**
 	 * when enabled, marks OP's posts with (OP), but make it a little visually
@@ -4218,13 +4415,9 @@ table.exif td b {
     text-decoration: line-through;
   }
 
-  :root.thread-hide .party-hat {
-    left: 19px;
-  }
-
   .party-hat {
     left: 0;
-    margin-top: -80px;
+    margin-top: -2.5rem;
     position: absolute;
     pointer-events: none;
     z-index: 1;
@@ -4241,7 +4434,6 @@ table.exif td b {
   /**
 	 * appchan's gallery mode, baked right into 4chan x.
 	 * first we style the gallery container
-
 	 */
 
   #a-gallery {
@@ -4645,8 +4837,17 @@ table.exif td b {
   .poster--pass .n-pu {
     color: #afb42b;
     display: inline-block;
-    vertical-align: middle;
+		vertical-align: middle;
   }
+	
+	/*
+	 * 4chan pass users
+	 */
+	
+	.n-pu {
+		height: 1.5rem;
+		width: 1.5rem;
+	}
 
   .file--gif .fileThumb,
   .file--video .fileThumb {
@@ -4752,7 +4953,7 @@ table.exif td b {
 
   .ss16--dialog-window {
     background-color: var(--background-primary);
-    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
     border-radius: 2px;
     padding: 1rem 1.5rem;
   }
@@ -4833,7 +5034,7 @@ table.exif td b {
   }
 
   .ss16--board-drawer {
-    width: 320px;
+    width: 20rem;
     background: var(--background-primary);
     left: 0;
     right: initial;
@@ -4853,31 +5054,33 @@ table.exif td b {
 
   .board-list-entry {
     display: block;
-    color: var(--text-primary-on-background);
-    text-decoration: none;
     height: 3rem;
     line-height: 3;
     padding-left: 1rem;
-    transition: background-color .25s;
-  }
-
-  .board-list-entry:hover {
-    background-color: rgba(33, 33, 33, .12);
+		transition: background-color .25s;
   }
 
   .board-list-entry.board--ws {
     color: #000;
     background-color: #d6daf0;
   }
+	
+	.board-list-entry.board--ws:hover {
+		background-color: #c7cbe4;
+	}
 
   .board-list-entry.board--nws {
     color: #800000;
     background-color: #f0e0d6;
   }
+	
+	.board-list-entry.board--nws:hover {
+		background-color: #ddcabe;
+	}
 
   #board-list a.ss16--board-drawer-toggle {
     order: -1;
-    opacity: 1;
+		cursor: pointer;
   }
 
   /**
@@ -5041,7 +5244,7 @@ table.exif td b {
     margin: 1rem auto 2rem;
     border-radius: 2px;
     background-color: var(--background-primary);
-    box-shadow: 0 2px 10px 0 rgba(33, 33, 33, .1);
+		box-shadow: var(--depth-ss18);
   }
 
   .atsb2018 th,
@@ -5105,4 +5308,5 @@ table.exif td b {
   .n-atb-4::after {
     content: 'Team Mini';
   }
+	
 }
