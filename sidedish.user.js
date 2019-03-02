@@ -1,10 +1,14 @@
 // ==UserScript==
 // @name        ss16 sidedish
-// @version     0.5
+// @version     0.5.1
 // @description A companion userscript for the ss16 userstyle.
 // @author      saxamaphone69
 // @namespace   https://saxamaphone69.github.io/ss16/
 // @match       *://boards.4chan.org/*
+// @match       *://boards.4channel.org/*
+// @connect     4chan.org
+// @connect     4channel.org
+// @connect     4cdn.org
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_xmlhttpRequest
@@ -558,7 +562,8 @@ observer.observe(target, config);
             });
             let boardNavToggle = $('.ss16--board-drawer-toggle');
             //on(boardNavToggle, 'click', );
-            let url = '../../../../../boards.json';
+            //let url = '../../../../../boards.json';
+            let url = 'https://a.4cdn.org/boards.json';
             // ???
 
             function createNode(element) {
@@ -588,12 +593,13 @@ observer.observe(target, config);
                     return boards.map(function(board) {
                         let anchor = createNode('a');
                         anchor.classList.add('board-list-entry');
-                        anchor.href = `https://boards.4chan.org/${board.board}/`;
                         anchor.textContent = `/${board.board}/ - ${board.title}`;
                         if (board.ws_board === 0) {
                             anchor.classList.add('board--nws');
+                            anchor.href = `https://boards.4chan.org/${board.board}/`;
                         } else {
                             anchor.classList.add('board--ws');
+                            anchor.href = `https://boards.4channel.org/${board.board}/`;
                         }
                         append($('.ss16--board-drawer'), anchor);
                     });
@@ -703,6 +709,114 @@ observer.observe(target, config);
         }
 
         resizeQuotePreviews();
+
+        function fetch4chanBoardList() {
+            $('#boardNavDesktopFoot').innerHTML = `<div class="boardList">
+<div class="column">
+<h3>Japanese Culture</h3>
+<ul>
+<li><a href="//boards.4channel.org/a/" class="boardlink">Anime &amp; Manga</a></li>
+<li><a href="//boards.4channel.org/c/" class="boardlink">Anime/Cute</a></li>
+<li><a href="//boards.4channel.org/w/" class="boardlink">Anime/Wallpapers</a></li>
+<li><a href="//boards.4channel.org/m/" class="boardlink">Mecha</a></li>
+<li><a href="//boards.4channel.org/cgl/" class="boardlink">Cosplay &amp; EGL</a></li>
+<li><a href="//boards.4channel.org/cm/" class="boardlink">Cute/Male</a></li>
+<li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
+<li><a href="//boards.4channel.org/n/" class="boardlink">Transportation</a></li>
+<li><a href="//boards.4channel.org/jp/" class="boardlink">Otaku Culture</a></li>
+</ul>
+<h3>Video Games</h3>
+<ul>
+<li><a href="//boards.4channel.org/v/" class="boardlink">Video Games</a></li>
+<li><a href="//boards.4channel.org/vg/" class="boardlink">Video Game Generals</a></li>
+<li><a href="//boards.4channel.org/vp/" class="boardlink">Pokémon</a></li>
+<li><a href="//boards.4channel.org/vr/" class="boardlink">Retro Games</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Interests</h3>
+<ul>
+<li><a href="//boards.4channel.org/co/" class="boardlink">Comics &amp; Cartoons</a></li>
+<li><a href="//boards.4channel.org/g/" class="boardlink">Technology</a></li>
+<li><a href="//boards.4channel.org/tv/" class="boardlink">Television &amp; Film</a></li>
+<li><a href="//boards.4channel.org/k/" class="boardlink">Weapons</a></li>
+<li><a href="//boards.4channel.org/o/" class="boardlink">Auto</a></li>
+<li><a href="//boards.4channel.org/an/" class="boardlink">Animals &amp; Nature</a></li>
+<li><a href="//boards.4channel.org/tg/" class="boardlink">Traditional Games</a></li>
+<li><a href="//boards.4channel.org/sp/" class="boardlink">Sports</a></li>
+<li><a href="//boards.4channel.org/asp/" class="boardlink">Alternative Sports</a></li>
+<li><a href="//boards.4channel.org/sci/" class="boardlink">Science &amp; Math</a></li>
+<li><a href="//boards.4channel.org/his/" class="boardlink">History &amp; Humanities</a></li>
+<li><a href="//boards.4channel.org/int/" class="boardlink">International</a></li>
+<li><a href="//boards.4channel.org/out/" class="boardlink">Outdoors</a></li>
+<li><a href="//boards.4channel.org/toy/" class="boardlink">Toys</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Creative</h3>
+<ul>
+<li><a href="//boards.4chan.org/i/" class="boardlink">Oekaki</a></li>
+<li><a href="//boards.4channel.org/po/" class="boardlink">Papercraft &amp; Origami</a></li>
+<li><a href="//boards.4channel.org/p/" class="boardlink">Photography</a></li>
+<li><a href="//boards.4channel.org/ck/" class="boardlink">Food &amp; Cooking</a></li>
+<li><a href="//boards.4chan.org/ic/" class="boardlink">Artwork/Critique</a></li>
+<li><a href="//boards.4chan.org/wg/" class="boardlink">Wallpapers/General</a></li>
+<li><a href="//boards.4channel.org/lit/" class="boardlink">Literature</a></li>
+<li><a href="//boards.4channel.org/mu/" class="boardlink">Music</a></li>
+<li><a href="//boards.4channel.org/fa/" class="boardlink">Fashion</a></li>
+<li><a href="//boards.4channel.org/3/" class="boardlink">3DCG</a></li>
+<li><a href="//boards.4channel.org/gd/" class="boardlink">Graphic Design</a></li>
+<li><a href="//boards.4channel.org/diy/" class="boardlink">Do-It-Yourself</a></li>
+<li><a href="//boards.4channel.org/wsg/" class="boardlink">Worksafe GIF</a></li>
+<li><a href="//boards.4channel.org/qst/" class="boardlink">Quests</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Other</h3>
+<ul>
+<li><a href="//boards.4channel.org/biz/" class="boardlink">Business &amp; Finance</a></li>
+<li><a href="//boards.4channel.org/trv/" class="boardlink">Travel</a></li>
+<li><a href="//boards.4channel.org/fit/" class="boardlink">Fitness</a></li>
+<li><a href="//boards.4channel.org/x/" class="boardlink">Paranormal</a></li>
+<li><a href="//boards.4channel.org/adv/" class="boardlink">Advice</a></li>
+<li><a href="//boards.4channel.org/lgbt/" class="boardlink">LGBT</a></li>
+<li><a href="//boards.4channel.org/mlp/" class="boardlink">Pony</a></li>
+<li><a href="//boards.4channel.org/news/" class="boardlink">Current News</a></li>
+<li><a href="//boards.4channel.org/wsr/" class="boardlink">Worksafe Requests</a></li>
+<li><a href="//boards.4channel.org/vip/" class="boardlink">Very Important Posts</a></li>
+</ul>
+<h3>Misc.<sup title="Not Safe For Work">(NSFW)</sup></h3>
+<ul>
+<li><a href="//boards.4chan.org/b/" class="boardlink">Random</a></li>
+<li><a href="//boards.4chan.org/r9k/" class="boardlink">ROBOT9001</a></li>
+<li><a href="//boards.4chan.org/pol/" class="boardlink">Politically Incorrect</a></li>
+<li><a href="//boards.4chan.org/bant/" class="boardlink">International/Random</a></li>
+<li><a href="//boards.4chan.org/soc/" class="boardlink">Cams &amp; Meetups</a></li>
+<li><a href="//boards.4chan.org/s4s/" class="boardlink">Shit 4chan Says</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Adult<sup title="Not Safe For Work">(NSFW)</sup></h3>
+<ul>
+<li><a href="//boards.4chan.org/s/" class="boardlink">Sexy Beautiful Women</a></li>
+<li><a href="//boards.4chan.org/hc/" class="boardlink">Hardcore</a></li>
+<li><a href="//boards.4chan.org/hm/" class="boardlink">Handsome Men</a></li>
+<li><a href="//boards.4chan.org/h/" class="boardlink">Hentai</a></li>
+<li><a href="//boards.4chan.org/e/" class="boardlink">Ecchi</a></li>
+<li><a href="//boards.4chan.org/u/" class="boardlink">Yuri</a></li>
+<li><a href="//boards.4chan.org/d/" class="boardlink">Hentai/Alternative</a></li>
+<li><a href="//boards.4chan.org/y/" class="boardlink">Yaoi</a></li>
+<li><a href="//boards.4chan.org/t/" class="boardlink">Torrents</a></li>
+<li><a href="//boards.4chan.org/hr/" class="boardlink">High Resolution</a></li>
+<li><a href="//boards.4chan.org/gif/" class="boardlink">Adult GIF</a></li>
+<li><a href="//boards.4chan.org/aco/" class="boardlink">Adult Cartoons</a></li>
+<li><a href="//boards.4chan.org/r/" class="boardlink">Adult Requests</a></li>
+</ul>
+</div>
+</div>`;
+        }
+
+        fetch4chanBoardList();
         /*
         function warn(string) {
             const toast = make({
@@ -760,6 +874,28 @@ observer.observe(target, config);
         resizeQuotePreviews();
 
 */
+        /*function toggle(e) {
+            var t = document.getElementById(e);
+            t.style.display = "block" != t.style.display ? "block" : "none";
+        }*/
+
+        function exifToggle() {
+            let exifs = $$('.abbr a');
+            for (let exif of exifs) {
+                let toggleExif = exif.getAttribute('onclick');
+                exif.removeAttribute('onclick');
+                on(exif, 'click', function() {
+                    let newtoggleExif = toggleExif.match(/'(.*)(.*)'/g);
+                    newtoggleExif = String(newtoggleExif);
+                    newtoggleExif = newtoggleExif.slice(1, -1);
+                    let el = $('#' + newtoggleExif);
+                    el.style.display = "block" != el.style.display ? "block" : "none";
+                });
+            }
+        }
+
+        exifToggle();
+
         function searchCurtain() {
             ready('#index-search', (element) => {
                 let _this = element;
@@ -832,7 +968,8 @@ var playPromise = OpVideo.play();
     }
 
     on(d, '4chanXInitFinished', init);
-    /*
+
+    
     function backup() {
         function removeStyleBackup(sels) {
 
@@ -851,22 +988,26 @@ var playPromise = OpVideo.play();
             //removeStyleBackup(); // this removes inline stylesheets
         }
 
+        on(d, '4chanMainInit', function() {
+            d.classList.add('fourchan-extension');
+        });
+
         removeStylesBackup($$('style', d.head));
 
         if (!doc.classList.contains('fourchan-x')) {
             doc.classList.remove('site-loading');
             doc.classList.add('no-fourchan-x');
-            make({
+            /*make({
                 el: 'aside',
                 cl4ss: 'ss16--dialog',
                 appendTo: 'body',
                 html: `<div class="ss16--dialog-window"><header class="ss16--dialog-header">Slight Problem...</header><section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section></div>`
             });
-            doc.classList.add('unscroll');
+            doc.classList.add('unscroll');*/
         }
     }
 
     on(d, 'DOMContentLoaded', backup);
-*/
+
     console.timeEnd('Initialising ss16 sidedish...');
 })();
