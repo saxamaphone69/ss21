@@ -34,7 +34,6 @@
     function rAF(cb, args) {
       if (!ticking) {
         window.requestAnimationFrame(function() {
-          //cb(args);
           ticking = false;
         });
       }
