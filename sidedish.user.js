@@ -131,6 +131,15 @@
  function init() {
   on(d, 'IndexBuild', doc.classList.remove('site-loading'));
 
+  on(d, 'OpenSettings', function() {
+   let settingDescriptions = $$('.description');
+   for (let settingDescription of settingDescriptions) {
+	let content = settingDescription.textContent;
+	content = content.slice(2);
+	settingDescription.textContent = content;
+   }
+  });
+
   removeStyles();
 
   function getBoardType() {
