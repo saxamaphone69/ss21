@@ -78,6 +78,10 @@ html {
   padding: 0 1rem;
 }
 
+.navigation--link.active {
+  border-bottom: 1px solid;
+}
+
 .hero {
   font-family: var(--font-complimentary);
   height: 30rem;
