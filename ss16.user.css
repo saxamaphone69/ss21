@@ -1,12 +1,44 @@
 /* ==UserStyle==
 @name           ss18
-@version        2.0.10
+@version        2.0.11
 @namespace      https://github.com/saxamaphone69/
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss16
 @supportURL     https://github.com/saxamaphone69/ss16/issues
 @license        CC-BY-SA-4.0
+@preprocessor   uso
+@advanced       dropdown ss18mode "Reading mode" {
+  1 "Light" <<<EOT
+  :root {
+    --primary-50: rgba(243, 229, 245, .5);
+    --background-primary: #fff;
+    --background-secondary: #fafafa;
+    --background-hint: #e8e8e8;
+    --background-outline: rgba(205, 205, 205, .75);
+    --text-primary-on-background: rgba(0, 0, 0, 0.87);
+    --text-secondary-on-background: rgba(0, 0, 0, 0.54);
+    --text-hint-on-background: rgba(0, 0, 0, 0.38);
+    --text-disabled-on-background: rgba(0, 0, 0, 0.38);
+		--background-highlight: #fffde7;
+  } EOT;
+  2 "Dark" <<<EOT
+  :root {
+    --primary-50: rgba(60, 1, 68, .25);
+    --background-primary: #2b3942;
+    --background-secondary: #2c343a;
+    --background-hint: #1e2a31;
+    --background-outline: rgba(33, 40, 44, .5);
+    --text-primary-on-background: rgb(138, 155, 161);
+    --text-secondary-on-background: rgba(138, 155, 161, .7);
+    --text-hint-on-background: rgba(138, 155, 161, .5);
+		--background-highlight: #2e392f;
+  }
+	.boardBanner {
+		color: #5b828a !important;
+		background-image: linear-gradient(45deg, #294437, #3b3237) !important;
+	} EOT;
+}
 ==/UserStyle== */
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*') {
   /**
@@ -21,17 +53,101 @@
 	 * css custom properties (a.k.a. variables) are finally here, and we take full
 	 * advantage of them for colouring, loosely based on the material design guidelines
 	 */
-
-  :root {
-    --primary-50: rgba(243, 229, 245, .5);
+	/*[[ss18mode]]*/
+	
+	:root {
     --primary-300: #ba68c8;
-    --primary-500: #9c27b0; /* rgba(156, 39, 176, 1) */
+    --primary-500: #9c27b0;
     --primary-700: #7b1fa2;
     --primary-dark: #454545;
     --secondary-300: #ffb74d;
-    --secondary-500: #ff9800; /* rgba(255, 152, 0, 1) */
+    --secondary-500: #ff9800;
     --secondary-700: #f57c00;
-    --background-primary: #fff; /* rgba(255, 255, 255, 1) */
+    --red-50: #ffebee;
+    --red-300: #e57373;
+    --red-500: #f44336;
+    --red-700: #d32f2f;
+    --blue-50: #e3f2fd;
+    --blue-300: #64b5f6;
+    --blue-500: #2196f3;
+    --blue-700: #1976d2;
+    --green-50: #e8f5e9;
+    --green-300: #81c784;
+    --green-500: #4caf50;
+    --green-700: #388e3c;
+    --purple-50: #f3e5f5;
+    --purple-300: #ba68c8;
+    --purple-500: #9c27b0;
+    --purple-700: #7b1fa2;
+    --orange-50: #fff3e0;
+    --orange-300: #ffb74d;
+    --orange-500: #ff9800;
+    --orange-700: #f57c00;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-300: #e0e0e0;
+    --gray-500: #9e9e9e;
+    --gray-700: #616161;
+    --gray-900: #212121;
+    --text-primary-on-primary: white;
+    --text-secondary-on-primary: rgba(255, 255, 255, 0.7);
+    --text-hint-on-primary: rgba(255, 255, 255, 0.5);
+    --text-disabled-on-primary: rgba(255, 255, 255, 0.5);
+    --text-icon-on-primary: rgba(255, 255, 255, 0.5);
+    --text-primary-on-primary-light: white;
+    --text-secondary-on-primary-light: rgba(255, 255, 255, 0.7);
+    --text-hint-on-primary-light: rgba(255, 255, 255, 0.5);
+    --text-disabled-on-primary-light: rgba(255, 255, 255, 0.5);
+    --text-icon-on-primary-light: rgba(255, 255, 255, 0.5);
+    --text-primary-on-primary-dark: white;
+    --text-secondary-on-primary-dark: rgba(255, 255, 255, 0.7);
+    --text-hint-on-primary-dark: rgba(255, 255, 255, 0.5);
+    --text-disabled-on-primary-dark: rgba(255, 255, 255, 0.5);
+    --text-icon-on-primary-dark: rgba(255, 255, 255, 0.5);
+    --text-primary-on-secondary: rgba(0, 0, 0, 0.87);
+    --text-secondary-on-secondary: rgba(0, 0, 0, 0.54);
+    --text-hint-on-secondary: rgba(0, 0, 0, 0.38);
+    --text-disabled-on-secondary: rgba(0, 0, 0, 0.38);
+    --text-icon-on-secondary: rgba(0, 0, 0, 0.38);
+    --text-primary-on-secondary-light: rgba(0, 0, 0, 0.87);
+    --text-secondary-on-secondary-light: rgba(0, 0, 0, 0.54);
+    --text-hint-on-secondary-light: rgba(0, 0, 0, 0.38);
+    --text-disabled-on-secondary-light: rgba(0, 0, 0, 0.38);
+    --text-icon-on-secondary-light: rgba(0, 0, 0, 0.38);
+    --text-primary-on-secondary-dark: white;
+    --text-secondary-on-secondary-dark: rgba(255, 255, 255, 0.7);
+    --text-hint-on-secondary-dark: rgba(255, 255, 255, 0.5);
+    --text-disabled-on-secondary-dark: rgba(255, 255, 255, 0.5);
+    --text-icon-on-secondary-dark: rgba(255, 255, 255, 0.5);
+    --text-primary-on-light: rgba(0, 0, 0, 0.87);
+    --text-secondary-on-light: rgba(0, 0, 0, 0.54);
+    --text-hint-on-light: rgba(0, 0, 0, 0.38);
+    --text-disabled-on-light: rgba(0, 0, 0, 0.38);
+    --text-icon-on-light: rgba(0, 0, 0, 0.38);
+    --text-primary-on-dark: white;
+    --text-secondary-on-dark: rgba(255, 255, 255, 0.7);
+    --text-hint-on-dark: rgba(255, 255, 255, 0.5);
+    --text-disabled-on-dark: rgba(255, 255, 255, 0.5);
+    --text-icon-on-dark: rgba(255, 255, 255, 0.5);
+    --font-family-default: arimo, roboto, helvetica, arial, sans-serif;
+    --font-family-compliment: karla, sans-serif;
+    --font-family-monospace: inconsolata, roboto mono, monospace, monospace;
+    --font-family-icon: material icons, font awesome;
+    --depth-material: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    --depth-default: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+		--depth-ss18: 0 2px 10px 0 rgba(33, 33, 33, .1);
+  }
+/*
+  :root {
+    --primary-50: rgba(243, 229, 245, .5);
+    --primary-300: #ba68c8;
+    --primary-500: #9c27b0;  rgba(156, 39, 176, 1) 
+    --primary-700: #7b1fa2;
+    --primary-dark: #454545;
+    --secondary-300: #ffb74d;
+    --secondary-500: #ff9800;  rgba(255, 152, 0, 1) 
+    --secondary-700: #f57c00;
+    --background-primary: #fff;  rgba(255, 255, 255, 1) 
     --background-secondary: #fafafa;
     --background-hint: #e8e8e8;
     --background-outline: rgba(205, 205, 205, .75);
@@ -114,7 +230,7 @@
     --depth-default: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 		--depth-ss18: 0 2px 10px 0 rgba(33, 33, 33, .1);
   }
-
+*/
   /**
 	 * invert colours if enabled in sidedish settings
 	 */
@@ -128,6 +244,7 @@
 		--text-hint-on-background: rgba(255, 255, 255, .5);
 	}
 	*/
+	/*
   :root.ss16--invert {
     --primary-50: rgba(60, 1, 68, .25);
     --background-primary: #2b3942;
@@ -138,10 +255,11 @@
     --text-secondary-on-background: rgba(138, 155, 161, .7);
     --text-hint-on-background: rgba(138, 155, 161, .5);
   }
+	*/
   /**
 	 * when viewing a nsfw board, use a different primary and secondary colour
 	 */
-	
+	/*
 	:root.ws {
 		--background-primary: rgb(251, 252, 255);
 		--background-secondary: #e5e8ee;
@@ -155,14 +273,14 @@
 		--background-hint: #eee7e3;
 		--background-outline: rgba(227, 212, 209, .75);
 	}
-
+*/
   :root.nws {
     --primary-50: rgba(239, 235, 233, .5);
     --primary-300: #a1887f;
-    --primary-500: #795548; /* rgba(156, 39, 176, 1) */
+    --primary-500: #795548; 
     --primary-700: #5d4037;
     --secondary-300: #81c784;
-    --secondary-500: #4caf50; /* rgba(255, 152, 0, 1) */
+    --secondary-500: #4caf50; 
     --secondary-700: #388e3c;
   }
 
@@ -441,6 +559,8 @@
 
   /**
 	 * the exception of course, being linkified links
+	 * 2019: also, https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-skip-ink
+	 * property has changed and auto is the default. so, technically, not needed!
 	 */
   /*
 	.linkify {
@@ -450,7 +570,7 @@
   .linkify,
 	.postMessage a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"]) {
     text-decoration: solid underline;
-    text-decoration-skip: ink;
+    /*text-decoration-skip-ink: auto;*/
   }
   /**
 	 * correct some weird browser inconsistencies, and while we're here, set tripcodes
@@ -665,8 +785,8 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0 1rem;
-		height: 2.25rem;
+		padding: 0 .5rem;
+		height: 2rem;
 		transition: background-color 0.25s;
 		margin-left: .25rem;
 	}
@@ -750,6 +870,19 @@
   .postMessage s a:hover {
     color: var(--gray-50);
   }
+	
+	:root.reveal-spoilers .postMessage s,
+	:root.reveal-spoilers .postMessage	s > a {
+		color: var(--gray-100) !important;
+	}
+	
+	.removed-spoiler::before {
+		content: '[spoiler]';
+	}
+	
+	.removed-spoiler::after {
+		content: '[/spoiler]';
+	}
 
   /**
 	 * ensure the only `hr` element, the unread line, is styled consistently across
@@ -878,7 +1011,10 @@
   .fa::after,
   .menu-button::after,
   .n-pu::after,
+	.contact-links::after,
+	.indicator::after,
   #navlinks a::after,
+	.postJumper a::after,
   #index-rev::after,
   .pagelist .prev a::after,
   .pagelist .next a::after,
@@ -972,6 +1108,10 @@
   .fa-wrench::after {
     content: 'settings';
   }
+	
+	.fa-bolt::after {
+		content: 'flash_on';
+	}
 
   .fa-minus-square::after,
   .fa-minus-square-o::after {
@@ -1003,6 +1143,14 @@
 
   #navlinks a:last-of-type::after {
     content: 'keyboard_arrow_down';
+  }
+	
+	.postJumper a:first-of-type::after {
+    content: 'arrow_upwards';
+  }
+
+  .postJumper a:last-of-type::after {
+    content: 'arrow_downwards';
   }
 
   #index-rev::after {
@@ -1098,6 +1246,10 @@
   .n-pu::after {
     content: 'person';
   }
+	
+	.contact-links::after {
+		content: 'feedback';
+	}
 
   .entry input[type='checkbox']::after {
     content: 'check_box_outline_blank';
@@ -1138,10 +1290,6 @@
     background-repeat: no-repeat;
   }
 
-  .identityIcon {
-    vertical-align: baseline;
-  }
-
   /**
 	 * 4CHANX: while shortcut icons are encouraged, if you choose not to use them,
 	 * still provide support
@@ -1160,9 +1308,18 @@
     color: var(--secondary-500);
   }
 	
+	.fa-bolt:not(.disabled),
 	.fa-comment-o:not(.disabled),
 	#watcher-link:not(.disabled) {
 		color: var(--text-primary-on-primary);
+	}
+	
+	#shortcut-werk .indicator::after {
+		content: 'work';
+	}
+	
+	#shortcut-fappe .indicator::after {
+		content: 'burst_mode';
 	}
 
   .boardBanner {
@@ -1257,7 +1414,9 @@
 
   [color='red'],
   [style*='color:red'],
-  [style*='color: red'] {
+  [style*='color: red'],
+	[style*='color:#F00'],
+	[style*='color:#FF0000'] {
     color: var(--red-500) !important;
   }
 
@@ -1483,7 +1642,8 @@
   }
 
   .indicator {
-    color: var(--text-primary-on-primary);
+		font-size: 0;
+    color: var(--text-secondary-on-primary);
     background-color: var(--secondary-500);
     display: inline-flex;
     align-items: center;
@@ -1491,10 +1651,11 @@
     width: 2rem;
     height: 2rem;
     border-radius: 2px;
-    transition: background-color .25s;
+    transition: color .25s, background-color .25s;
   }
 
   .indicator:hover {
+		color: var(--text-primary-on-primary);
     background-color: var(--secondary-700);
     cursor: pointer;
   }
@@ -1750,6 +1911,8 @@
 	 * as per material spec, a banner would be the more appropriate component to use
 	 * https://material.io/design/components/banners.html
 	 * but because of the inconsistent method of heading levels, hard to do
+	 * 2019: notifications go over the banner, and it is near impossible to detect
+	 * when a global message is there, and to make the notifications go past it
 	 */
 
   .globalMessage {
@@ -1758,9 +1921,10 @@
     z-index: 7;
     background-color: var(--background-primary);
     width: 100%;
-    padding: 1rem .5rem .5rem 1rem;
+    padding: 1rem 1.5rem .75rem;
     top: 3rem;
     box-shadow: 0 .25rem 1.5rem rgba(33, 33, 33, .25);
+		will-change: top;
     transition: top .25s;
   }
 
@@ -1772,14 +1936,14 @@
     top: .25rem;
   }
 
-  .globalMessage * {
+  .globalMessage *:not(.hide-announcement-button) {
     font-size: 1rem;
     font-weight: 400;
   }
 
-  .globalMessage > *:not(.hide-announcement) {
+  .globalMessage--inner-wrapper {
     width: 75rem;
-    margin: 0 auto .25em;
+    margin: 0 auto;
   }
 
   .globalMessage a {
@@ -1789,20 +1953,21 @@
   .globalMessage a:hover {
     color: var(--primary-700);
   }
-
-  .globalMessage .hide-announcement {
+/*
+  .globalMessage .hide-announcement-button {
     font-size: 0;
     margin-left: .5rem;
     position: absolute;
     bottom: .5rem;
     right: calc(22.5% - calc(4rem / 2));
+	*/
     /*
 		 * this doesn't actually work because it can't hug the right of a container,
 		 * so once the window shrinks, the button will go off and overlap content
-		 */
+		 *//*
   }
 
-  .globalMessage .hide-announcement > a {
+  .globalMessage .hide-announcement-button > a {
     font-size: .875rem;
     line-height: 1;
     letter-spacing: .08929em;
@@ -1821,7 +1986,7 @@
   .globalMessage .hide-announcement > a:hover {
     background-color: var(--primary-50);
   }
-
+*/
   /*
 	.globalMessage {
 		contain: content;
@@ -2058,21 +2223,6 @@
 		margin: 1px 0;
 	}
 */
-	@media (max-width: 75rem) {
-    #header-bar {
-      padding: 0 .5rem;
-    }
-
-    #board-list a {
-      padding: 0 .5rem;
-      min-width: 1rem;
-    }
-
-    .shortcut {
-      padding: 0 .25rem;
-      min-width: 1rem;
-    }
-  }
 
   /**
 	 * this attempts to ensure that the pagelist and footer always remain at the bottom
@@ -2203,15 +2353,22 @@
 
   .postInfo {
     display: flex;
+		/*flex-wrap: wrap;*/
     align-items: center;
 		line-height: 2.5;
 		height: 2.5rem;
 		/*
     padding: .5rem 1rem .275rem .5rem;
 		*/
-		padding: .375rem 1rem .275rem .5rem;
+		padding: .375rem 3.5rem .275rem .5rem;
     background-color: rgba(117, 117, 117, .025);
   }
+	
+	:root:not(.bottom-backlinks) .postInfo {
+		flex-wrap: wrap;
+		height: auto;
+		line-height: inherit;
+	}
 
   .noFile .postInfo {
     border-bottom: 1px solid var(--background-hint);
@@ -2221,14 +2378,46 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-		max-width: 60%;
+		max-width: 50ch;
+		transition: max-width .25s;
   }
+	
+	.postInfo > .subject:hover {
+		max-width: 60%;
+	}
 	
 	.nameBlock {
 		display: inline-flex;
 		align-items: center;
 		line-height: 2.5;
 		height: 2.5rem;
+		white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+		max-width: 40%;
+	}
+	
+	.dateTime {
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	
+	.contact-links {
+		margin: 0 .25rem;
+	}
+	
+	.postJumper {
+		font-size: 0;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+		width: .75rem;
+		margin-right: .25rem;
+	}
+	
+	.postJumper a::after {
+		font-size: .75rem;
+		width: .75rem;
 	}
 
   .post {
@@ -2256,6 +2445,33 @@
     font-size: 1.125rem;
     margin: .5rem 1rem;
   }
+	
+	:root:not(.bottom-backlinks) .container {
+		width: 100%;
+		font-size: 87.5%;
+		font-family: var(--font-family-monospace);
+		color: var(--text-hint-on-background);
+		padding-left: .75rem;
+		margin-top: -.5rem;
+	}
+	
+	:root:not(.bottom-backlinks) .container:not(:empty)::before {
+		content: 'quoted by: ';
+	}
+	
+	:root:not(.bottom-backlinks) .container:not(:empty)::after {
+		content: '.';
+	}
+	
+	:root:not(.bottom-backlinks) .container:not(:empty) .backlink:not(:only-of-type):not(:last-of-type)::after {
+		content: ', ';
+		color: var(--text-hint-on-background);
+	}
+
+	:root:not(.bottom-backlinks) .container:not(:empty) .backlink:not(:only-of-type):last-of-type::before {
+		content: 'and ';
+		color: var(--text-hint-on-background);
+	}
 	
 	/**
 	 * redo: non-bottom backlinks
@@ -2475,12 +2691,11 @@
     color: var(--text-primary-on-background);
   }
 
-  #boardNavDesktopFoot:not(.is-active)::before {
+  #boardNavDesktopFoot.is-active::before {
     padding-bottom: 2rem;
   }
 
   #boardNavDesktopFoot {
-    /*font-size: 0;*/
     font-family: var(--font-family-compliment);
     color: var(--text-secondary-on-background);
     background-color: var(--background-primary);
@@ -2495,6 +2710,7 @@
     height: calc(2rem * 16);
     width: 100%;
     max-width: 75rem;
+		padding: 0 1.5rem;
     margin: auto;
     transition: height .25s;
     overflow-x: auto;
@@ -2525,7 +2741,8 @@
 		margin-left: .25rem;
 	}
 
-  #boardNavDesktopFoot a:hover {
+  #boardNavDesktopFoot a:hover,
+	.boardlink.current {
     color: var(--text-primary-on-background);
   }
   /*
@@ -2645,8 +2862,7 @@
 	 */
 
   .file {
-    /*color: var(--text-primary-on-dark);*/
-    color: var(--text-hint-on-light);
+    color: var(--text-hint-on-background);
     position: relative;
   }
 
@@ -2792,10 +3008,15 @@
     color: var(--primary-300);
     unicode-bidi: isolate;
   }
+	
+	.fileText a:hover {
+		color: var(--primary-500);
+	}
 
-  .fa-download::after {
+  .file .fa-download::after,
+	.file .fa-times::after {
     font-size: 1.125rem;
-    vertical-align: bottom;
+    vertical-align: middle;
   }
 
   .fileText-original,
@@ -2892,6 +3113,28 @@
 		max-width: calc(100vw - 10rem) !important;
 	}
 	*/
+	
+	.webm-title > a::before {
+		content: "title";
+	}
+	.webm-title.loading > a::after {
+		content: "...";
+	}
+	.webm-title.error > a:hover::before,
+	.webm-title.error > a:focus::before {
+		content: "error";
+	}
+	.webm-title > span {
+		cursor: text;
+	}
+	.webm-title.not-found > span::before {
+		content: "not found";
+	}
+	.webm-title:not(:hover):not(:focus) > span,
+	.webm-title:hover > span + a,
+	.webm-title:focus > span + a {
+		display: none;
+	}
 
   /**
 	 * thread and reply hiding
@@ -2913,7 +3156,12 @@
 
   .postContainer:hover > .hide-thread-button,
   .postContainer:hover > div > .hide-reply-button {
-    opacity: .75;
+    opacity: .6;
+  }
+	
+	.postContainer:hover > .hide-thread-button:hover,
+  .postContainer:hover > div > .hide-reply-button:hover {
+    opacity: .87;
   }
 
   .fa-minus-square::after,
@@ -3054,16 +3302,20 @@ table.exif td b {
   /**
 	 * while mayhem had the settings dialog within the overlay, ccd0 has it as two
 	 * separate elements
+	 * 2019 update: https://github.com/ccd0/4chan-x/pull/2322
 	 */
 
   #overlay {
     position: fixed;
-    z-index: 16;
+    z-index: 17;
     background-color: rgba(33, 33, 33, .75);
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
   }
 	
 	/**
@@ -3071,15 +3323,11 @@ table.exif td b {
 	 * cause blurryness on some text elements. the X axis is fine, but certain Y
 	 * axis numbers cause it (e.g. 85vh at maximised browser is fine, but 90vh
 	 * can make it blurry). certain heights are the issue
+	 * 2019 update: https://github.com/ccd0/4chan-x/pull/2322
 	 */
 	
   #fourchanx-settings {
-    position: fixed;
-    z-index: 17;
     background-color: var(--background-primary);
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
     width: 75rem;
     max-width: 90%;
     height: 85vh;
@@ -3164,6 +3412,7 @@ table.exif td b {
 	 * CSS, in the form of `overscroll-behavior`, which means scrolling is contained
 	 * to the settings and will not effect the entire document
 	 * https://caniuse.com/#feat=css-overscroll-behavior
+	 * 2019 update: this is now the default behaviour
 	 */
 
   .section-container {
@@ -3399,12 +3648,13 @@ table.exif td b {
 	 * https://github.com/ccd0/4chan-x/issues/1303
 	 * left here for future-proofness. however, it should also be noted i put
 	 * `overflow-y` on `:root`, not body, negating the effect.
+	 * 2019 update: https://github.com/ccd0/4chan-x/pull/2322
 	 */
-
+	/*
   .unscroll {
     overflow: hidden;
   }
-
+	*/
   /**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
 	 * top and bottom of the page within threads. not needed in catalogue mode, so it
@@ -3458,7 +3708,7 @@ table.exif td b {
 
   .post > .postInfo > .menu-button.active,
   .post:hover > .postInfo > .menu-button {
-    opacity: 1;
+    opacity: .6;
   }
 
   .menu-button.active::after {
@@ -3571,7 +3821,209 @@ table.exif td b {
   :root.ua-gecko .entry input[type='checkbox'] {
     visibility: visible;
   }
+	
+	/**
+	 * default volume range slider
+	 */
+	
+	input[type=range] {
+		-webkit-appearance: none;
+		padding: 0;
+		margin: 0;
+		vertical-align: middle;
+		background: var(--text-hint-on-background);
+		height: .25rem;
+	}
+	/*
+	input[type=range]:focus {
+		outline: none;
+	}
+	input[type=range]::-webkit-slider-runnable-track {
+		width: 100%;
+		height: 6.7px;
+		cursor: pointer;
+		box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+		background: #ff8483;
+		border-radius: 0px;
+		border: 0px solid #562425;
+	}
+	input[type=range]::-webkit-slider-thumb {
+		box-shadow: 0px 0px 0px #050000, 0px 0px 0px #1f0000;
+		border: 0px solid #ff0000;
+		height: 16px;
+		width: 16px;
+		border-radius: 100px;
+		background: #212121;
+		cursor: pointer;
+		-webkit-appearance: none;
+		margin-top: -4.65px;
+	}
+	input[type=range]:focus::-webkit-slider-runnable-track {
+		background: #ff9d9d;
+	}
+	input[type=range]::-moz-range-track {
+		width: 100%;
+		height: 6.7px;
+		cursor: pointer;
+		box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+		background: #ff8483;
+		border-radius: 0px;
+		border: 0px solid #562425;
+	}
+	input[type=range]::-moz-range-thumb {
+		box-shadow: 0px 0px 0px #050000, 0px 0px 0px #1f0000;
+		border: 0px solid #ff0000;
+		height: 16px;
+		width: 16px;
+		border-radius: 100px;
+		background: #212121;
+		cursor: pointer;
+	}
+	*/
+	/*
+	// Range
+//
+// Style range inputs the same across browsers. Vendor-specific rules for pseudo
+// elements cannot be mixed. As such, there are no shared styles for focus or
+// active states on prefixed selectors.
 
+ input[type='range'] {
+  width: 100%;
+  height: calc(#{$form-range-thumb-height} + #{$form-range-thumb-focus-box-shadow-width * 2});
+  padding: 0; // Need to reset padding
+  background-color: transparent;
+  appearance: none;
+
+   &:focus {
+    outline: none;
+
+     // Pseudo-elements must be split across multiple rulesets to have an effect.
+    // No box-shadow() mixin for focus accessibility.
+    &::-webkit-slider-thumb { box-shadow: $form-range-thumb-focus-box-shadow; }
+    &::-moz-range-thumb     { box-shadow: $form-range-thumb-focus-box-shadow; }
+    &::-ms-thumb            { box-shadow: $form-range-thumb-focus-box-shadow; }
+  }
+
+   &::-moz-focus-outer {
+    border: 0;
+  }
+
+   &::-webkit-slider-thumb {
+    width: $form-range-thumb-width;
+    height: $form-range-thumb-height;
+    margin-top: ($form-range-track-height - $form-range-thumb-height) / 2; // Webkit specific
+    @include gradient-bg($form-range-thumb-bg);
+    border: $form-range-thumb-border;
+    @include border-radius($form-range-thumb-border-radius);
+    @include box-shadow($form-range-thumb-box-shadow);
+    @include transition($custom-forms-transition);
+    appearance: none;
+
+     &:active {
+      @include gradient-bg($form-range-thumb-active-bg);
+    }
+  }
+
+   &::-webkit-slider-runnable-track {
+    width: $form-range-track-width;
+    height: $form-range-track-height;
+    color: transparent; // Why?
+    cursor: $form-range-track-cursor;
+    background-color: $form-range-track-bg;
+    border-color: transparent;
+    @include border-radius($form-range-track-border-radius);
+    @include box-shadow($form-range-track-box-shadow);
+  }
+
+   &::-moz-range-thumb {
+    width: $form-range-thumb-width;
+    height: $form-range-thumb-height;
+    @include gradient-bg($form-range-thumb-bg);
+    border: $form-range-thumb-border;
+    @include border-radius($form-range-thumb-border-radius);
+    @include box-shadow($form-range-thumb-box-shadow);
+    @include transition($custom-forms-transition);
+    appearance: none;
+
+     &:active {
+      @include gradient-bg($form-range-thumb-active-bg);
+    }
+  }
+
+   &::-moz-range-track {
+    width: $form-range-track-width;
+    height: $form-range-track-height;
+    color: transparent;
+    cursor: $form-range-track-cursor;
+    background-color: $form-range-track-bg;
+    border-color: transparent; // Firefox specific?
+    @include border-radius($form-range-track-border-radius);
+    @include box-shadow($form-range-track-box-shadow);
+  }
+
+   &::-ms-thumb {
+    width: $form-range-thumb-width;
+    height: $form-range-thumb-height;
+    margin-top: 0; // Edge specific
+    margin-right: $form-range-thumb-focus-box-shadow-width; // Workaround that overflowed box-shadow is hidden.
+    margin-left: $form-range-thumb-focus-box-shadow-width;  // Workaround that overflowed box-shadow is hidden.
+    @include gradient-bg($form-range-thumb-bg);
+    border: $form-range-thumb-border;
+    @include border-radius($form-range-thumb-border-radius);
+    @include box-shadow($form-range-thumb-box-shadow);
+    @include transition($custom-forms-transition);
+    appearance: none;
+
+     &:active {
+      @include gradient-bg($form-range-thumb-active-bg);
+    }
+  }
+
+   &::-ms-track {
+    width: $form-range-track-width;
+    height: $form-range-track-height;
+    color: transparent;
+    cursor: $form-range-track-cursor;
+    background-color: transparent;
+    border-color: transparent;
+    border-width: $form-range-thumb-height / 2;
+    @include box-shadow($form-range-track-box-shadow);
+  }
+
+   &::-ms-fill-lower {
+    background-color: $form-range-track-bg;
+    @include border-radius($form-range-track-border-radius);
+  }
+
+   &::-ms-fill-upper {
+    margin-right: 15px; // arbitrary?
+    background-color: $form-range-track-bg;
+    @include border-radius($form-range-track-border-radius);
+  }
+
+   &:disabled {
+    &::-webkit-slider-thumb {
+      background-color: $form-range-thumb-disabled-bg;
+    }
+
+     &::-webkit-slider-runnable-track {
+      cursor: default;
+    }
+
+     &::-moz-range-thumb {
+      background-color: $form-range-thumb-disabled-bg;
+    }
+
+     &::-moz-range-track {
+      cursor: default;
+    }
+
+     &::-ms-thumb {
+      background-color: $form-range-thumb-disabled-bg;
+    }
+  }
+}
+*/
   /**
 	 * thread watcher
 	 */
@@ -3716,6 +4168,10 @@ table.exif td b {
     display: inline-flex;
     flex-direction: row;
   }
+	
+	.watcher-page {
+		margin-right: .25rem;
+	}
 
   #watched-threads .watcher-unread {
     flex: 0;
@@ -4434,6 +4890,8 @@ table.exif td b {
 	 */
 
   .qmark-op,
+	.qmark-you,
+	.qmark-ct,
   .qmark-dead {
     opacity: .5;
     position: relative;
@@ -4496,12 +4954,12 @@ table.exif td b {
 
   .gal-buttons {
     position: absolute;
-    top: 1.5rem;
-    left: 50%;
+    top: 1rem;
+    right: 5rem;
     display: flex;
     color: var(--text-primary-on-dark);
     background-color: rgba(33, 33, 33, .5);
-    padding: .5rem 1rem;
+    padding: .5rem;
     border-radius: 2px;
   }
 
@@ -4509,25 +4967,30 @@ table.exif td b {
   .gal-buttons:not(.gal-playing) > .gal-stop {
     display: none;
   }
-
-  .gal-buttons > a::after {
-    font-size: 3rem;
-    margin-right: 1rem;
+	
+	.gal-buttons > a {
+		font-size: 2rem;
+		line-height: 1;
     opacity: .7;
     transition: opacity .25s;
-  }
+		margin-right: .5rem;
+	}
+	
+	.gal-buttons > a:last-child {
+		margin-right: 0;
+	}
 
-  .gal-buttons > a:hover::after {
+  .gal-buttons > a:hover {
     opacity: .85;
   }
 
-  .gal-buttons > a:last-child::after {
-    margin-right: 0;
-  }
-
-  .gal-close {
+  .gal-buttons > a.gal-close {
     font-size: 0;
   }
+	
+	.gal-close::after {
+		line-height: 2rem;
+	}
 
   .gal-name {
     display: block;
@@ -4790,19 +5253,16 @@ table.exif td b {
 	 */
 
   .post--hot > .post {
-    background-image: linear-gradient(to bottom, var(--background-primary), #ffebee);
-  }
-
-  :root.ss16--invert .post--hot > .post {
-    background-image: linear-gradient(to bottom, var(--background-primary), #573737);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(223, 57, 80, .33));
   }
 
   .post:target,
+	.filter-highlight > .post,
   .highlight,
   .qphl,
   .yourPost > .post,
   :root.highlight-own .yourPost .stub {
-    background-color: #fffde7;
+    background-color: var(--background-highlight);
   }
 
   .quotesYou > .post {
@@ -4817,16 +5277,29 @@ table.exif td b {
     color: #009688;
   }
 
-  .poster--admin > .post {
+  .poster--admin > .post,
+	.poster--admin + .summary {
     background-color: #ffebee;
   }
+	
+	.identityIcon {
+    height: 0;
+    width: 1.5rem;
+    padding-top: 1.5rem;
+    background-repeat: no-repeat;
+	}
 
   .poster--admin .nameBlock,
   .capcodeAdmin {
     color: #f44336;
   }
+	
+	.capcodeAdmin .identityIcon {
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23f44336' d='M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3C/svg%3E");
+	}
 
-  .poster--mod > .post {
+  .poster--mod > .post,
+	.poster--mod + .summary {
     background-color: #ede7f6;
   }
 
@@ -4834,6 +5307,10 @@ table.exif td b {
   .capcodeMod {
     color: #673ab7;
   }
+	
+	.capcodeMod .identityIcon {
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23673ab7' d='M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9m-6-8L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3C/svg%3E");
+	}
 
   .poster--developer > .post {
     background-color: #e0f7fa;
@@ -4868,6 +5345,22 @@ table.exif td b {
     display: inline-flex;
   }
 	
+	/**
+	 * 4CHANX: applies contact links for admins and mods
+	 */
+	
+	.contact-links {
+		display: inline-block;
+	}
+	
+	.contact-links::after {
+		vertical-align: middle;
+	}
+
+	.contact-links:not(:hover) a {
+		display: none;
+	}
+
 	/*
 	 * 4chan pass users
 	 */
@@ -5338,11 +5831,83 @@ table.exif td b {
     content: 'Team Mini';
   }
 	
+	/**
+	 * SIDEDISH: toggle to reduce the opacity of thumbnails
+	 */
+	
+	.ss16--img-toggle {
+		opacity: .6;
+		will-change: opacity;
+		transition: opacity .25s;
+		cursor: pointer;
+	}
+	
+	:root.ss16--img-opacity .ss16--img-toggle,
+	.ss16--img-toggle:hover {
+		opacity: .87;
+	}
+	
+	.fileThumb {
+		will-change: opacity;
+		transition: opacity .25s;
+	}
+	
 	:root.ss16--img-opacity .fileThumb {
 		opacity: .15;
 	}
 	
+	/**
+	 * april fools 2019 support
+	 */
+	
 	.like-btn {  margin-left: 8px;  font-weight: bold;}.like-perk-cnt { margin-top: 10px; font-size: 20px; }.like-score {  vertical-align: super;  font-size: 10px;  font-weight: bold;  margin-left: 2px;  background-color: #1d8dc4;  display: inline-block;  border-radius: 8px;  white-space: nowrap;  color: #fff;  padding: 1px 4px;  line-height: 13px;}.like-perks-btn {  font-size: 12px;  margin-left: 8px;}#quickReply #qrEmail {  width: 250px;}#like-perks-cnt kbd {  display: inline-block;}#like-perks-cnt ul {  list-style: disc;  padding-left: 20px;}#like-perks-cnt li {  margin-top: 2px;  line-height: 18px;}#like-perks-cnt h4 {  margin-bottom: 4px;  font-size: 12px;  margin-left: 5px;}#like-perks-cnt .like-perk-list {  line-height: 18px;  padding: 0 5px 5px 5px;}
+	
+	/**
+	 * oneechan "support" (in other words, turn it off when using this because you do NOT need it)
+	 */
+	
+	.fa-gears::after {
+		content: 'sentiment_very_dissatisfied';
+	}
+	
+	:root.oneechan .entry input[type='checkbox'] {
+		display: inline !important;
+	}
+	
+	.riceCheck {
+		display: none;
+	}
+	
+	#oneechan-options {
+		background-color: var(--background-primary);
+		padding: .5rem 1rem;
+		border-radius: 2px;
+		box-shadow: var(--depth-ss18);
+	}
+	
+	#oneechan-options::after {
+		content: "Aren't you a rebel? Not following the rules and all that!\a
+			Probably explains the anime ''girl'' you have following you as you browse 4chan(nel).\a
+			Either way, disable OneeChan to use this. Please.";
+		white-space: pre-line;
+	}
+	
+	#oneechan-options * {
+		display: none;
+	}
+	
+	#mascot {
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		z-index: -1;
+		opacity: .5;
+		pointer-events: none;
+	}
+	
+	#mascot > img {
+		height: 50vh;
+	}
 	
 }
 /*

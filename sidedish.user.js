@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss16 sidedish
-// @version     0.7.19
+// @version     0.7.20
 // @description A companion userscript for the ss16 userstyle.
 // @author      saxamaphone69
 // @namespace   https://saxamaphone69.github.io/ss16/
@@ -481,10 +481,25 @@
 </div>
 </div>`;
    let currentBoard = location.pathname.split('/')[1];
-   $(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add('current');
+   if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
+	$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add('current');
+   }
   }
 
   fetch4chanBoardList();
+
+  function passLinker() {
+   let passLink, bottomLinks;
+   passLink = $('.pass-link-container');
+   bottomLinks = $('#footer-links');
+   if (passLink) {
+	bottomLinks.appendChild(passLink);
+   } else {
+	return false;
+   }
+  };
+
+  passLinker();
 
   /*
   if (doc.classList.contains('oneechan')) {
@@ -515,14 +530,32 @@
 
   exifToggle();
 
+  // this only works when the global message is already there. ideally, we'd have to observe the element for children changes and wrap the new children
+  // it also means the toggle doesn't hide the element because it is looking for the parent
+/*
   function wrapGlobalMessage() {
-   let originalMessage = $('.globalMessage').innerHTML;
-   let newHTML = `<div class="globalMessage--inner-wrapper">${originalMessage}</div>`;
-   $('.globalMessage').innerHTML = newHTML;
+   ready('.globalMessage', (element) => {
+	let _this = element;
+	let newHTML = d.createElement('div');
+	newHTML.classList.add('globalMessage--outer-wrapper');
+	var el = document.querySelector('div');
+	// append p as a new child to el
+	//let originalMessage = _this.innerHTML;
+	let original = $('.globalMessage');
+	//let newHTML = `<div class="globalMessage--inner-wrapper">${originalMessage}</div>`;
+	let appender = $('#globalToggle');
+	//_this.innerHTML = newHTML;
+	appender.parentNode.insertBefore(newHTML, appender.nextSibling);
+	appender.appendChild(original);
+	//let button = $('.hide-announcement-button', _this);
+	//on(button, 'click', function() {
+	// this.parentNode.parentNode.setAttribute('hidden', 'hidden');
+	//});
+   });
   }
 
   wrapGlobalMessage();
-
+*/
   function searchCurtain() {
    ready('#index-search', (element) => {
 	let _this = element;
@@ -612,7 +645,7 @@
   if (!doc.classList.contains('fourchan-x')) {
    doc.classList.remove('site-loading');
    doc.classList.add('no-fourchan-x');
-   /*
+   
    make({
 	el: 'aside',
 	cl4ss: 'ss16--dialog',
@@ -620,7 +653,7 @@
 	html: `<div class="ss16--dialog-window"><header class="ss16--dialog-header">Slight Problem...</header><section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section></div>`
    });
    doc.classList.add('unscroll');
-   */
+   
   }
  }
 
