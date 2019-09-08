@@ -59,10 +59,15 @@ ss16 makes use of the highlighting feature in 4chan x to give certain posts extr
 
 #### capcodes
 `/Founder$/;highlight:poster--founder;op:yes`
+
 `/Admin$/;highlight:poster--admin;op:yes`
+
 `/Mod$/;highlight:poster--mod;op:yes`
+
 `/Manager$/;highlight:poster--manager;op:yes`
+
 `/Developer$/;highlight:poster--developer;op:yes`
+
 `/Verified$/;highlight:poster--verified;op:yes`
 
 #### pass dates
@@ -73,14 +78,17 @@ ss16 makes use of the highlighting feature in 4chan x to give certain posts extr
 
 #### comment
 `/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
+
 `/^\W*(\w+\b\W*){91,}$/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
 
 #### filenames
 `/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
+
 `/.gif$/;highlight:file--gif;top:no;` - gif thumbnails display `GIF`
 
 #### image dimensions
 `/\d{4}x/;highlight:file--wide;top:no;` - files that are at least 1000px wide, take up the whole screen
+
 `/x\d{4}/;highlight:file--high;top:no;` - files that are at least 1000px high are given a class
 
 #### filesize
