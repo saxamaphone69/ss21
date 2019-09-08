@@ -7,7 +7,7 @@ a self-centered, fresh attempt at (user)styling 4chan
 ## preview of ss16 applied
 ![screenshot of ss16 applied](img/preview.png)
 
-following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan X](https://ccd0.github.io/4chan-x/) in 2019!
+following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in 2019!
 
 this style is currently being actively developed for chrome first, with firefox/edge as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) (don't use stylish anymore), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
@@ -51,3 +51,37 @@ essentially:
  - title and contest banners (technically skippable)
  - 4chan-JS code that isn't needed as we use 4chan x
  
+### 4chan x filters
+ss16 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss16 as intended, add these filters
+
+#### post numbers
+`/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` - posts with dubs vibrate and are checked on /s4s/
+
+#### capcodes
+`/Founder$/;highlight:poster--founder;op:yes`
+`/Admin$/;highlight:poster--admin;op:yes`
+`/Mod$/;highlight:poster--mod;op:yes`
+`/Manager$/;highlight:poster--manager;op:yes`
+`/Developer$/;highlight:poster--developer;op:yes`
+`/Verified$/;highlight:poster--verified;op:yes`
+
+#### pass dates
+`/./;highlight:poster--pass;top:no;` - pass users are green
+
+#### subject
+`/./;op:only;top:no;highlight:thread--subject` - threads that have a subject are given a class
+
+#### comment
+`/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
+`/^\W*(\w+\b\W*){91,}$/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
+
+#### filenames
+`/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
+`/.gif$/;highlight:file--gif;top:no;` - gif thumbnails display `GIF`
+
+#### image dimensions
+`/\d{4}x/;highlight:file--wide;top:no;` - files that are at least 1000px wide, take up the whole screen
+`/x\d{4}/;highlight:file--high;top:no;` - files that are at least 1000px high are given a class
+
+#### filesize
+`/MB/;op:yes;highlight:file--huge;top:no;` - files that are over a MB are given a discerning class (thanks, australia)
