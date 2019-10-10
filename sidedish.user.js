@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss16 sidedish
-// @version     0.7.20
+// @version     0.7.22
 // @description A companion userscript for the ss16 userstyle.
 // @author      saxamaphone69
 // @namespace   https://saxamaphone69.github.io/ss16/
@@ -76,6 +76,14 @@
 	$(parent).appendChild(el);
    } else {
 	parent.appendChild(el);
+   }
+  }
+  if (obj.prepend) {
+   let parent = obj.prepend;
+   if (typeof parent === 'string') {
+	$(parent).prepend(el);
+   } else {
+	parent.prepend(el);
    }
   }
   return el;
@@ -193,7 +201,15 @@
    }
    ticking = true;
   }
+/*
+//https://github.com/adactio/FitText.js/blob/master/fittext.js
+//https://github.com/rikschennink/fitty/blob/gh-pages/src/fitty.js
+  function fitText(el) {
+   el.style.fontSize = Math.max(Math.min(el.clientWidth / 10, parseFloat(1/0)), parseFloat(-1/0)) + 'px';
+  }
 
+  fitText(hero);
+*/
   function fancyShadow(el) {
    let oVal = window.scrollY,
 	   nVal = (oVal / 2.5) * 0.1;
@@ -231,7 +247,11 @@
    rAF(fancyShadow(boardTitle));
    rAF(progressScroll(scrollProgress));
   });
-
+/*
+  on(window, 'resize', function(e) {
+   fitText(hero);
+  });
+*/
   function countBacks() {
    let posts = $$('.post');
    for (let post of posts) {
@@ -290,8 +310,8 @@
 	let _this = element;
 	make({
 	 el: 'a',
-	 cl4ss: 'material-icons ss16--img-toggle',
-	 appendTo: _this,
+	 cl4ss: 'material-icons shortcut ss16--img-toggle',
+	 prepend: _this,
 	 html: `visibility_off`
 	});
    });
@@ -315,7 +335,7 @@
 	make({
 	 el: 'a',
 	 cl4ss: 'material-icons ss16--board-drawer-toggle',
-	 appendTo: _this,
+	 prepend: headerBar,
 	 html: `menu`
 	});
    });
@@ -592,7 +612,7 @@
 	  OpVideo.classList.add('ss16--op-banner');
 	  OpVideo.loop = true;
 	  OpVideo.src = OpFullFile;
-	  var playPromise = OpVideo.play();
+	  let playPromise = OpVideo.play();
 	  if (playPromise !== undefined) {
 	   playPromise.then(_ => {
 	   })
@@ -645,15 +665,23 @@
   if (!doc.classList.contains('fourchan-x')) {
    doc.classList.remove('site-loading');
    doc.classList.add('no-fourchan-x');
-   
-   make({
-	el: 'aside',
-	cl4ss: 'ss16--dialog',
-	appendTo: 'body',
-	html: `<div class="ss16--dialog-window"><header class="ss16--dialog-header">Slight Problem...</header><section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section></div>`
-   });
-   doc.classList.add('unscroll');
-   
+   if (getValue('noFourchanX') === true) {
+	make({
+	 el: 'aside',
+	 cl4ss: 'ss16--dialog',
+	 appendTo: 'body',
+	 html: `<div class="ss16--dialog-window">
+<header class="ss16--dialog-header">Slight Problem...</header>
+<section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section>
+<footer class="ss16--dialog-footer">
+<button class="ss16--dialog-button">Continue anyway</button>
+</div>`
+	});
+	on($('.ss16--dialog-button'), 'click', function() {
+	 setValue('noFourchanX', false);
+	 $('.ss16--dialog').remove();
+	});
+   }
   }
  }
 
