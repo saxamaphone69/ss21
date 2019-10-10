@@ -1,1 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Arimo|Karla|Inconsolata|Material+Icons');
+@-moz-document regexp("https://boards\\.4chan(?:nel)?\\.org.*") {
+@import url('https://fonts.googleapis.com/css?family=Arimo:400,700|Karla:400|Inconsolata:400|Material+Icons&display=swap');
+}
