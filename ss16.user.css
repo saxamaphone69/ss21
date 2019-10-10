@@ -1,6 +1,6 @@
 /* ==UserStyle==
 @name           ss18
-@version        2.0.11
+@version        2.0.12
 @namespace      https://github.com/saxamaphone69/
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
@@ -58,6 +58,7 @@
 	:root {
     --primary-300: #ba68c8;
     --primary-500: #9c27b0;
+		--primary-500-rgb: 156, 39, 176;
     --primary-700: #7b1fa2;
     --primary-dark: #454545;
     --secondary-300: #ffb74d;
@@ -1038,7 +1039,8 @@
   .close::after,
   .jump::after,
   .file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
-  .file--gif:not(.expanded-image) > .post > .file > .fileThumb::after {
+  .file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
+	.native-settings::after {
     font-family: var(--font-family-icon);
     font-weight: normal;
     font-style: normal;
@@ -1111,6 +1113,10 @@
 	
 	.fa-bolt::after {
 		content: 'flash_on';
+	}
+	
+	.fa-book::after {
+		content: 'book';
 	}
 
   .fa-minus-square::after,
@@ -1258,6 +1264,10 @@
   .entry input[type='checkbox']:checked::after {
     content: 'check_box';
   }
+	
+	.native-settings::after {
+		content: 'settings_applications'
+	}
 
   /**
    * we also sub out the default 4chan icons to material icons, but as svg, at 24dp
@@ -1295,12 +1305,14 @@
 	 * still provide support
 	 */
 
-  :root.shortcut-icons #shortcuts .fa {
+  :root.shortcut-icons #shortcuts .fa,
+	:root.shortcut-icons .native-settings {
     font-size: 0;
     visibility: hidden;
   }
 
-  :root:not(.shortcut-icons) #shortcuts .fa::after {
+  :root:not(.shortcut-icons) #shortcuts .fa::after,
+	:root:not(.shortcut-icons) .native-settings::after {
     display: none;
   }
 
@@ -1332,12 +1344,38 @@
     align-items: center;
     background-image: linear-gradient(pink, cornflowerblue);
     overflow: hidden;
-    pointer-events: none;
     user-select: none;
     contain: strict;
 		transform: translate3d(0px, 0px, 0px);
 		will-change: transform;
   }
+	
+	.ss16--op-banner {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		filter: blur(3px) saturate(.5);
+		z-index: 0;
+		object-fit: cover;
+		pointer-events: none; /* that way you can't save the full image in the banner */
+	}
+
+	.boardBanner::after {
+		content: '';
+		display: block;
+		position: absolute;
+		height: calc(100% + 2rem);
+		width: calc(100% + 2rem);
+		top: -1rem;
+		left: -1rem;
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
+		box-shadow: inset 0 0 10rem 2rem rgba(0, 0, 0, .5);
+		filter: blur(2px) saturate(.75);
+		z-index: -1;
+		pointer-events: none;
+	}
 
   .boardTitle {
     font-family: var(--font-family-compliment);
@@ -1377,19 +1415,63 @@
 	
 	#bannerCnt {
 		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
+		top: -1rem;
+		right: -1rem;
+		bottom: -1rem;
+		left: -1rem;
+		z-index: -1;
+	}
+
+	#bannerCnt > img {
 		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: blur(5px) saturate(.5);
+	}
+	/* uncomment this to show contest banners for other boards
+	.middlead.center {
+		display: block !important;
+	}
+	*/
+	.fcx-announcement {
+		animation: jello 1s infinite both;
+		position: fixed;
+		color: rgba(255, 255, 255, .87);
+		background-color: rgba(33, 33, 33, .87);
+		padding: .5rem 1rem;
+		bottom: 2rem;
+		left: 2rem;
+		border-radius: 4px;
+		box-shadow: var(--depth-ss18);
 	}
 	
-	#bannerCnt > img {
-		height: 100%;
-		width: 100%;
-		z-index: 0;
-		object-fit: cover;
-		filter: blur(3px) saturate(.5);
+	.fcx-announcement a {
+		color: var(--primary-300);
 	}
+	
+	@keyframes jello {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
 
   /**
 	 * quoted text, a.k.a. >implying implications in current year, ishygddt
@@ -1507,14 +1589,10 @@
     position: fixed;
   }
 
-  :root.centered-links #board-list,
-  :root.centered-links #header-bar .boardList {
-    justify-content: center;
-  }
-
   #header-bar {
     color: var(--text-primary-on-primary);
     background-color: var(--primary-500);
+		/*background-color: rgba(var(--primary-500-rgb), .87);*/
     position: relative;
     z-index: 10;
     padding: 0 1.5rem;
@@ -1525,6 +1603,7 @@
     align-items: center;
     will-change: background-color, transform;
     transition: background-color .25s, transform .25s;
+		/*ackdrop-filter: blur(.25rem);*/
   }
 
   /**
@@ -1543,7 +1622,7 @@
   #board-list,
   #custom-board-list,
   #full-board-list,
-  #full-boord-list .boardList {
+  #full-board-list .boardList {
     display: flex;
     align-items: center;
   }
@@ -1679,13 +1758,15 @@
     color: var(--text-secondary-on-primary);
   }
 
-  .shortcut:not(#shortcut-fappe):not(#shortcut-werk):not(#shortcut-updater):not(#shortcut-stats):not(#shortcut-menu) {
+  .shortcut:not(.ss16--img-toggle):not(#shortcut-fappe):not(#shortcut-werk):not(#shortcut-updater):not(#shortcut-stats):not(#shortcut-menu) {
     font-family: var(--font-family-compliment);
   }
 
   .shortcut > .menu-button {
     display: inline-flex;
   }
+	
+	
 
   /**
 	 * 4CHANX: `#scroll-marker` is used to determine unread post position, amongst
@@ -1926,6 +2007,9 @@
     box-shadow: 0 .25rem 1.5rem rgba(33, 33, 33, .25);
 		will-change: top;
     transition: top .25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #header-bar.scroll ~ .globalMessage {
@@ -1935,10 +2019,16 @@
   #header-bar.scroll.scrolled ~ .globalMessage {
     top: .25rem;
   }
+  
+  .hide-announcement-button {
+    order: 2;
+    height: 1.25rem;
+  }
 
   .globalMessage *:not(.hide-announcement-button) {
     font-size: 1rem;
     font-weight: 400;
+    flex: 1;
   }
 
   .globalMessage--inner-wrapper {
@@ -2071,6 +2161,10 @@
   #page-count {
     cursor: pointer;
   }
+	
+	#updater .warning {
+		color: var(--secondary-500);
+	}
 
   #thread-stats {
     color: var(--text-hint-on-primary);
@@ -2081,12 +2175,33 @@
   }
 
   #thread-stats .warning {
-    color: var(--red-500);
+    color: var(--secondary-500);
   }
 
   :root.float #thread-stats > .move > span:not(#page-count) {
     pointer-events: none;
   }
+	
+	:root:not(.float) #shortcuts {
+		position: relative;
+	}
+	
+	#shortcut-updater,
+	#shortcut-stats {
+		font-size: .75rem;
+		position: absolute;
+		right: 100%;
+		height: 2rem;
+	}
+	
+	#shortcut-updater {
+		top: 0;
+	}
+	
+	#shortcut-stats {
+		bottom: 0;
+		white-space: nowrap;
+	}
 
   /**
 	 * 4chan's index, which requires the user to be using the json index of 4chan x
@@ -2286,6 +2401,13 @@
   .thread .postContainer:last-of-type {
     margin-bottom: 0;
   }
+	
+	/**
+	 * XXX: honestly, summary should have some visual feedback on hover
+	 * and it should be different if it will expand the thread or direct to
+	 * the thread (if enabled in settings).
+	 * also, bottom summary
+	 */
 
   .summary {
     display: block;
@@ -2397,6 +2519,10 @@
 		max-width: 40%;
 	}
 	
+	#qp .nameBlock {
+		max-width: none;
+	}
+	
 	.dateTime {
 		white-space: nowrap;
 		overflow: hidden;
@@ -2404,6 +2530,10 @@
 	
 	.contact-links {
 		margin: 0 .25rem;
+	}
+	
+	.is_index .postJumper {
+		display: none;
 	}
 	
 	.postJumper {
@@ -2546,11 +2676,11 @@
     border-radius: 2px;
 		font-size: 1rem;
   }
-
+	/*
   .postMessage .inline {
     margin-bottom: -1rem;
   }
-
+	*/
   .container + .inline {
     margin-top: 1.5rem;
   }
@@ -2586,6 +2716,10 @@
   .postNum > span:last-child {
     font-size: 0;
   }
+	
+	/**
+	 * XXX: pagelist without json index looks bad
+	 */
 
   :root .pagelist:not(.json-index),
   .pagelist {
@@ -2762,7 +2896,7 @@
 */
 
   .absBotText {
-    font-size: .85rem;
+    font-size: .75rem;
     color: var(--text-secondary-on-background);
     background-color: var(--background-primary);
     user-select: none;
@@ -2775,20 +2909,33 @@
     margin: auto;
     /*border-top: 1px solid var(--background-outline);*/
   }
-
+	
   #footer-links {
     font-size: 0;
     max-width: 75rem;
     padding: 0 1.5rem 2rem;
     margin: 0 auto;
     position: relative;
+		/* we can't use grid here because the " • " between footer links counts as a node in the grid */
+		/*
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+		*/
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
   }
 
-  #footer-links a {
-    font-size: .85rem;
+  #footer-links > a,
+	.pass-link-container {
+    font-size: .75rem;
+		height: 1rem;
+		flex: 1;
+		/*
     display: inline-block;
     width: calc((100% / 4) - 1rem);
     margin-right: 1rem;
+		*/
   }
 
   #footer-links a:hover {
@@ -2802,7 +2949,7 @@
     width: 1rem;
     position: absolute;
     right: 1.5rem;
-    bottom: 2.125rem;
+    bottom: 2rem;
     filter: grayscale(1);
     opacity: .5;
   }
@@ -3108,6 +3255,12 @@
   .expanded-image.file--wide > .post > .file > .fileThumb > .full-image {
     width: 100%;
   }
+	
+	@media (max-width: 75rem) {
+		.expanded-image.file--wide > .post > .file > .fileThumb {
+			all: unset;
+  	}
+	}
   /*
 	.file--wide.file--high .full-image {
 		max-width: calc(100vw - 10rem) !important;
@@ -3298,7 +3451,7 @@ table.exif td b {
     font-size: .75rem;
     display: none;
   }
-
+	
   /**
 	 * while mayhem had the settings dialog within the overlay, ccd0 has it as two
 	 * separate elements
@@ -3641,6 +3794,15 @@ table.exif td b {
   .section-keybinds .field {
     font-family: var(--font-family-monospace);
   }
+	
+	.section-main p {
+		margin-top: 1rem;
+		margin-bottom: 0;
+	}
+	
+	.section-main p a {
+		color: var(--primary-500);
+	}
 
   /**
 	 * `.unscroll` should be added to `body`, but for whatever reason, it isn't,
@@ -5424,7 +5586,7 @@ table.exif td b {
 	 * gets rid of the default css, so here is a quick and dirty style (before you get
 	 * redirected, that is)
 	 */
-
+	
   :root[xmlns] #doc {
     display: flex;
     flex-direction: column;
@@ -5433,7 +5595,7 @@ table.exif td b {
     text-align: center;
     min-height: 100vh;
   }
-
+	
   :root[xmlns] #doc a {
     color: var(--primary-500);
   }
@@ -5455,7 +5617,7 @@ table.exif td b {
     color: var(--text-secondary-on-background);
     margin: 0;
   }
-
+	
   /**
 	 * ss16 dialog
 	 */
@@ -5600,9 +5762,11 @@ table.exif td b {
 		background-color: #ddcabe;
 	}
 
-  #board-list a.ss16--board-drawer-toggle {
+  .ss16--board-drawer-toggle {
     order: -1;
 		cursor: pointer;
+		min-width: 3rem;
+		text-align: center;
   }
 
   /**
@@ -5840,6 +6004,7 @@ table.exif td b {
 		will-change: opacity;
 		transition: opacity .25s;
 		cursor: pointer;
+		display: inline-flex !important;
 	}
 	
 	:root.ss16--img-opacity .ss16--img-toggle,
@@ -5909,9 +6074,48 @@ table.exif td b {
 		height: 50vh;
 	}
 	
+	/**
+	 * 4chan native extension
+	 */
+	
+	#settingsMenu {
+		position: fixed;
+		background-color: rgba(33, 33, 33, .75);
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		z-index: 99;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	#settingsMenu::after {
+		content: "Yeah, this isn't getting supported.\a
+			Disable the native extension to use ss18 to its fullest.";
+		white-space: pre-line;
+		background-color: var(--background-primary);
+		padding: .5rem 1rem;
+		border-radius: 2px;
+		box-shadow: var(--depth-ss18);
+	}
+	
+	#settingsMenu .extPanel {
+		display: none;
+	}
+	
 }
 /*
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org/f/.*'),
-	regexp('https://boards\\.4chan(?:nel)?\\.org\\/[a-z]{1,3}\\/archive') {
+	regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/archive') {
+}
+*/
+/*
+@-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog') {
+	.is_catalog #content #threads::before {
+		content: 'just fyi this will not work because we block the native 4chan js';
+		color: var(--red-500);
+	}
 }
 */
