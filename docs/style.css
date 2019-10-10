@@ -1,3 +1,10 @@
+:root {
+  --font-default: arimo, sans-serif;
+  --font-complimentary: karla, sans-serif;
+  --font-code: inconsolata, monospace, monospace;
+  --colour-primary: #9c27b0;
+}
+
 body,
 h1,
 h2,
@@ -10,7 +17,7 @@ p {
 }
 
 a {
-  color: #ff8993;
+  color: var(--colour-primary);
   text-decoration: none;
 }
 
@@ -19,7 +26,7 @@ a:hover {
 }
 
 b {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .underline {
@@ -27,7 +34,7 @@ b {
 }
 
 html {
-  font-family: roboto, sans-serif;
+  font-family: var(--font-default);
   font-size: 1rem;
   line-height: 1.5;
   color: #212121;
@@ -59,11 +66,11 @@ html {
 }
 
 .navigation.navigation--scrolled {
-  background-color: rgba(255, 137, 147, 1);
+  background-color: var(--colour-primary);
 }
 
 .navigation--link {
-  font-family: karla;
+  font-family: var(--font-complimentary);
   color: #fafafa;
   display: inline-flex;
   align-items: center;
@@ -71,20 +78,40 @@ html {
   padding: 0 1rem;
 }
 
+.navigation--link.active {
+  border-bottom: 1px solid;
+}
+
 .hero {
-  font-family: karla, sans-serif;
+  font-family: var(--font-complimentary);
   height: 30rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-image: linear-gradient(45deg, #fec180, #ff8993);
+  background-image: linear-gradient(45deg, pink, cornflowerblue);
+  background-size: 400% 400%;
   user-select: none;
   pointer-events: none;
   cursor: default;
   z-index: 1;
   position: relative;
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 84% 0%;
+  }
+
+  50% {
+    background-position: 17% 100%;
+  }
+
+  100% {
+    background-position: 84% 0%;
+  }
 }
 
 .heading--main {
@@ -107,13 +134,14 @@ html {
 }
 
 .heading--section {
-  font-family: karla, sans-serif;
+  font-family: var(--font-complimentary);
   font-weight: 700;
   font-size: 3rem;
   text-transform: lowercase;
   position: relative;
   z-index: 2;
   margin-bottom: 1rem;
+  margin-left: 1rem;
 }
 
 .heading--section::before {
@@ -121,10 +149,10 @@ html {
   display: block;
   height: 0.5rem;
   width: 2rem;
-  background-color: #fec180;
+  background-color: var(--colour-primary);
   position: absolute;
   top: 2rem;
-  left: -2.5rem;
+  left: -3.5rem;
   z-index: -1;
 }
 
@@ -134,15 +162,20 @@ p {
   margin: 0 0 1rem 1rem;
 }
 
+.change-list {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
 .trip,
 .code {
-  font-family: roboto mono, monospace;
+  font-family: var(--font-code);
   color: #545454;
 }
 
 .button--download {
   font-size: 125%;
-  font-family: roboto mono, monospace;
+  font-family: var(--font-code);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -187,7 +220,7 @@ video {
 }
 
 .feature--card-title {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .feature--grid {
@@ -202,7 +235,7 @@ video {
 
 .feature--heading {
   font-size: 1.25rem;
-  font-weight: 500;
+  font-weight: 700;
   display: block;
   margin-bottom: 0.5rem;
 }

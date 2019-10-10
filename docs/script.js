@@ -34,7 +34,6 @@
     function rAF(cb, args) {
       if (!ticking) {
         window.requestAnimationFrame(function() {
-          //cb(args);
           ticking = false;
         });
       }
@@ -58,9 +57,29 @@
       }
       el.style.transform = 'translate3d(0, ' + cVal + 'px, 0)';
     }
+    function scrollSpy() {
+      let section, sections, i;
+      section = $$('.heading--section');
+      sections = {};
+      i = 0;
+      Array.prototype.forEach.call(section, ({id, offsetTop}) => {
+        sections[id] = offsetTop;
+      });
+      window.onscroll = () => {
+        let scrollPosition;
+        scrollPosition = d.documentElement.scrollTop || d.body.scrollTop;
+        for (i in sections) {
+          if (sections[i] <= scrollPosition) {
+            $('.active').classList.remove('active');
+            $(`a[href*=${i}]`).classList.add('active');
+          }
+        }
+      };
+    }
     on(window, 'scroll', function(e) {
       rAF(navBackground(nav));
       rAF(parallaxHero(hero));
+      rAF(scrollSpy());
     });
   }
   ready(init());
