@@ -1,15 +1,18 @@
 # ss16
 a self-centered, fresh attempt at (user)styling 4chan
 
+## mid-2020 update
+`ss21` a.k.a ss16 `2.1.0` is nearing completion and will be ready for release soon<sup>tm</sup>
+
 ## late-2019 update
 `2.1.0` is still expected to come soon<sup>tm</sup> with a complete rewrite in `.styl` and complete user control
 
 ## preview of ss16 applied
 ![screenshot of ss16 applied](img/preview.png)
 
-following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in 2019!
+following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019~~2020!
 
-this style is currently being actively developed for chrome first, with firefox/edge as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) (don't use stylish anymore), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
+this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
 ## installation
 1. install `ss16.user.css`, `ss16font.css`, and `ss16boardbanner.css` with stylus
@@ -52,7 +55,7 @@ essentially:
  - 4chan-JS code that isn't needed as we use 4chan x
  
 ### 4chan x filters
-ss16 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss16 as intended, add these filters
+ss16 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss16 as intended, add these filters:
 
 #### post numbers
 `/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` - posts with dubs vibrate and are checked on /s4s/
