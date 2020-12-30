@@ -81,6 +81,6 @@ ss21 makes use of the highlighting feature in 4chan x to give certain posts extr
 feel free to open an issue for any bugs or requests here on the issue tracker
 
 ## licensing
-code released under CC-BY-SA-4.0
-contains code from https://github.com/ryanmorr/ready
+code released under CC-BY-SA-4.0<br>
+contains code from https://github.com/ryanmorr/ready<br>
 icons provided by https://www.material.io/resources/icons/
