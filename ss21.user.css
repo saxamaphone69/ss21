@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.0.6
+@version        2.1.0
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author       	sax
 @homepageURL    https://github.com/saxamaphone69/ss16
@@ -20,7 +20,7 @@
 @var select     ss21QRPosition      "QR position" 									 ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
 @var select     ss21buttonStyle     "Button style" 									 ["1:Contained", "2:Outline", "3:Text"]
 @var checkbox   ss21quoteColour    	"Default olive" 								 0
-@var checkbox   ss21boardBanner     "Enable board title and banner"  1
+@var checkbox   ss21boardBanner     "Enable board title and banner"	 1
 @var checkbox   ss21evenPosts				"Recolour even post backgrounds" 0
 @var checkbox		ss21blotter					"Show blotter"									 0
 @var select     ss21headerHeight    "Header height" 								 ["1:Tall", "2:Short"]
@@ -33,7 +33,7 @@
 ==/UserStyle== */
 
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
-
+	// main
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -247,19 +247,19 @@
 	// 8. the '>>' to the left of posts when reply hiding isn't on
 	
 	.mobile,
-  .desktop:not(#bannerCnt):not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
-  hr:not(#unread-line),
-  .qr-link-container,
-  .postForm,
-  .postInfo > input,
-  .ad-plea,
+	.desktop:not(#bannerCnt):not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
+	hr:not(#unread-line),
+	.qr-link-container,
+	.postForm,
+	.postInfo > input,
+	.ad-plea,
 	.adt-800,
 	.adaps,
-  .sideArrows,
-  #navbotright,
+	.sideArrows,
+	#navbotright,
 	#toggleMsgBtn // sometimes this leaks through, so we add it despite it having `.desktop`
-    display none
-  
+		display none
+	
 	// as always, using tried and tested web frameworks and design systems to
 	// create a reset, reboot, and sensible base
 	
@@ -802,7 +802,8 @@
 	.jump::after,
 	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
-	.native-settings::after
+	.native-settings::after,
+	.post--dubs .postNum a:nth-child(2n)::after
 		font-family material icons
 		font-weight normal
 		font-style normal
@@ -932,6 +933,8 @@
 		content 'settings_applications' // native 4chan extension
 	.contact-links::after
 		content 'contact_support' // for admins and mods
+	.post--dubs .postNum a:nth-child(2n)::after
+		content 'check'
 	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
@@ -988,8 +991,8 @@
 	// ($$$) add another potentially expensive override to inline-styled
 	// elements to ensure they use our red, not `red` red
 	[color="red"],
-  [style*="color:red"],
-  [style*="color: red"]
+	[style*="color:red"],
+	[style*="color: red"]
 		color var(--red-500) !important
 	
 	.hand
@@ -1647,6 +1650,12 @@
 				grid-template-columns repeat(2, 1fr)
 				.thread:nth-of-type(15n)
 					grid-column span 2
+			
+			:root.paged-mode .is_index
+				&.board_v .board .thread:nth-of-type(15n)
+					grid-column 1
+				&.board_pol .board .thread:nth-of-type(15n)
+					grid-column 1
 	
 	.postContainer
 		position relative
@@ -2261,10 +2270,10 @@
 	.postContainer > .qphl, // the current post being previewed from the post list
 	:root.highlight-own .yourPost > .post, // post that is marked as your own
 	:root.highlight-own .yourPost .stub // stubs of posts marked as your own
-		background-color mix(#FFECB3, ss21BackgroundElevated, 10%) !important
+		background-color mix(#FFECB3, ss21BackgroundElevated, 7%) !important
 	
 	:root.highlight-you .quotesYou > .post // replies to posts marked as your own
-		background-color mix(#FFCDD2, ss21BackgroundElevated, 10%)
+		background-color mix(#FFCDD2, ss21BackgroundElevated, 7%)
 	
 	// when in catalogue mode, give threads a red glow to show they are highlighted
 	// XXX: probably can be simplified in our version of the catalogue
@@ -2352,6 +2361,23 @@
 	
 	.thread-chip--mire .post
 		background-color mix(pink, ss21BackgroundColour, 25%)
+	
+	.post--dubs
+		will-change transform
+		transform perspective(1px) translateZ(0)
+		animation buzz .25s linear infinite
+		z-index 11 // for some reason the menu gets offset when transformed
+		.postNum a:nth-child(2n)::after
+			color ss21green
+			vertical-align text-bottom
+			margin-left .25rem
+			pointer-events none
+	
+	@keyframes buzz
+		50%
+			transform translateX(2px) rotate(.5deg)
+		100%
+			transform translateX(-2px) rotate(-.5deg)
 	
 	// 4CHANX: applies contact links to admins and mods
 	.contact-links
@@ -2449,6 +2475,10 @@
 			grid-template-columns repeat(auto-fit, minmax(7.5rem, 1fr))
 		&.catalog-large
 			grid-template-columns repeat(auto-fit, minmax(12.5rem, 1fr))
+	
+	// https://www.smashingmagazine.com/native-css-masonry-layout-css-grid/
+	// https://css-tricks.com/a-lightweight-masonry-solution/
+	// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Masonry_Layout
 	
 	// `.thread`
 	.catalog-thread
@@ -2615,7 +2645,7 @@
 	.catalog-thread:hover {
 		z-index: 10;
 	}
-	
+
 	// XXX: threads furthest to the left and right of the browser edge
 	// will have content cut off on hover
 	
@@ -3506,12 +3536,12 @@
 	// make the draggable area a little bigger than the updater itself
 	
 	#updater > .move
-    position absolute
-    z-index -1
-    top -.125rem
-    right -.125rem
-    bottom -.125rem
-    left -.125rem
+		position absolute
+		z-index -1
+		top -.125rem
+		right -.125rem
+		bottom -.125rem
+		left -.125rem
 	
 	// make these appear clickable
 	
@@ -3523,8 +3553,8 @@
 	// without selecting text
 	
 	:root.float #thread-stats > .move > span:not(#page-count)
-    pointer-events none
-  
+		pointer-events none
+	
 	.new
 		color limegreen
 		margin-right .5rem
@@ -3746,8 +3776,8 @@
 		borderRadius()
 		margin-top calc(.5rem * -1) // counters the offset because of the top and bottom padding
 		&[style*='m: 0']
-    	margin-top 0
-    	margin-bottom calc(.5rem * -1)
+			margin-top 0
+			margin-bottom calc(.5rem * -1)
 	
 	// only show the submenu when its parent has hover/focus
 	.focused > .submenu
@@ -3883,7 +3913,7 @@
 		display flex
 		top 1rem
 		right 1rem
-		background-color rgba(33, 33, 33, .5)
+		background-color rgba(0, 0, 0, .5)
 		tc(@background-color, high)
 		padding .5rem
 		borderRadius()
@@ -3897,7 +3927,7 @@
 		z-index 1
 		right 1rem
 		bottom 1rem
-		background-color rgba(33, 33, 33, .5)
+		background-color rgba(0, 0, 0, .5)
 		tc(@background-color, high)
 		line-height 1
 		padding .5rem
@@ -3910,7 +3940,7 @@
 		z-index 1
 		right 1rem
 		bottom 3.5rem
-		background-color rgba(33, 33, 33, .5)
+		background-color rgba(0, 0, 0, .5)
 		tc(@background-color, high)
 		line-height 1
 		padding .5rem
@@ -4135,13 +4165,19 @@
 	// or a `wbr` which breaks links
 	.flashListing
 		width 100%
-		margin-bottom 1rem
+		max-width 75rem
+		margin 1rem auto
 		vertical-align top
 		word-break normal
+		background-color var(--background-primary)
 		td,
 		th
-			padding .5rem
+			padding .25rem
 			border-bottom 1px solid var(--text-hint-on-background)
+		.postblock
+			background-color ss21primary
+			font-weight 700
+			tc(@background-color, high)
 		tbody
 			vertical-align inherit
 
@@ -4196,4 +4232,3 @@
 					border-left 0
 				.field
 					background #fff
-	
