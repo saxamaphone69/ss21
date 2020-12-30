@@ -3,33 +3,34 @@
 @namespace      https://github.com/saxamaphone69/
 @version        2.1.0
 @description    a self-centered, fresh attempt at (user)styling 4chan
-@author       	sax
-@homepageURL    https://github.com/saxamaphone69/ss16
-@supportURL     https://github.com/saxamaphone69/ss16/issues
+@author         sax
+@homepageURL    https://github.com/saxamaphone69/ss21
+@updateURL      https://github.com/saxamaphone69/ss21/raw/master/ss21.user.css
+@supportURL     https://github.com/saxamaphone69/ss21/issues
 @license        CC-BY-SA-4.0
-@preprocessor 	stylus
-@var range			ss21fontSize				"Default font size"							 [16, 10, 18, 2, "px"]
-@var checkbox   ss21roundedCorners  "Rounded corners" 							 1
-@var select     ss21readingMode     "Reading mode" 									 ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba"]
-@var color      ss21primary         "Primary colour" 								 #7c20ed
-@var select     ss21spacingLevel    "Spacing amount" 								 ["0:Comfortable", "1:Compact"]
-@var checkbox   ss21underlineLink   "Underline external links" 			 0
-@var checkbox   ss21postWidth       "Full-width posts" 							 1
-@var checkbox   ss21boardCenter     "Centered board"								 1
-@var checkbox		ss21sidebar					"Sidebar"												 0
-@var select     ss21QRPosition      "QR position" 									 ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
-@var select     ss21buttonStyle     "Button style" 									 ["1:Contained", "2:Outline", "3:Text"]
-@var checkbox   ss21quoteColour    	"Default olive" 								 0
-@var checkbox   ss21boardBanner     "Enable board title and banner"	 1
-@var checkbox   ss21evenPosts				"Recolour even post backgrounds" 0
-@var checkbox		ss21blotter					"Show blotter"									 0
-@var select     ss21headerHeight    "Header height" 								 ["1:Tall", "2:Short"]
-@var checkbox		ss21opacityHeader		"Make header slightly transparent"	 1
-@var checkbox		ss21forcedAnon			"Hide all names/tripcodes/IDs"	 0
-@var select     ss21fileInfo    		"File information displayed"		 ["1:Always displayed", "2:On hover"]
-@var checkbox		ss21twoWide					"On wide screens, show 2 threads"	 	 1
-@var checkbox		ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
-@var checkbox		ss21fileCard "Turns files into a card as opposed to the classic look" 0
+@preprocessor   stylus
+@var range      ss21fontSize         "Default font size" [16, 10, 18, 2, "px"]
+@var checkbox   ss21roundedCorners   "Rounded corners" 1
+@var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba"]
+@var color      ss21primary          "Primary colour" #7c20ed
+@var select     ss21spacingLevel     "Spacing amount" ["0:Comfortable", "1:Compact"]
+@var checkbox   ss21underlineLink    "Underline external links" 0
+@var checkbox   ss21postWidth        "Full-width posts" 1
+@var checkbox   ss21boardCenter      "Centered board" 1
+@var checkbox   ss21sidebar          "Sidebar" 0
+@var select     ss21QRPosition       "QR position" ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
+@var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text"]
+@var checkbox   ss21quoteColour      "Default olive" 0
+@var checkbox   ss21boardBanner      "Enable board title and banner" 1
+@var checkbox   ss21evenPosts        "Recolour even post backgrounds" 0
+@var checkbox   ss21blotter          "Show blotter" 0
+@var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
+@var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
+@var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
+@var select     ss21fileInfo         "File information displayed" ["1:Always displayed", "2:On hover"]
+@var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
+@var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
+@var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
@@ -46,7 +47,7 @@
 	*/
 	
 	/*
-	 * yes, ss16 is still around, even 5 years later. it utilises the latest and
+	 * yes, ss21 is still around, even 5 years later. it utilises the latest and
 	 * greatest web technologies and practices to create a userstyle that is
 	 * unique; standing out from the (onee|app)chan styles that the majority of
 	 * ricers use.
@@ -1103,7 +1104,7 @@
 		align-items center
 	
 	// SIDEDISH: button to toggle the off canvas menu
-	.ss16--board-drawer-toggle
+	.ss21--board-drawer-toggle
 		display inline-flex
 		align-items center
 		justify-content center
@@ -1201,12 +1202,13 @@
 		display none
 	
 	// SIDEDISH: we add an image opacity toggler-thing
-	.ss16--img-toggle
+	// XXX: i don't think we do this anymore...
+	.ss21--img-toggle
 		tc(ss21primary, medium)
 		cursor pointer
 		transition color .25s
 	
-	:root.ss16--img-opacity .ss16--img-toggle
+	:root.ss21--img-opacity .ss21--img-toggle
 		tc(ss21primary, high)
 	
 	// 4CHANX: `#scroll-marker` is used to determine unread post position, amongst
@@ -1373,7 +1375,7 @@
 			100%
 				background-position 84% 0%
 		
-		.ss16--op-banner
+		.ss21--op-banner
 			position absolute
 			height 100%
 			width 100%
@@ -2033,8 +2035,7 @@
 		font-size 1rem
 	
 	// SIDEDISH: toggle to make media barely visible
-	
-	:root.ss16--img-opacity .fileThumb
+	:root.ss21--img-opacity .fileThumb
 		opacity .05
 		transition opacity .25s
 		&:hover
@@ -3277,7 +3278,7 @@
 		bottom 0
 		&::after
 			font-size 3rem
-			color var(--blue-500) // XXX: needs to be styl var
+			color ss21blue
 
 	// 4CHANX: settings
 	// easier styling thanks to https://github.com/ccd0/4chan-x/pull/2322
@@ -3392,6 +3393,8 @@
 	.section-filter a,
 	.section-advanced a
 		color ss21primary
+		&:hover
+			color shade(@color, 10%)
 	
 	/**
 	 * since `.unscroll` isn't added to `body`, we can make use of some bleeding edge
@@ -3712,7 +3715,7 @@
 			color var(--red-500)
 	
 	.shortcut .replies-quoting-you::after
-		color red
+		color ss21red
 	
 	// menus
 	// styled based on:
@@ -3830,7 +3833,7 @@
 		right 1rem
 		font-size 0
 		color var(--text-secondary-on-primary)
-		background-color var(--primary)
+		background-color ss21primary
 		borderRadius()
 		z-depth(4)
 		overflow hidden
@@ -3860,7 +3863,7 @@
 			display flex
 			align-items center
 			font-size 0
-			background-color var(--primary)
+			background-color ss21primary
 			tc(ss21primary, high)
 			padding 0 1.5rem
 			height 3rem
@@ -4032,7 +4035,7 @@
 	
 	// SIDEDISH: support for the board drawer added by sidedish
 	
-	.ss16--board-drawer-background
+	.ss21--board-drawer-background
 		position fixed
 		overflow hidden
 		contain strict
@@ -4056,11 +4059,11 @@
 			transition opacity .25s
 	.drawer-open
 		pointer-events auto
-		.ss16--board-drawer
+		.ss21--board-drawer
 			transform translateX(0)
 		&::before
 			opacity 1
-	.ss16--board-drawer
+	.ss21--board-drawer
 		width 20rem
 		left 0
 		right initial
@@ -4089,7 +4092,7 @@
 			&:hover
 				background-color darken(#f0e0d6, 5%)
 	
-	.ss16--fit
+	.ss21--fit
 		position fixed
 		right 1rem
 		z-index 10
@@ -4102,13 +4105,13 @@
 		transition all .25s
 		&:hover
 			transform scale(2)
-		&.ss16--fit-weight
+		&.ss21--fit-weight
 			top 10rem
-			&:hover + .ss16--fit-height
+			&:hover + .ss21--fit-height
 				top 19.5rem
-		&.ss16--fit-height
+		&.ss21--fit-height
 			top 15rem
-		.ss16--fit-input
+		.ss21--fit-input
 			padding 0
 			border 1px solid ss21TextHint
 			borderRadius()
@@ -4116,7 +4119,7 @@
 			background none
 			text-align right
 			width 5ch
-		.ss16--fit-unit
+		.ss21--fit-unit
 			color var(--text-hint-on-background)
 			margin-left .5ch
 	
