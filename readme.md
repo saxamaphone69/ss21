@@ -1,26 +1,35 @@
-# ss16
+# ss21
 a self-centered, fresh attempt at (user)styling 4chan
 
-## mid-2020 update
-`ss21` a.k.a ss16 `2.1.0` is nearing completion and will be ready for release soon<sup>tm</sup>
+![screenshot of ss21 applied](img/ss21-preview.png)
 
-## late-2019 update
-`2.1.0` is still expected to come soon<sup>tm</sup> with a complete rewrite in `.styl` and complete user control
+following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020~~, 2021!
 
-## preview of ss16 applied
-![screenshot of ss16 applied](img/preview.png)
+created by **saxamaphone** "sax" `!3.saxN0DHY`, who has been making userstyles for 4chan since 2009 with styles such as 3 Shades of 4chan (which only exists as Midnight Caek in App/OneeChan now), curabitr, and xl
 
-following the success (or lack of) from curabitr and xl, ss16 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019~~2020!
+ss21 is a fresh attempt to make a userstyle that looks radically different from the typical App/OneeChan aesthetic of today, utilising modern web standards and bleeding edge CSS technologies
 
-this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require something that applies custom css, such as [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
+## about
+| feature | detail |
+| --- | --- |
+| **documented** | looking through the original `ss21` file contains comments that explain what things do and why they are there |
+| **variables** | thankfully, we now use the preprocessor `.styl` within stylus for built in functions not previously possible |
+| **sidedish** |  unlike most userstyles, `ss21` requires a companion userscript for additonal rice and features not found in 4chan X |
+| **filters** | through the use of 4chan X's filtering system, additional classes are added to certain posts for further enhancements |
+| **web fonts** | using `@import`, we can load fonts from the web, not longer requiring downloaded and locally installed fonts |
+| **rebase** | utilising code from well-established web projects such as bootstrap, carbon, and the material design guidelines, elements are rendered consistently and correctly across browsers |
+
+it should be noted that `ss21` **does not** function with the default 4chan extension or App/OneeChan
 
 ## installation
-1. install `ss16.user.css`, `ss16font.css`, and `ss16boardbanner.css` with stylus
-2. install `sidedish.user.js` with tampermonkey
-3. add the blocking filters below
+this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
+
+1. install `ss21.user.css`, `ss21font.css`, and `ss21boardbanner.css` (stylus should prompt you when viewing the raw file)
+2. install `sidedish.user.js`
+3. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
 4. cross your fingers and hope it works!
 
-## blocker filters
+### blocker filters
 a blocker is used to not only hide ads, but also block some other stuff to save on network requests.
 go to your blocker-of-choice options, and locate where you can add your own filters. add the following:
 
@@ -52,47 +61,26 @@ essentially:
  - block those bitcoin mining ads hiroshimoot uses
  - all 4chan css, with a few exceptions listed at the end
  - title and contest banners (technically skippable)
- - 4chan-JS code that isn't needed as we use 4chan x
+ - 4chan-JS code that isn't needed, as we use 4chan x
  
 ### 4chan x filters
-ss16 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss16 as intended, add these filters:
+ss21 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss21 as intended, add these filters:
 
-#### post numbers
-`/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` - posts with dubs vibrate and are checked on /s4s/
+| section | filter |
+| --- | --- |
+| **post numbers** | `/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` |
+| **capcodes** | `/Founder$/;highlight:poster--founder;op:yes`<br>`/Admin$/;highlight:poster--admin;op:yes`<br>`/Mod$/;highlight:poster--mod;op:yes`<br>`/Manager$/;highlight:poster--manager;op:yes`<br>`/Developer$/;highlight:poster--developer;op:yes`<br>`/Verified$/;highlight:poster--verified;op:yes` |
+| **pass dates** | `/./;highlight:poster--pass;top:no;` |
+| **subject** | `/./;op:only;top:no;highlight:thread--subject` |
+| **comment** | `/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long`<br>`/^\W*(\w+\b\W*){91,149}$/;op:only;top:no;highlight:thread--extra-long`<br>`/^\W*(\w+\b\W*){150,}$/;op:only;top:no;highlight:thread--silly-long`<br>`/(?:[^\n]*(\n+)){5,}/;op:only;top:no;highlight:thread--new-lines` |
+| **filenames** | `/.webm$/;highlight:file--video;top:no;`<br>`/.gif$/;highlight:file--gif;top:no;` |
+| **image dimensions** | `/\d{4}x/;highlight:file--wide;top:no;`<br>`/x\d{4}/;highlight:file--high;top:no;` |
+| **filesize** | `/MB/;op:yes;highlight:file--huge;top:no;` |
 
-#### capcodes
-`/Founder$/;highlight:poster--founder;op:yes`
+## reporting bugs and feature requests
+feel free to open an issue for any bugs or requests here on the issue tracker
 
-`/Admin$/;highlight:poster--admin;op:yes`
-
-`/Mod$/;highlight:poster--mod;op:yes`
-
-`/Manager$/;highlight:poster--manager;op:yes`
-
-`/Developer$/;highlight:poster--developer;op:yes`
-
-`/Verified$/;highlight:poster--verified;op:yes`
-
-#### pass dates
-`/./;highlight:poster--pass;top:no;` - pass users are green
-
-#### subject
-`/./;op:only;top:no;highlight:thread--subject` - threads that have a subject are given a class
-
-#### comment
-`/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long` - threads with a lot of characters given a special class
-
-`/^\W*(\w+\b\W*){91,}$/;op:only;top:no;highlight:thread--extra-long` - threads with anything more than that, given another whole class
-
-#### filenames
-`/.webm$/;highlight:file--video;top:no;` - webm thumbnails have a play button
-
-`/.gif$/;highlight:file--gif;top:no;` - gif thumbnails display `GIF`
-
-#### image dimensions
-`/\d{4}x/;highlight:file--wide;top:no;` - files that are at least 1000px wide, take up the whole screen
-
-`/x\d{4}/;highlight:file--high;top:no;` - files that are at least 1000px high are given a class
-
-#### filesize
-`/MB/;op:yes;highlight:file--huge;top:no;` - files that are over a MB are given a discerning class (thanks, australia)
+## licensing
+code released under CC-BY-SA-4.0
+contains code from https://github.com/ryanmorr/ready
+icons provided by https://www.material.io/resources/icons/
