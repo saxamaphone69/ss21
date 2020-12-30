@@ -12,11 +12,13 @@
 // @grant       GM_xmlhttpRequest
 // @run-at      document-start
 // @inject-into content
+// @updateURL   https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js
+// @downloadURL https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js
 // ==/UserScript==
 
 (async () => {
-  'use strict';
-  console.time('Initialising ss16 sidedish...');
+  "use strict";
+  console.time("Initialising ss21 sidedish...");
 
   /*! @ryanmorr/ready v1.3.1 | https://github.com/ryanmorr/ready */
   !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).ready=e()}}(function(){return function l(i,u,f){function a(t,e){if(!u[t]){if(!i[t]){var r="function"==typeof require&&require;if(!e&&r)return r(t,!0);if(c)return c(t,!0);var n=new Error("Cannot find module '"+t+"'");throw n.code="MODULE_NOT_FOUND",n}var o=u[t]={exports:{}};i[t][0].call(o.exports,function(e){return a(i[t][1][e]||e)},o,o.exports,l,i,u,f)}return u[t].exports}for(var c="function"==typeof require&&require,e=0;e<f.length;e++)a(f[e]);return a}({1:[function(e,t,r){"use strict";var n;Object.defineProperty(r,"__esModule",{value:!0}),r.default=function(e,t){n||(n=new MutationObserver(u)).observe(o.documentElement,{childList:!0,subtree:!0});if(e===o&&i)return t.call(o,o),function(){};var r={selector:e,callback:t};v.push(r),"string"==typeof e&&Array.from(o.querySelectorAll(e)).forEach(function(e){return t.call(e,e)});return function(){return function(e){var t=v.length;for(;t--;)e===v[t]&&v.splice(t,1);!v.length&&n&&(n.disconnect(),n=null)}(r)}};var v=[],o=window.document,l=o.documentElement,i=/complete|loaded|interactive/.test(o.readyState);i||o.addEventListener("DOMContentLoaded",function(){i=!0;for(var e=v.length;e--;){var t=v[e];t.selector===o&&(t.callback.call(o,o),v.splice(e,1))}});var y=["matches","webkitMatchesSelector","msMatchesSelector"].reduce(function(e,t){return e||(t in l?t:e)},null);function u(e){var t=!0,r=!1,n=void 0;try{for(var o,l=e[Symbol.iterator]();!(t=(o=l.next()).done);t=!0){var i=o.value,u=!0,f=!1,a=void 0;try{for(var c,d=function(){var n=c.value;v.forEach(function(e){var t,r;1===n.nodeType&&(t=n,r=e.selector,t[y](r))&&e.callback.call(n,n)})},s=i.addedNodes[Symbol.iterator]();!(u=(c=s.next()).done);u=!0)d()}catch(e){f=!0,a=e}finally{try{u||null==s.return||s.return()}finally{if(f)throw a}}}}catch(e){r=!0,n=e}finally{try{t||null==l.return||l.return()}finally{if(r)throw n}}}t.exports=r.default},{}]},{},[1])(1)});
@@ -24,19 +26,19 @@
   const d = document,
     doc = d.documentElement,
     config = (() => {
-      switch (location.pathname.split('/')[2]) {
-        case 'thread':
-          return 'thread';
-        case 'catalog':
-          return 'catalog';
-        case 'archive':
-          return 'archive';
+      switch (location.pathname.split("/")[2]) {
+        case "thread":
+          return "thread";
+        case "catalog":
+          return "catalog";
+        case "archive":
+          return "archive";
         default:
-          return 'index';
+          return "index";
       }
     })();
 
-  doc.classList.add('site-loading');
+  doc.classList.add("site-loading");
 
   function $(sel, root) {
     return (root || d).querySelector(sel);
@@ -49,10 +51,10 @@
   function on(sel, events, cb) {
     sel = Array.isArray(sel) ? sel : [sel];
     let event = events.split(/\s+/);
-    sel.forEach(sel => {
-      event.forEach(ev => {
+    sel.forEach((sel) => {
+      event.forEach((ev) => {
         sel.addEventListener(ev, cb, {
-          passive: true
+          passive: true,
         });
       });
     });
@@ -76,7 +78,7 @@
     }
     if (obj.appendTo) {
       let parent = obj.appendTo;
-      if (typeof parent === 'string') {
+      if (typeof parent === "string") {
         $(parent).appendChild(el);
       } else {
         parent.appendChild(el);
@@ -84,7 +86,7 @@
     }
     if (obj.prepend) {
       let parent = obj.prepend;
-      if (typeof parent === 'string') {
+      if (typeof parent === "string") {
         $(parent).prepend(el);
       } else {
         parent.prepend(el);
@@ -95,33 +97,39 @@
 
   function removeStyle(sel) {
     if (sel) {
-      console.log('%c ss16 sidedish is removing this stylesheet: ', 'color:green;', sel);
+      console.log(
+        "%c ss21 sidedish is removing this stylesheet: ",
+        "color:green;",
+        sel
+      );
       sel.remove();
     } else {
-      console.log('%c ss16 sidedish was unable to find: ', 'color:red;', sel);
+      console.log("%c ss21 sidedish was unable to find: ", "color:red;", sel);
     }
   }
 
   function removeStyles() {
-    removeStyle($('style[type]', d.head)); // this removes the inline mobile css
-    removeStyle($('#fourchanx-css', d.head)); // this removes the css required by 4chan x
+    removeStyle($("style[type]", d.head)); // this removes the inline mobile css
+    removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
   }
 
   function sendNotification(type, content) {
-    d.dispatchEvent(new CustomEvent('CreateNotification', {
-      detail: {
-        type: type, // success, info, warning, error
-        content: content,
-        lifetime: 0
-      }
-    }));
+    d.dispatchEvent(
+      new CustomEvent("CreateNotification", {
+        detail: {
+          type: type, // success, info, warning, error
+          content: content,
+          lifetime: 0,
+        },
+      })
+    );
   }
 
   function init() {
-    on(d, 'IndexBuild', doc.classList.remove('site-loading'));
+    on(d, "IndexBuild", doc.classList.remove("site-loading"));
 
-    on(d, 'OpenSettings', function() {
-      let settingDescriptions = $$('.description');
+    on(d, "OpenSettings", function () {
+      let settingDescriptions = $$(".description");
       for (let settingDescription of settingDescriptions) {
         let content = settingDescription.textContent;
         content = content.slice(2);
@@ -140,10 +148,10 @@
     getBoardType();
 
     function toggleFooter() {
-      const navBot = $('#boardNavDesktopFoot');
-      on(navBot, 'click', function(e) {
+      const navBot = $("#boardNavDesktopFoot");
+      on(navBot, "click", function (e) {
         if (e.target === this) {
-          this.classList.toggle('is-active');
+          this.classList.toggle("is-active");
         }
       });
     }
@@ -151,30 +159,30 @@
     toggleFooter();
 
     // this should return the `#header-bar` element
-    const headerBar = $('#header-bar');
+    const headerBar = $("#header-bar");
 
     const scrollProgress = make({
-      el: 'progress',
+      el: "progress",
       attr: {
-        id: 'scroll-progress',
+        id: "scroll-progress",
         value: 0,
-        max: 100
+        max: 100,
       },
-      appendTo: headerBar
+      appendTo: headerBar,
     });
 
-    const hero = $('.boardBanner'),
+    const hero = $(".boardBanner"),
       heroHeight = 480,
-      boardTitle = $('.boardTitle'),
+      boardTitle = $(".boardTitle"),
       mVal = 300;
 
-   boardTitle.style.setProperty("--length", boardTitle.innerText.length);
+    boardTitle.style.setProperty("--length", boardTitle.innerText.length);
 
     let ticking = false;
 
     function rAF(cb, args) {
       if (!ticking) {
-        window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(function () {
           cb(args);
           ticking = false;
         });
@@ -194,11 +202,12 @@
       let oVal = window.scrollY,
         nVal = (oVal / 2.5) * 0.1;
       if (oVal >= heroHeight) {
-        headerBar.classList.add('scrolled');
-        el.style.textShadow = '0 0 var(--primary-500)';
+        headerBar.classList.add("scrolled");
+        el.style.textShadow = "0 0 var(--primary-500)";
       } else {
-        headerBar.classList.remove('scrolled');
-        el.style.textShadow = (16 + -nVal) + 'px ' + (16 + -nVal) + 'px var(--primary-500)';
+        headerBar.classList.remove("scrolled");
+        el.style.textShadow =
+          16 + -nVal + "px " + (16 + -nVal) + "px var(--primary-500)";
       }
     }
 
@@ -210,7 +219,7 @@
       } else {
         cVal = mVal;
       }
-      el.style.transform = 'translate3d(0, ' + cVal + 'px, 0)';
+      el.style.transform = "translate3d(0, " + cVal + "px, 0)";
     }
 
     function progressScroll(el) {
@@ -220,63 +229,65 @@
       el.value = scrollPercent.toFixed(2);
     }
 
-    on(window, 'scroll', function(e) {
+    on(window, "scroll", function (e) {
       rAF(parallaxHero(hero));
       rAF(fancyShadow(boardTitle));
       rAF(progressScroll(scrollProgress));
     });
 
     function countBacks() {
-      console.log('Counting backlinks');
-      let posts = $$('.post');
+      console.log("Counting backlinks");
+      let posts = $$(".post");
       for (let post of posts) {
-        let backlinks = $$('.backlink', post);
-        post.setAttribute('data-backlinks-length', backlinks.length);
+        let backlinks = $$(".backlink", post);
+        post.setAttribute("data-backlinks-length", backlinks.length);
         if (backlinks.length > 8) {
-          post.parentNode.classList.add('post--hot');
+          post.parentNode.classList.add("post--hot");
         }
       }
     }
 
     function convertSummaries() {
-      console.log('Converting summaries');
-      let summaries = $$('.summary');
+      console.log("Converting summaries");
+      let summaries = $$(".summary");
       for (let summary of summaries) {
         let oldText, newText;
         oldText = summary.innerHTML;
-        newText = oldText.replace(/(\d+(?=\ ))/g, '<b>$1</b>');
+        newText = oldText.replace(/(\d+(?=\ ))/g, "<b>$1</b>");
         summary.innerHTML = newText;
       }
     }
 
     function swapInfo() {
-      console.log('Switching OP\'s post info');
-      let ops = $$('.op');
+      console.log("Switching OP's post info");
+      let ops = $$(".op");
       for (let op of ops) {
-        let opPostInfo = $('.postInfo', op);
+        let opPostInfo = $(".postInfo", op);
         op.prepend(opPostInfo);
-        op.classList.add('post--file-swapped');
+        op.classList.add("post--file-swapped");
       }
     }
 
     // if a thumbnail has a tall aspect ratio, allow for greater styling control
     function checkHeights() {
-      let thumbs = $$('.fileThumb');
+      let thumbs = $$(".fileThumb");
       for (let thumb of thumbs) {
-        let thumbSize = $('img', thumb);
+        let thumbSize = $("img", thumb);
         let thumbHeight = thumbSize.style.height;
         let thumbWidth = thumbSize.style.width;
         if (thumbHeight.slice(0, -2) > thumbWidth.slice(0, -2)) {
           // adds it to the `.thread` container
-          thumb.parentNode.parentNode.parentNode.parentNode.classList.add('file--tall');
+          thumb.parentNode.parentNode.parentNode.parentNode.classList.add(
+            "file--tall"
+          );
         }
       }
     }
 
-    if (config === 'index') {
-      const target = $('.board');
+    if (config === "index") {
+      const target = $(".board");
       const config = {
-        childList: true
+        childList: true,
       };
 
       function subscriber(mutations) {
@@ -287,17 +298,17 @@
       observer.observe(target, config);
     }
 
-    if (config === 'index') {
-      on(d, 'IndexRefresh', convertSummaries);
-      on(d, 'IndexRefresh', swapInfo);
-      on(d, 'IndexRefresh', checkHeights);
+    if (config === "index") {
+      on(d, "IndexRefresh", convertSummaries);
+      on(d, "IndexRefresh", swapInfo);
+      on(d, "IndexRefresh", checkHeights);
     }
 
-    if (config === 'thread') {
+    if (config === "thread") {
       countBacks();
       swapInfo();
     }
-/*
+    /*
     function imgOpacity() {
       ready('#shortcuts', (element) => {
         let _this = element;
@@ -321,25 +332,25 @@
 */
     function boardDrawer() {
       let boardDrawer = make({
-        el: 'aside',
-        cl4ss: 'ss16--board-drawer-background',
-        appendTo: 'body',
-        html: `<nav class="ss16--board-drawer"></nav>`
+        el: "aside",
+        cl4ss: "ss21--board-drawer-background",
+        appendTo: "body",
+        html: `<nav class="ss21--board-drawer"></nav>`,
       });
-      ready('#board-list', (element) => {
+      ready("#board-list", (element) => {
         let _this = element;
         make({
-          el: 'a',
-          cl4ss: 'material-icons ss16--board-drawer-toggle',
+          el: "a",
+          cl4ss: "material-icons ss21--board-drawer-toggle",
           prepend: headerBar,
           attr: {
-            title: 'Open board list drawer'
+            title: "Open board list drawer",
           },
-          html: `menu`
+          html: `menu`,
         });
       });
-      let boardNavToggle = $('.ss16--board-drawer-toggle');
-      let url = 'https://a.4cdn.org/boards.json';
+      let boardNavToggle = $(".ss21--board-drawer-toggle");
+      let url = "https://a.4cdn.org/boards.json";
 
       function createNode(element) {
         return d.createElement(element);
@@ -349,30 +360,30 @@
         return parent.appendChild(el);
       }
 
-      boardDrawer.addEventListener('click', function(e) {
+      boardDrawer.addEventListener("click", function (e) {
         if (e.target === boardDrawer) {
-          boardDrawer.classList.remove('drawer-open');
+          boardDrawer.classList.remove("drawer-open");
         }
       });
 
-      on(boardNavToggle, 'click', function() {
-        boardDrawer.classList.add('drawer-open');
+      on(boardNavToggle, "click", function () {
+        boardDrawer.classList.add("drawer-open");
         fetch(url)
-          .then(resp => resp.json())
-          .then(function(data) {
+          .then((resp) => resp.json())
+          .then(function (data) {
             let boards = data.boards;
-            return boards.map(function(board) {
-              let anchor = createNode('a');
-              anchor.classList.add('board-list-entry');
+            return boards.map(function (board) {
+              let anchor = createNode("a");
+              anchor.classList.add("board-list-entry");
               anchor.textContent = `/${board.board}/ - ${board.title}`;
               if (board.ws_board === 0) {
-                anchor.classList.add('board--nws');
+                anchor.classList.add("board--nws");
                 anchor.href = `https://boards.4chan.org/${board.board}/`;
               } else {
-                anchor.classList.add('board--ws');
+                anchor.classList.add("board--ws");
                 anchor.href = `https://boards.4channel.org/${board.board}/`;
               }
-              append($('.ss16--board-drawer'), anchor);
+              append($(".ss21--board-drawer"), anchor);
             });
           });
       });
@@ -381,14 +392,14 @@
     boardDrawer();
 
     function resizeQuotePreviews() {
-      ready('#qp', (element) => {
+      ready("#qp", (element) => {
         let _this = element;
         let winHeight = window.innerHeight;
         let qpHeight = _this.offsetHeight + 32;
         if (qpHeight > winHeight) {
-          let scaledHeight = (winHeight / qpHeight);
-          _this.style.transformOrigin = 'top left';
-          _this.style.transform = 'scale(' + scaledHeight + ')';
+          let scaledHeight = winHeight / qpHeight;
+          _this.style.transformOrigin = "top left";
+          _this.style.transform = "scale(" + scaledHeight + ")";
         }
       });
     }
@@ -396,7 +407,7 @@
     resizeQuotePreviews();
 
     function fetch4chanBoardList() {
-      $('#boardNavDesktopFoot').innerHTML = `<div class="boardList">
+      $("#boardNavDesktopFoot").innerHTML = `<div class="boardList">
 <div class="column">
 <h3>Japanese Culture</h3>
 <ul>
@@ -503,9 +514,11 @@
 </ul>
 </div>
 </div>`;
-      let currentBoard = location.pathname.split('/')[1];
+      let currentBoard = location.pathname.split("/")[1];
       if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
-        $(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add('current');
+        $(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add(
+          "current"
+        );
       }
     }
 
@@ -513,27 +526,27 @@
 
     function passLinker() {
       let passLink, bottomLinks;
-      passLink = $('.pass-link-container');
-      bottomLinks = $('#footer-links');
+      passLink = $(".pass-link-container");
+      bottomLinks = $("#footer-links");
       if (passLink) {
         bottomLinks.appendChild(passLink);
       } else {
         return false;
       }
-    };
+    }
 
     passLinker();
 
-    if (location.pathname.split('/')[1] === 'fit') {
+    if (location.pathname.split("/")[1] === "fit") {
       function weightConverter() {
         let weightElement = make({
-          el: 'aside',
-          cl4ss: 'ss16--fit ss16--fit-weight',
-          appendTo: 'body',
+          el: "aside",
+          cl4ss: "ss21--fit ss21--fit-weight",
+          appendTo: "body",
           html: `<form oninput="let mW = aW.value / 2.2046; resultW.value = mW.toFixed(2);">
-<input class="ss16--fit-input" type="number" id="aW" name="aW" min="0" step="10" /><span class="ss16--fit-unit">lbs</span><br>
-<output class="ss16--fit-output" name="resultW" for="aW">0</output><span class="ss16--fit-unit">kg</span>
-</form>`
+<input class="ss21--fit-input" type="number" id="aW" name="aW" min="0" step="10" /><span class="ss21--fit-unit">lbs</span><br>
+<output class="ss21--fit-output" name="resultW" for="aW">0</output><span class="ss21--fit-unit">kg</span>
+</form>`,
         });
       }
 
@@ -541,14 +554,14 @@
 
       function heightConverter() {
         let heightElement = make({
-          el: 'aside',
-          cl4ss: 'ss16--fit ss16--fit-height',
-          appendTo: 'body',
+          el: "aside",
+          cl4ss: "ss21--fit ss21--fit-height",
+          appendTo: "body",
           html: `<form oninput="let pH = aH.value * 30.48; let qH = bH.value * 2.54; let rH = pH + qH; resultH.value = rH.toFixed(1);">
-<input class="ss16--fit-input" type="number" id="aH" name="aH" min="0" /><span class="ss16--fit-unit">&prime;</span>
-<input class="ss16--fit-input" type="number" id="bH" name="bH" min="0" max="12" /><span class="ss16--fit-unit">&Prime;</span><br>
-<output class="ss16--fit-output" name="resultH" for="aH bH">0</output><span class="ss16--fit-unit">cm</span>
-</form>`
+<input class="ss21--fit-input" type="number" id="aH" name="aH" min="0" /><span class="ss21--fit-unit">&prime;</span>
+<input class="ss21--fit-input" type="number" id="bH" name="bH" min="0" max="12" /><span class="ss21--fit-unit">&Prime;</span><br>
+<output class="ss21--fit-output" name="resultH" for="aH bH">0</output><span class="ss21--fit-unit">cm</span>
+</form>`,
         });
       }
 
@@ -556,15 +569,15 @@
     }
 
     function exifToggle() {
-      let exifs = $$('.abbr a');
+      let exifs = $$(".abbr a");
       for (let exif of exifs) {
-        let toggleExif = exif.getAttribute('onclick');
-        exif.removeAttribute('onclick');
-        on(exif, 'click', function() {
+        let toggleExif = exif.getAttribute("onclick");
+        exif.removeAttribute("onclick");
+        on(exif, "click", function () {
           let newtoggleExif = toggleExif.match(/'(.*)(.*)'/g);
           newtoggleExif = String(newtoggleExif);
           newtoggleExif = newtoggleExif.slice(1, -1);
-          let el = $('#' + newtoggleExif);
+          let el = $("#" + newtoggleExif);
           el.style.display = "block" != el.style.display ? "block" : "none";
         });
       }
@@ -599,63 +612,61 @@
       wrapGlobalMessage();
     */
     function searchCurtain() {
-      ready('#index-search', (element) => {
+      ready("#index-search", (element) => {
         let _this = element;
-        on(_this, 'focus', function() {
-          doc.classList.add('ss16--index-searching');
+        on(_this, "focus", function () {
+          doc.classList.add("ss21--index-searching");
           make({
-            el: 'aside',
-            cl4ss: 'ss16--index-searching-curtain',
-            appendTo: 'body'
+            el: "aside",
+            cl4ss: "ss21--index-searching-curtain",
+            appendTo: "body",
           });
         });
-        on(_this, 'blur', function() {
-          $('.ss16--index-searching-curtain').remove();
+        on(_this, "blur", function () {
+          $(".ss21--index-searching-curtain").remove();
           if (_this.dataset.searching != 1) {
-            doc.classList.remove('ss16--index-searching');
-            $('.ss16--index-searching-curtain').remove();
+            doc.classList.remove("ss21--index-searching");
+            $(".ss21--index-searching-curtain").remove();
           }
         });
       });
     }
 
-    if (config === 'index') {
+    if (config === "index") {
       searchCurtain();
     }
 
     function OPAsBanner() {
-      ready('.op .fileThumb', (element) => {
+      ready(".op .fileThumb", (element) => {
         let _this = element,
-          banner = $('.boardBanner');
+          banner = $(".boardBanner");
         let OpFullFile = _this.href;
-        if (OpFullFile.endsWith('m')) {
-          let OpVideo = document.createElement('video');
-          OpVideo.classList.add('ss16--op-banner');
+        if (OpFullFile.endsWith("m")) {
+          let OpVideo = document.createElement("video");
+          OpVideo.classList.add("ss21--op-banner");
           OpVideo.loop = true;
           OpVideo.src = OpFullFile;
           let playPromise = OpVideo.play();
           if (playPromise !== undefined) {
-            playPromise.then(_ => {})
-              .catch(error => {});
+            playPromise.then((_) => {}).catch((error) => {});
           }
           OpVideo.muted = true;
           banner.appendChild(OpVideo);
         } else {
           let OpImage = new Image();
-          OpImage.classList.add('ss16--op-banner');
+          OpImage.classList.add("ss21--op-banner");
           OpImage.src = OpFullFile;
           banner.appendChild(OpImage);
         }
       });
     }
 
-    if (config === 'thread') {
+    if (config === "thread") {
       OPAsBanner();
     }
-
   }
 
-  on(d, '4chanXInitFinished', init);
+  on(d, "4chanXInitFinished", init);
 
   /*
    function backup() {
@@ -709,5 +720,5 @@
 
    on(d, 'DOMContentLoaded', backup);
   */
-  console.timeEnd('Initialising ss16 sidedish...');
+  console.timeEnd("Initialising ss21 sidedish...");
 })();
