@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.0
+@version        2.1.1
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -190,11 +190,6 @@
 		--grey-500 #b3b3b6
 		--grey-700 #737376
 		--grey-900 #303033
-		--red-500 #f44336
-		--blue-500 #2196f3
-		--green-500 #4caf50
-		--purple-500 #9c27b0
-		--orange-500 #ff9800
 		--font-default inter var, arimo, roboto, helvetica, arial, system-ui
 		--font-monospace inconsolata, monospace, monospace
 		--font-icon material icons
@@ -229,7 +224,7 @@
 		to
 			transform rotate(359deg)
 
-	// let's hide stuff we don't need
+	// let's hide stuff we don't need: ads!
 	// first, let's keep `!important` away as to not pollute scope
 
 	.center,
@@ -237,7 +232,7 @@
 	[hidden]
 		display none !important
 	
-	// and while we're here
+	// and while we're here:
 	// 1. mobile elements
 	// 2. a bunch of elements we never use also have `.desktop`, so that's convenient
 	// 3. all `hr` elements, bar the unread line
@@ -280,11 +275,22 @@
 		-webkit-font-smoothing antialiased
 		-moz-osx-font-smoothing grayscale
 		scroll-behavior smooth
-		text-rendering optimizeLegibility
+		text-rendering optimizeLegibility // XXX: despite https://marco.org/2012/11/15/text-rendering-optimize-legibility - inter ui needs it for ligatures
 		overflow-y scroll
-		word-break break-word // XXX: might not even work tbh
+		overflow-wrap anywhere
+		//word-break break-word // XXX: might not even work tbh
 		box-sizing border-box
 		transition color .25s, background-color .25s
+	
+	@css {
+		:root .navLinks {
+			--is-nws: brown;
+			background-color: var(--is-nws, var(--primary)) !important;
+		}
+		:root.ws .navLinks {
+			--is-nws: initial;
+		}
+	}
 	
 	:root
 		if ss21spacingLevel == 1
@@ -309,6 +315,7 @@
 	:focus
 		outline 0
 		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
+		isolation isolate
 	
 	// 4CHANX: adds `.keyboard-focus` to `html`
 	// :root:not(.keyboard-focus) a { outline: none; }
@@ -422,6 +429,7 @@
 	.linkify,
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
 		text-decoration solid underline
+		text-underline-offset 1px
 		color ss21primary
 	
 	.linkify
@@ -517,12 +525,12 @@
 			.dec
 				color #c76b29
 	
-	// fix spacing of media objects, and make them responsive
+	// fix spacing of media objects, and make them responsive by default
 	embed,
 	img,
 	svg,
 	video
-		vertical-align middle
+		vertical-align middle // XXX: might be better off with `display: block` instead of messing with vertical alignment
 		height auto
 		max-width 100%
 	
@@ -621,7 +629,6 @@
 	input[type="checkbox"]
 		width 1.25em
 		height 1.25em
-		background-color var(--background-primary)
 		background-repeat no-repeat
 		background-position center
 		background-size contain
@@ -721,7 +728,7 @@
 		color var(--text-hint-on-background)
 		opacity 1
 	
-	// correct cursor style of +/- buttons in chrome for `input[type="number"]`
+	// correct cursor style of +/- buttons in safari for `input[type="number"]`
 	::-webkit-inner-spin-button,
 	::-webkit-outer-spin-button
 		height auto
@@ -743,7 +750,7 @@
 		height 0
 		overflow visible
 		border 0
-		border-top 1px solid var(--green-500)
+		border-top 1px solid ss21green
 		margin 0 0 1rem // XXX: this should be the same as the post gap
 	
 	// `s` is used for [spoiler] text. occasionally, this has issues with
@@ -867,7 +874,7 @@
 		content 'flash_on' // prefetch
 	.watch-thread-link::after
 		content 'favorite_border' // watch thread
-		color var(--red-500)
+		color ss21red
 	.watch-thread-link.watched::after
 		content 'favorite' // unwatch thread
 	#navlinks a:first-of-type::after
@@ -983,18 +990,18 @@
 		if ss21quoteColour
 			color #789922
 		else
-			color var(--green-500)
+			color ss21green
 	
 	// make warning text visually different
 	.warning
-		color var(--red-500)
+		color ss21red
 	
 	// ($$$) add another potentially expensive override to inline-styled
 	// elements to ensure they use our red, not `red` red
 	[color="red"],
 	[style*="color:red"],
 	[style*="color: red"]
-		color var(--red-500) !important
+		color ss21red !important
 	
 	.hand
 		cursor pointer
@@ -1247,9 +1254,9 @@
 		&::-webkit-progress-bar
 			background-color var(--grey-300)
 		&::-webkit-progress-value
-			background-color var(--green-500)
+			background-color s21green
 		&::-moz-progress-bar
-			background-color var(--green-500)
+			background-color ss21green
 	
 	:root.bottom-header #scroll-progress
 		top auto
@@ -1300,13 +1307,13 @@
 		will-change opacity
 		transition opacity .25s
 		&.error
-			background-color var(--red-500) // 4chan x is 90% transparent (.9)
+			background-color ss21red // 4chan x is 90% transparent (.9)
 		&.info
-			background-color var(--blue-500)
+			background-color ss21blue
 		&.success
-			background-color var(--green-500)
+			background-color ss21green
 		&.warning
-			background-color var(--orange-500)
+			background-color ss21orange
 		.message
 			order -1
 			flex-grow 1
@@ -1507,7 +1514,7 @@
 		font-size 2rem
 		font-weight 700
 		text-align center
-		background-color var(--red-500)
+		background-color ss21red
 	
 	// index sorting and what not. only enabled with json mode in 4chan x
 	// first up, only some elements are shown, depending on which mode is enabled
@@ -1586,7 +1593,7 @@
 		width 0
 		&::after
 			position relative
-			color var(--red-500)
+			color ss21red
 			left -3rem
 			opacity .54
 			transition opacity .25s
@@ -1877,7 +1884,12 @@
 	
 	// XXX: stubs are gross and horrible. hopefully they are rewritten soon(tm)
 	// and then they can be given some better love
-	.stub ~ * // $$$
+	// icon black on white, active+focus .87
+	// icon black on white, active+NOT focused .54
+	// icon black on white, inactive .38
+	// .stub ~ * is probably a little too expensive $$$
+	.stub + .postContainer,
+	.stub + .postContainer + .summary
 		display none
 	
 	.stub
@@ -1896,8 +1908,11 @@
 			> .fa
 				display inline-flex
 				margin-right .5rem
-		.menu-button
-			display inline-flex
+				&::after
+					opacity .54
+					transition opacity .25s
+			&:hover .fa::after
+				opacity .87
 	
 	// file formatting
 	.file
@@ -2040,6 +2055,22 @@
 		transition opacity .25s
 		&:hover
 			opacity .15
+	
+	// XXX: convert sauce links to icons for fun
+	.sauce[href*='google']
+		color transparent
+		display inline-block
+		width .75rem
+		opacity .54
+		background-repeat no-repeat
+		background-position 50% 50%
+		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21primary) + "' /%3E%3C/svg%3E")
+		&:hover
+			opacity .8
+	
+	.file--huge .fileText .sauce[href*='google']
+		color transparent
+		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
 	
 	if ss21thumbnailOpacity == 1
 		.fileThumb
@@ -2293,13 +2324,14 @@
 	:root.werkTyme.catalog-hover-expand .catalog-thread.watched > .catalog-container:hover > .catalog-post
 		border 2px solid rgba(255, 0, 0, .75)
 	
+	// XXX: needs to be coincided with normal .fileText
 	.file--huge .fileText
-		color var(--green-500)
+		color ss21green
 		a
-			color darken(#4caf50, 25%)
+			color darken(ss21green, 25%)
 	
 	.postContainer.post--hot > .post
-		background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(223, 57, 80, .33))
+		background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(140, 35, 50, .33))
 
 	.postContainer.poster--admin
 		> .post
@@ -2905,7 +2937,7 @@
 	
 	// make it visually obvious that the sjis mode is on. overrides default button styles
 	#qr.sjis-preview #sjis-toggle
-		background-color var(--orange-500)
+		background-color ss21orange
 	
 	// preserves white space when previewing tex on /sci/
 	#tex-preview
@@ -3269,7 +3301,7 @@
 			& > .remove
 				display inline-flex
 				cursor pointer
-				color var(--red-500)
+				color ss21red
 	
 	#add-post
 		font-size 0
@@ -3521,7 +3553,7 @@
 		span
 			tc(ss21primary, medium)
 		.warning // have to remention this here due to specificty
-			color var(--red-500)
+			color ss21red
 	
 	:root.float #updater,
 	:root.float #thread-stats
@@ -3604,7 +3636,7 @@
 			opacity 0
 			pointer-events none
 			border-radius 50%
-			background-color var(--red-500)
+			background-color ss21red
 			height 1.5rem
 			width 1.5rem
 			transform scale(.5)
@@ -3686,7 +3718,7 @@
 		.fa-times
 			display inline-flex
 			margin-right .25rem
-			color var(--red-500)
+			color ss21red
 			opacity .6
 			transition color .25s
 			&:hover
@@ -3709,10 +3741,10 @@
 			text-decoration line-through
 			opacity .75
 		.replies-unread .watcher-link
-			color var(--blue-500)
+			color ss21blue
 		.replies-quoting-you .watcher-link,
 		.last-page .watcher-page
-			color var(--red-500)
+			color ss21red
 	
 	.shortcut .replies-quoting-you::after
 		color ss21red
@@ -4113,12 +4145,18 @@
 			top 15rem
 		.ss21--fit-input
 			padding 0
-			border 1px solid ss21TextHint
 			borderRadius()
 			margin-bottom .25rem
 			background none
 			text-align right
 			width 5ch
+			border 1px solid alpha(ss21OppColour, .33)
+			transition border .25s, box-shadow .25s
+			&:hover
+				border-color alpha(ss21OppColour, .8)
+			&:focus
+				border-color ss21primary
+				box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
 		.ss21--fit-unit
 			color var(--text-hint-on-background)
 			margin-left .5ch
