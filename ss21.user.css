@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.1
+@version        2.1.2
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -453,6 +453,8 @@
 			background-position 50% 50%
 			background-repeat no-repeat
 			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23f00' d='M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z'/%3E%3C/svg%3E"), radial-gradient(white 3px, transparent 3px) //yes, that just happened
+		&.vocaroo
+			color #CAFF70 !important
 	
 	// correct some weird browser inconsistencies in font inheritance, and while
 	// we're here, set tripcodes and user ids to also use a monospace font
@@ -537,6 +539,7 @@
 	// `audio` separate, because it doesn't need to be responsive
 	audio
 		vertical-align middle
+		width 100%
 	
 	// remove the default border given to `iframe`
 	iframe
@@ -639,7 +642,7 @@
 		appearance none
 		vertical-align text-top
 		margin-right .25rem
-		cursor top // opinionated
+		cursor pointer // opinionated
 		transition all .25s
 		&:active
 			filter brightness(90%)
@@ -1142,6 +1145,7 @@
 			justify-content center
 			position relative
 			min-width 3rem
+			padding 0 .5rem
 			if ss21headerHeight == 1
 				height 3rem
 			else if ss21headerHeight == 2
@@ -1178,7 +1182,17 @@
 	#shortcuts
 		display flex
 		align-items center
-	
+		//position relative
+		/*
+		&::before
+			content ''
+			position absolute
+			background-image linear-gradient(to right, rgba(0, 0, 0, 0), rgba(ss21primary, .8))
+			pointer-events none
+			height 100%
+			width 1.5rem
+			right 100%
+	*/
 	.shortcut
 		min-width 3rem
 		if ss21headerHeight == 1
@@ -1240,6 +1254,7 @@
 		bottom 100%
 	
 	// SIDEDISH: we add a scrolling progress indicator
+	// XXX: this only works if `#header-bar` is set to fixed
 	#scroll-progress
 		position absolute
 		top 100%
@@ -1483,7 +1498,8 @@
 			top 0
 		#header-bar.autohide.scrolled ~ .globalMessage
 			top .25rem
-	:root.bottom-header
+	:root.bottom-header,
+	:root.top-header:not(.fixed) #header-bar.scrolled ~ 
 		.globalMessage
 			top 0
 	
@@ -1672,7 +1688,7 @@
 		if ss21postWidth
 			max-width 100%
 		else
-			display table // XXX: try other block elements
+			display table
 	
 	.thread .postContainer:last-of-type
 		margin-bottom 0
@@ -2733,7 +2749,6 @@
 		.prev,
 		.next
 			width 10%
-			a::after,
 			a::after
 				font-size 4.25rem
 				flex 1
@@ -3918,7 +3933,6 @@
 	
 	// 4CHANX: appchan's gallery mode, baked right into 4chan x
 	// TODO: when you work out text colour, make the '/' in the counter lighter
-	
 	#a-gallery
 		position fixed
 		top 0
@@ -3931,7 +3945,6 @@
 		z-index 50
 	
 	// container for images and controls
-	
 	.gal-viewport
 		display flex
 		flex-direction row
@@ -3941,7 +3954,6 @@
 		position relative
 	
 	// gallery controls
-	
 	.gal-buttons
 		position absolute
 		z-index 1
@@ -3955,26 +3967,19 @@
 		& > a
 			display inline-flex
 	
-	// name of the file being viewed
-	
-	.gal-name
+	.gal-labels
 		position absolute
 		z-index 1
 		right 1rem
 		bottom 1rem
-		background-color rgba(0, 0, 0, .5)
-		tc(@background-color, high)
-		line-height 1
-		padding .5rem
-		borderRadius()
+		display flex
+		flex-direction column
+		align-items flex-end
 	
-	// displays which file you're viewing out of the total of files
-	
-	.gal-count
-		position absolute
-		z-index 1
-		right 1rem
-		bottom 3.5rem
+	.gal-count,
+	.gal-name,
+	.gal-sauce
+		margin-top .5rem
 		background-color rgba(0, 0, 0, .5)
 		tc(@background-color, high)
 		line-height 1
@@ -3982,7 +3987,6 @@
 		borderRadius()
 	
 	// hide the stop icon if not sliding, hide the play if sliding
-	
 	.gal-buttons.gal-playing > .gal-start,
 	.gal-buttons:not(.gal-playing) > .gal-stop
 		display none
@@ -3991,7 +3995,6 @@
 		font-size 0
 	
 	// the image, video, or pdf
-	
 	.gal-image
 		flex 1
 		display flex
@@ -4003,14 +4006,12 @@
 			margin auto
 	
 	// make sure it takes up the whole viewport
-	
 	:root.gal-pdf .gal-image a,
 	.gal-image iframe
 		width 100%
 		height 100%
 	
 	// and, either stretch to it or fit to it
-	
 	:root.gal-fit-width .gal-image img,
 	:root.gal-fit-width .gal-image video
 		max-width 100%
@@ -4020,7 +4021,6 @@
 		max-height 100vh
 	
 	// previous and next buttons for gallery
-	
 	.gal-prev
 		position absolute
 		z-index 0
@@ -4042,7 +4042,6 @@
 	
 	// container for thumbnails
 	// hide it if enabled
-	
 	:root.gal-hide-thumbnails .gal-thumbnails
 		display none
 	
