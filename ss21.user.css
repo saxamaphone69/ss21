@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.2
+@version        2.1.3
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -190,7 +190,7 @@
 		--grey-500 #b3b3b6
 		--grey-700 #737376
 		--grey-900 #303033
-		--font-default inter var, arimo, roboto, helvetica, arial, system-ui
+		--font-default 'Inter var', arimo, roboto, helvetica, arial, system-ui
 		--font-monospace inconsolata, monospace, monospace
 		--font-icon material icons
 	
@@ -570,16 +570,17 @@
 	input[type="submit"],
 	a.replylink
 		font-size .875rem
+		line-height 1
 		letter-spacing .09em
 		text-transform uppercase
 		position relative
 		display inline-flex
 		align-items center
 		justify-content center
-		vertical-align middle
-		padding 0 .5rem
+		//vertical-align middle
+		padding 0 .75rem
 		border 0
-		min-height 1.5rem
+		min-height 2.25rem
 		min-width 4rem
 		borderRadius()
 		cursor pointer
@@ -611,6 +612,9 @@
 			&:active
 				background-color rgba(ss21primary, 0.25)
 				transform translateY(1px)
+	
+	a.replylink
+		min-height 1.5rem
 	
 	// okay, so there are only a handful of input fields used in 4chan x anyway:
 	// index search field (with 3 select dropdowns), qr, and the settings
@@ -976,6 +980,13 @@
 		margin-left .25rem
 		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M19,8V5H5V8H9A3,3 0 0,0 12,11A3,3 0 0,0 15,8H19M19,3A2,2 0 0,1 21,5V12A2,2 0 0,1 19,14H5A2,2 0 0,1 3,12V5A2,2 0 0,1 5,3H19M3,15H9A3,3 0 0,0 12,18A3,3 0 0,0 15,15H21V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V15Z' /%3E%3C/svg%3E")
 	
+	// XXX: on "retina" (`window.devicePixelRatio >= 2`) displays, 4chan x switches
+	// to the @2x version of certain icons. until we switch the identityIcon to an
+	// svg, force the icon to still render at the correct size
+	.retina
+		height 1rem
+		width 1rem
+	
 	// 4CHANX: while shortcut icons are encouraged, if for some odd reason you
 	// choose not to use them, still provide support
 	:root.shortcut-icons #shortcuts .fa,
@@ -994,6 +1005,13 @@
 			color #789922
 		else
 			color ss21green
+	
+	// on /gd/'s pinned thread, quotes are hardcoded colour
+	[style*="color:#789922"]
+		if ss21quoteColour
+			color #789922 !important
+		else
+			color ss21green !important
 	
 	// make warning text visually different
 	.warning
@@ -1604,6 +1622,7 @@
 			margin 1px 0
 	
 	// replace the original clear search 'x' with an icon
+	// XXX: `:focus` is off
 	#index-search-clear
 		font-size 0
 		width 0
@@ -2073,19 +2092,22 @@
 			opacity .15
 	
 	// XXX: convert sauce links to icons for fun
+	// XXX: on mac + chrome, have to add `white-space: pre` otherwise it still renders
+	// the text
 	.sauce[href*='google']
 		color transparent
 		display inline-block
+		white-space pre
 		width .75rem
 		opacity .54
 		background-repeat no-repeat
 		background-position 50% 50%
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21primary) + "' /%3E%3C/svg%3E")
+		transition opacity .25s
 		&:hover
 			opacity .8
 	
 	.file--huge .fileText .sauce[href*='google']
-		color transparent
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
 	
 	if ss21thumbnailOpacity == 1
@@ -2409,7 +2431,7 @@
 				opacity .6
 	
 	.thread-chip--mire .post
-		background-color mix(pink, ss21BackgroundColour, 25%)
+		background-color mix(pink, ss21BackgroundColour, 10%)
 	
 	.post--dubs
 		will-change transform
@@ -3956,7 +3978,7 @@
 	// gallery controls
 	.gal-buttons
 		position absolute
-		z-index 1
+		z-index 2
 		display flex
 		top 1rem
 		right 1rem
@@ -3969,7 +3991,7 @@
 	
 	.gal-labels
 		position absolute
-		z-index 1
+		z-index 2
 		right 1rem
 		bottom 1rem
 		display flex
@@ -3986,6 +4008,9 @@
 		padding .5rem
 		borderRadius()
 	
+	.gal-sauce:empty
+		display none
+	
 	// hide the stop icon if not sliding, hide the play if sliding
 	.gal-buttons.gal-playing > .gal-start,
 	.gal-buttons:not(.gal-playing) > .gal-stop
@@ -4001,6 +4026,7 @@
 		align-items flex-start
 		justify-content space-around
 		overflow hidden
+		margin 1rem
 		& > a
 			display block
 			margin auto
@@ -4023,7 +4049,7 @@
 	// previous and next buttons for gallery
 	.gal-prev
 		position absolute
-		z-index 0
+		z-index 1
 		width 25%
 		height 100%
 		cursor url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(255, 255, 255, .87)' d='M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z'/%3E%3C/svg%3E"), pointer
@@ -4032,7 +4058,7 @@
 	
 	.gal-next
 		position absolute
-		z-index 0
+		z-index 1
 		right 0
 		width 25%
 		height 100%
@@ -4051,6 +4077,7 @@
 		align-items center
 		overflow-y auto
 		background-color rgba(33, 33, 33, .25)
+		border-left 1px solid tint(ss21BackgroundElevated, 10%)
 	
 	.gal-thumb
 		display block
@@ -4272,3 +4299,14 @@
 					border-left 0
 				.field
 					background #fff
+	
+	// please turn off oneechan...
+	.fa-gears::after
+		content 'sentiment_very_dissatisfied'
+	#oneechan-options
+		background-color var(--background-primary)
+		padding 1rem
+		&::after
+			content "Aren't you a rebel? Not following the rules! Tsk tsk tsk."
+		*
+			display none
