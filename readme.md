@@ -28,10 +28,17 @@ it is **highly** recommended you play with the settings within the userstyle
 ## installation
 this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
-1. install `ss21.user.css`, `ss21font.css`, and `ss21boardbanner.css` (stylus should prompt you when viewing the raw file)
-2. install `sidedish.user.js`
-3. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
-4. cross your fingers and hope it works!
+1. install [`ss21.user.css`](https://github.com/saxamaphone69/ss21/raw/master/ss21.user.css) (stylus should prompt you to install)
+2. install [`ss21font.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21font.css), and (optionally) [`ss21boardbanner.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21boardbanner.css)
+ - since these are not `user.css` files, they are not auto-recognised and auto-updated by stylus. the easiest way to install them is to:
+   - click on stylus and click on the "manage button"
+   - on the left hand side, click on the "write new style" button and make sure "as usercss" is NOT checked
+   - copy (`ctrl+c`) and paste (`ctrl+v`) the content of `ss21font.css` into this new window
+   - stylus doesn't actually allow `@import`... so cut (`ctrl+x`) lines 2 and 3, click on the "override style" button, paste those 2 lines back into the window, name the file ss21font, then click save. yeah, i know.
+   - `ss21boardbanner.css` is the same steps, except once you paste and click the "override style" button, name it ss21boardbanner and click save
+3. install [`sidedish.user.js`](https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js) (your userscript manager should prompt you to install)
+4. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
+5. cross your fingers and hope it works!
 
 ### blocker filters
 a blocker is used to not only hide ads, but also block some other stuff to save on network requests.
