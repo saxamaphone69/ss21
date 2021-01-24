@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.3
+@version        2.1.4
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -34,7 +34,7 @@
 ==/UserStyle== */
 
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
-	// main
+	
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -196,7 +196,6 @@
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
 	// it loads. also create a pseudo element loader/spinner in the mean time
-	
 	:root.site-loading
 		#delform
 			display flex
@@ -223,10 +222,9 @@
 	@keyframes loading
 		to
 			transform rotate(359deg)
-
+	
 	// let's hide stuff we don't need: ads!
 	// first, let's keep `!important` away as to not pollute scope
-
 	.center,
 	.arc-ads,
 	[hidden]
@@ -241,7 +239,6 @@
 	// 6. checkboxes next to posts (use the menu)
 	// 7. ad pleas (buy a 4chan pass, friend)
 	// 8. the '>>' to the left of posts when reply hiding isn't on
-	
 	.mobile,
 	.desktop:not(#bannerCnt):not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
 	hr:not(#unread-line),
@@ -265,7 +262,6 @@
 	// 3. default `color` and `background` to help us determine light|dark mode
 	// 4. make text render a little nicer
 	// 5. always apply a scrollbar regardless of page height
-	
 	:root
 		font-family var(--font-default)
 		font-size 1rem
@@ -298,7 +294,7 @@
 	
 	body
 		font-size ss21fontSize
-
+	
 	// let's reset `box-sizing` so that when we say `1rem`, we mean it
 	// http://www.paulirish.com/2012/box-sizing-border-box-ftw/ along with
 	// https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
@@ -306,12 +302,11 @@
 	::before,
 	::after
 		box-sizing inherit
-
+	
 	// it is bad practice/UX to not give focused elements visual feedback (not
 	// to mention against the law), but there is a 0% chance anyone with visual
 	// impairments would be using a userstyle
 	// XXX: i actually want to support this
-
 	:focus
 		outline 0
 		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
@@ -345,7 +340,7 @@
 	
 	::-webkit-scrollbar-thumb
 		background-color var(--grey-700)
-
+	
 	// address `font-weight` set incorrectly in all browsers. while we're here we
 	// set other elements we want to `bold`, too
 	b,
@@ -528,6 +523,8 @@
 				color #c76b29
 	
 	// fix spacing of media objects, and make them responsive by default
+	// XXX: `video` controls will appear slightly off the bottom of the video
+	// when height is not a rounded amount
 	embed,
 	img,
 	svg,
@@ -662,6 +659,7 @@
 	// XXX: the border needs to remain transparent OR opaque, cannot go between each
 	select
 		display inline-block
+		tc(ss21BackgroundColour, high)
 		background-color var(--background-primary)
 		background-repeat no-repeat
 		background-position 95% 45%
@@ -1021,7 +1019,8 @@
 	// elements to ensure they use our red, not `red` red
 	[color="red"],
 	[style*="color:red"],
-	[style*="color: red"]
+	[style*="color: red"],
+	[style*="color:#ff0000"]
 		color ss21red !important
 	
 	.hand
@@ -1064,7 +1063,6 @@
 			min-height 360px
 	
 	// 4chan x header
-	
 	// offset the header and body when it's fixed
 	// XXX: this first one might not be needed because we have the header transparent
 	// until a certain scroll threshold
@@ -1222,7 +1220,8 @@
 		justify-content center
 		padding 0 .5rem
 		.fa::after,
-		.menu-button::after
+		.menu-button::after,
+		.native-settings::after
 			tc(ss21primary, medium)
 			transition color .25s
 		.fa:hover::after,
@@ -1382,7 +1381,7 @@
 			text-align center
 			height 50vh
 			width 100%
-			z-index -1
+			//z-index -1
 			if ss21readingMode == ss21light
 				background-image linear-gradient(45deg, pink, cornflowerBlue)
 			else if ss21readingMode == ss21dark
@@ -1398,15 +1397,22 @@
 			&::after
 				content ''
 				display block
-				height 5rem
-				width 100%
 				//background red
 				//background-image linear-gradient(to bottom, rgba(ss21BackgroundColour, 0), 80%, rgba(ss21BackgroundColour, 1))
 				//box-shadow inset 0 0 50px 0 blue
 				position absolute
-				bottom 0
-				left 0
-
+				height calc(100% + 2rem)
+				width calc(100% + 2rem)
+				top -1rem
+				left -1rem
+				background-size cover
+				background-repeat no-repeat
+				background-position 50% 50%
+				box-shadow inset 0 0 10rem 2rem #000
+				filter blur(2px) saturate(.75)
+				z-index -1
+				pointer-events none
+		
 		@keyframes gradientShift
 			0%
 				background-position 84% 0%
@@ -1468,12 +1474,12 @@
 		.navLinks.json-index
 			margin 1rem auto !important
 	
-	/* Announcement Hiding */
+	// announcement hiding
 	:root.hide-announcement .globalMessage
 		display none
 	
 	// ideally the icon should just be a dismiss label button
-	// and since the announcement is always inconsistent with h* and links
+	// and since the announcement is always inconsistent with h* and links,
 	// it's difficult to style this consistently and per material spec
 	.globalMessage
 		background-color ss21BackgroundElevated
@@ -1510,7 +1516,7 @@
 		a:not(.fa)
 			color ss21primary
 			border-bottom 1px solid
-
+	
 	:root.top-header
 		#header-bar.autohide ~ .globalMessage
 			top 0
@@ -1552,7 +1558,6 @@
 	
 	// index sorting and what not. only enabled with json mode in 4chan x
 	// first up, only some elements are shown, depending on which mode is enabled
-
 	.indexlink, // hide the link to the original index
 	.cataloglink, // hide the link to the original catalogue
 	.archlistlink, // hide the link to the original archive
@@ -1562,7 +1567,7 @@
 	:root:not(.catalog-mode) #index-size, // hide the thumbnail size option except for when in catalogue mode
 	#index-search:not([data-searching]) + #index-search-clear // unless searching the index, hide the 'clear search' icon
 		display none
-
+	
 	.navLinks.json-index
 		background-color ss21primary
 		tc(@background-color, high)
@@ -1580,7 +1585,7 @@
 			background-color ss21BackgroundElevated
 			tc(@background-color, high)
 			margin-right .25rem
-
+	
 	#index-search
 		background-color ss21BackgroundElevated
 		tc(@background-color, high)
@@ -1783,7 +1788,7 @@
 	.page-num
 		color var(--text-hint-on-background)
 		margin 0 .25rem
-
+	
 	.postNum
 		display inline-flex
 		align-items center
@@ -1838,6 +1843,8 @@
 		color var(--text-hint-on-background)
 		a
 			color alpha(ss21primary, .54)
+			&:hover
+				color alpha(ss21primary, .87)
 	
 	// EXIF data table
 	.exif
@@ -1922,9 +1929,10 @@
 	// icon black on white, active+focus .87
 	// icon black on white, active+NOT focused .54
 	// icon black on white, inactive .38
-	// .stub ~ * is probably a little too expensive $$$
-	.stub + .postContainer,
-	.stub + .postContainer + .summary
+	
+	// .stub ~ * is probably a little too expensive $$$ - but it's there because
+	// if json index is off and replies are shown, it covers all bases
+	.stub ~ *
 		display none
 	
 	.stub
@@ -2061,7 +2069,7 @@
 	<img src="//s.4cdn.org/image/filedeleted-res.gif" alt="File deleted." class="fileDeletedRes retina">
 	</span>
 	*/
-
+	
 	// 4CHANX: `.webm` metadata
 	.webm-title
 		& > a::before
@@ -2084,13 +2092,6 @@
 	.quick-filter-md5::after
 		font-size 1rem
 	
-	// SIDEDISH: toggle to make media barely visible
-	:root.ss21--img-opacity .fileThumb
-		opacity .05
-		transition opacity .25s
-		&:hover
-			opacity .15
-	
 	// XXX: convert sauce links to icons for fun
 	// XXX: on mac + chrome, have to add `white-space: pre` otherwise it still renders
 	// the text
@@ -2108,6 +2109,7 @@
 			opacity .8
 	
 	.file--huge .fileText .sauce[href*='google']
+		color transparent
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
 	
 	if ss21thumbnailOpacity == 1
@@ -2187,88 +2189,7 @@
 		borderRadius()
 		z-depth(2)
 	
-	// 4CHANX: quote and quoting styling
-	/*
-	.hashlink::before {
-	content: ' ';
-	visibility: hidden;
-}
-
-.inline + .hashlink {
-	display: none !important;
-}
-
-:root.resurrect-quotes .deadlink {
-	text-decoration: none !important;
-}
-
-.catalog-post .qmark-ct {
-	display: none;
-}
-
-.backlink.deadlink:not(.forwardlink),
-.quotelink.deadlink:not(.forwardlink) {
-	text-decoration: underline !important;
-}
-	// when a post is inlined, give the post number clicked a visual difference
-	.inlined
-		opacity .6
-
-.forwarded {
-	display: none;
-}
-
-.quotelink.forwardlink,
-.backlink.forwardlink {
-	text-decoration: none;
-	border-bottom: 1px dashed;
-}
-	// the forwarded link
-	.forwardlink
-		border-bottom
-
-.filtered {
-	text-decoration: underline line-through;
-}
-
-:root.hide-backlinks .backlink.filtered,
-:root.hide-backlinks .backlink.filtered + .hashlink.filtered {
-	display: none;
-}
-
-.postNum + .container::before {
-	content: " ";
-}
-
-:root.bottom-backlinks .backlink {
-	font-size: 90%;
-}
-
-.inline {
-	border: 1px solid;
-	display: table;
-	margin: 2px 0;
-}
-
-.container ~ .inline {
-	margin-left: 20px;
-}
-
-:root.catalog-mode .inline {
-	display: none;
-}
-
-.inline .post {
-	border: 0 !important;
-	background-color: transparent !important;
-	display: table !important;
-	margin: 0 !important;
-	padding: 1px 2px !important;
-}
-*/
-	
-	// 4CHANX: backlinks at the bottom of posts
-	
+	// 4CHANX: backlinks
 	// XXX: a little too specific, so we require an !important
 	.container:empty
 		display none !important
@@ -2309,7 +2230,6 @@
 			background-color rgba(255, 255, 255, .05)
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
-	
 	.indicator
 		font-size 0
 		color #fff
@@ -2333,7 +2253,6 @@
 	
 	// 4CHANX: post highlighting and filter effects
 	// some of these will only work if you added the filters i asked you to install
-	
 	.postContainer > .post:target, // for when a post is quoted in the url
 	.filter-highlight > .post, // posts that match the default 4chan x highlight filter
 	.highlight, // ???
@@ -2492,7 +2411,13 @@
 			width .75rem
 			&::after
 				font-size .75rem
+				transition opacity .25s
 				opacity .54
+			&:hover::after
+				opacity .89
+	
+	.flag
+		margin 0 .25rem
 	
 	// 4CHANX: copy text link hidden textarea
 	// wonder if a visiblity: hidden would suffice here
@@ -2518,7 +2443,6 @@
 	// because normal threads/posts are given their own visual style,
 	// and because most of the information is hidden when shown in this particular
 	// card style, a lot of that has to get reset when represented here
-	
 	.catalog-container > .hide-thread-button, // if enabled, thread hiding button
 	:root .catalog-post .container, // backlink container (:root is used to avoid an !important)
 	.catalog-post .file, // all file-related information
@@ -2748,7 +2672,6 @@
 		display none
 	
 	// pagelist styling
-	
 	:root .pagelist:not(.json-index),
 	.pagelist
 		display flex
@@ -2791,8 +2714,10 @@
 			flex 1
 			overflow hidden
 	
-	// bottom board navigation
+	// XXX: non-json index pagelist looks bad, pls fix
 	
+	// bottom board navigation
+	// XXX: on fresh 4chan x install, this is disabled
 	:root.hide-bottom-board-list #boardNavDesktopFoot
 		display none
 	
@@ -2843,7 +2768,6 @@
 			color var(--grey-300)
 	
 	// copyright information in the footer
-	
 	:root.hide-bottom-board-list .absBotDisclaimer
 		border-top 0
 		padding-top 3rem
@@ -2888,7 +2812,6 @@
 	// XXX: https://github.com/twbs/bootstrap/compare/98cd0eee62...a1d0afe81c
 	// the qr is rendered the same essentially on every board, so let's get this
 	// massive selector chain over and done with
-	
 	#qr.autohide:not(.focus):not(:hover):not(:active) > form, // autohide the qr form when not in use
 	#autohide, // the checkbox to autohide (click the label)
 	#qr.reply-to-thread:not(.show-new-thread-option) select[data-name="thread"], // hide new thread options if enabled
@@ -2967,7 +2890,6 @@
 	
 	// when shift_js is enabled, switch the font for the qr and the button
 	// https://en.wikipedia.org/wiki/Shift_JIS_art
-	
 	#sjis-toggle,
 	#qr.sjis-preview textarea
 		font 16px/1 "IPAMonaPGothic", "Mona", "MS PGothic", monospace
@@ -2985,7 +2907,7 @@
 		sub
 			margin-right .125em
 			bottom -.5em
-
+	
 	// 4CHANX: this exists in the original 4chan x css, no clue when the element even appears
 	//#qrtab { border-radius: 3px 3px 0 0;margin-bottom: 1px; }
 	
@@ -3000,67 +2922,9 @@
 	.captcha-counter
 		text-align center
 	
-	/*
-	// XXX scrollable with scroll bar hidden; prevents scroll on space press
-	:root.ua-blink #qr .captcha-container > div,
-	:root.ua-edge #qr .captcha-container > div {
-		overflow: hidden;
-	}
-
-	:root.ua-blink #qr .captcha-container > div > div:first-of-type,
-	:root.ua-edge #qr .captcha-container > div > div:first-of-type {
-		overflow-y: scroll;
-		overflow-x: hidden;
-		padding-right: 30px;
-		height: 99%;
-		width: 100%;
-	}
-
-	#qr .captcha-counter {
-		display: block;
-		width: 100%;
-		text-align: center;
-		pointer-events: none;
-	}
-
-	#qr.captcha-open .captcha-counter {
-		position: absolute;
-		bottom: 3px;
-	}
-
-	#qr .captcha-counter > a {
-		pointer-events: auto;
-		display: inline-block;
-	}
-
-	#qr:not(.captcha-open) .captcha-counter > a {
-		display: block;
-		width: 100%;
-	}
-
-	#qr.captcha-v2 #qr-captcha-iframe {
-		width: 302px;
-		height: 423px;
-		border: 0;
-		display: block;
-		margin: auto;
-	}
-
-	.goog-bubble-content {
-		max-width: 100vw;
-		max-height: 100vh;
-		overflow: auto;
-	}
-
-	.goog-bubble-content iframe {
-		position: static !important;
-	}
-	*/
-
 	// oekaki support for /i/ and /ic/ mainly, but also for any board
 	// XXX: find a better way to present the width/height input
 	// XXX: make input[type="color"] look potentially nicer
-	
 	.oekaki
 		display flex
 		align-items stretch
@@ -3096,7 +2960,7 @@
 				left 1px
 				&:not(:checked) + input[name="oekaki-bgcolor"]
 					visibility hidden // if no background for your drawing is needed, hide the background colour option
-
+	
 	input[name="oekaki-bgcolor"]
 		padding 0
 		border 0
@@ -3113,8 +2977,33 @@
 		input[type="submit"]
 			width 15%
 			margin-left .25rem
-			background-color ss21green
-			// XXX: make submit button look better
+			if ss21buttonStyle == 1
+				background-color ss21green
+				tc(ss21green, high)
+				z-depth(2)
+				&:hover
+					background-color mix(#fff, @background-color, 10%)
+				&:active
+					background-color mix(#fff, @background-color, 12%)
+					transform translateY(1px)
+			else if ss21buttonStyle == 2
+				color ss21green
+				background transparent
+				border 1px solid ss21green
+				&:hover
+					background-color rgba(ss21green, 0.1)
+				&:active
+					background-color rgba(ss21green, 0.25)
+					transform translateY(1px)
+			else if ss21buttonStyle == 3
+				color ss21green
+				background transparent
+				&:hover
+					background-color rgba(ss21green, 0.1)
+				&:active
+					background-color rgba(ss21green, 0.25)
+					transform translateY(1px)
+	// XXX: make submit button look better
 	
 	#qr-file-button
 		width 15%
@@ -3131,7 +3020,6 @@
 		position relative
 	
 	// no file selected text
-	
 	#qr-no-file
 		color var(--text-secondary-on-background)
 		flex 1
@@ -3159,7 +3047,7 @@
 	
 	#file-n-submit.has-file #qr-filename
 		display inline-block
-
+	
 	#qr:not(.has-spoiler) #qr-spoiler-label, // only show spoiler image option on boards that support it
 	#file-n-submit:not(.has-file) #qr-spoiler-label // only show spoiler option when a file is uploaded
 		display none
@@ -3198,72 +3086,15 @@
 				&:hover::after
 					tc(rgba(ss21BackgroundElevated), medium)
 	
+	#qr-filename-container #qr-filerm .fa-times-circle
+		&::after
+			color rgba(ss21red, .54)
+		&:hover::after
+			color rgba(ss21red, .89)
+	
 	#custom-cooldown-button:not(.disabled) .fa-clock-o::after,
 	#qr.dump #dump-button .fa-plus-square::after
 		tc(rgba(ss21BackgroundElevated), high)
-	
-	/* Spoiler Checkbox, QR Icons */
-	/*
-	#qr-filename-container > label,
-	#qr-filename-container > a {
-		-webkit-flex: none;
-		flex: none;
-		margin: 0;
-		margin-right: 3px;
-	}
-
-	#qr:not(.has-spoiler) #qr-spoiler-label,
-	#file-n-submit:not(.has-file) #qr-spoiler-label,
-	.has-file #paste-area,
-	.has-file #url-button,
-	#file-n-submit:not(.custom-cooldown) #custom-cooldown-button {
-		display: none;
-	}
-
-	#qr-filename-container > label {
-		position: relative;
-	}
-
-	#qr-filename-container input[type="checkbox"] {
-		margin: 0;
-	}
-
-	.checkbox-letter {
-		font-size: 13px;
-		font-weight: bold;
-	}
-
-	#qr-filename-container label:not(:hover) > input[type="checkbox"]:not(:focus):not(:checked),
-	#qr-filename-container label:not(:hover) > input[type="checkbox"]:not(:focus):not(:checked) ~ :not(.checkbox-letter),
-	#qr-filename-container label:hover > .checkbox-letter,
-	input[type="checkbox"]:focus ~ .checkbox-letter,
-	input[type="checkbox"]:checked ~ .checkbox-letter {
-		// not displayed but still focusable 
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	.checkbox-letter,
-	#paste-area,
-	#url-button,
-	#custom-cooldown-button,
-	#dump-button {
-		opacity: 0.6;
-	}
-
-	#paste-area {
-		font-size: 0;
-	}
-
-	#paste-area:focus {
-		opacity: 1;
-	}
-
-	#custom-cooldown-button.disabled {
-		opacity: 0.27;
-	}
-	*/
 	
 	#char-count
 		font-size .75rem
@@ -3273,7 +3104,6 @@
 		bottom 0
 	
 	// qr dump list ui
-	
 	#dump-list .qr-preview:only-of-type > .remove, // if there's only post in the dump list, don't show the option to remove it
 	.qr-preview:not(.has-file) label, // if a post has no file attached, don't show the option to spoiler it
 	#qr:not(.has-spoiler) .qr-preview-spoiler // only show the spoiler option if the board supports it
@@ -3351,7 +3181,6 @@
 
 	// 4CHANX: settings
 	// easier styling thanks to https://github.com/ccd0/4chan-x/pull/2322
-	
 	#overlay
 		position fixed
 		display flex
@@ -3366,7 +3195,6 @@
 	
 	// the settings itself contains elements that need to be rebooted again
 	// due to the way they are used and laid out
-	
 	#fourchanx-settings
 		background-color var(--background-primary)
 		width 75rem
@@ -3505,9 +3333,10 @@
 		button + .description
 			padding 0
 			margin-top .125em
+		div[data-checked="false"] > .suboption-list
+			display none
 	
 	// filter section
-	
 	.section-filter
 		ul
 			padding 0
@@ -3521,7 +3350,6 @@
 			min-height 70vh
 	
 	// sauce section
-	
 	.section-sauce
 		ul
 			padding 0
@@ -3541,19 +3369,16 @@
 		margin-bottom 1rem
 	
 	// space out the favicon previews (in groups of 3)
-	
 	.favicon-preview > img:nth-of-type(3n+1)
 			margin-left .5rem
 	
 	// keybinds section
-	
 	.section-keybinds
 		div
 			margin-bottom .5rem
 	
 	// advanced section
 	// XXX: needs a lot of small tweaks to improve visual/grid consistency + vertical rhythm
-	
 	.section-advanced
 		textarea
 			min-height 7.5rem
@@ -3571,13 +3396,11 @@
 			color var(--text-secondary-on-background)
 
 	// XXX: quick fix for oneechan (which should not be used anyway)
-	
 	#sauce-doc-expand + .riceCheck
 		display none
 	
 	// thread updater and stats. ideally, leave these in the header. but if
 	// you prefer it to be floating and fixed, support that too
-	
 	#updater,
 	#thread-stats
 		font-family var(--font-monospace)
@@ -3589,7 +3412,7 @@
 		tc(ss21primary, low)
 		span
 			tc(ss21primary, medium)
-		.warning // have to remention this here due to specificty
+		.warning // have to re-mention this here due to specificty
 			color ss21red
 	
 	:root.float #updater,
@@ -3606,7 +3429,6 @@
 		//height 1.75rem
 	
 	// make the draggable area a little bigger than the updater itself
-	
 	#updater > .move
 		position absolute
 		z-index -1
@@ -3616,47 +3438,21 @@
 		left -.125rem
 	
 	// make these appear clickable
-	
 	#update-timer,
 	#page-count
 		cursor pointer
 	
 	// give `pointer-events: none` so that the element can be dragged around
 	// without selecting text
-	
 	:root.float #thread-stats > .move > span:not(#page-count)
 		pointer-events none
 	
 	.new
 		color limegreen
 		margin-right .5rem
-	/*
-	ss18
-
-  #updater {
-    color: var(--text-secondary-on-primary);
-  }
-
-  #updater .new {
-    color: var(--green-500);
-  }
-
-  #thread-stats {
-    color: var(--text-hint-on-primary);
-  }
-
-  #thread-stats span {
-    color: var(--text-secondary-on-primary);
-  }
-
-  #thread-stats .warning {
-    color: var(--red-500);
-  }
-	*/
 	
 	// we go a little overboard with the micro-interaction here, but whatever;
 	// adds a "ripple" effect when watching a thread
-	
 	.watch-thread-link
 		display inline-flex
 		align-items center
@@ -3791,7 +3587,6 @@
 	// https://www.material.io/components/menus/
 	// https://twbs-bootstrap.netlify.com/docs/4.3/components/dropdowns/
 	// https://www.carbondesignsystem.com/components/dropdown/code/
-	
 	.menu-button
 		position relative
 		display inline-flex
@@ -3879,12 +3674,13 @@
 		color var(--text-hint-on-background)
 	
 	// 4CHANX: volume control; located here because it's only found in the header menu
-	
 	input[name="Default Volume"]
 		vertical-align middle
+		padding 0
 		margin 0
 		width 5rem
-		height 16px
+		height 1rem
+	// XXX: custom style
 	
 	/**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
@@ -3915,7 +3711,6 @@
 
 	// 4CHANX: embedding
 	// if media is embedded, remove the un prefix from inside the post
-	
 	.embedder:not(.embedded) > span
 		display none
 	
@@ -3952,6 +3747,8 @@
 			transition opacity .25s
 			&:hover
 				opacity .87
+		audio
+			min-width 30rem
 	
 	// 4CHANX: appchan's gallery mode, baked right into 4chan x
 	// TODO: when you work out text colour, make the '/' in the counter lighter
@@ -4036,7 +3833,7 @@
 	.gal-image iframe
 		width 100%
 		height 100%
-	
+	// XXX: i think something has changed, this needs to be adjusted
 	// and, either stretch to it or fit to it
 	:root.gal-fit-width .gal-image img,
 	:root.gal-fit-width .gal-image video
@@ -4044,7 +3841,7 @@
 	
 	:root.gal-fit-height .gal-image img,
 	:root.gal-fit-height .gal-image video
-		max-height 100vh
+		max-height 85vh
 	
 	// previous and next buttons for gallery
 	.gal-prev
@@ -4188,7 +3985,6 @@
 			margin-left .5ch
 	
 	// april fools 2020 support
-	
 	.xa20e::after
 		font-size 18px
 		line-height 1em
@@ -4247,12 +4043,11 @@
 			tc(@background-color, high)
 		tbody
 			vertical-align inherit
-
+	
 	// attempt to get "yotsuba" theme working
 	// since stylus runs after page, it can't retroactively check if the page
 	// is a .ws or .nws page, so we can't really even use variables from stylus
 	// nor custom properties
-	
 	if ss21readingMode == ss21yotsuba
 		:root
 			&.ws
@@ -4307,6 +4102,6 @@
 		background-color var(--background-primary)
 		padding 1rem
 		&::after
-			content "Aren't you a rebel? Not following the rules! Tsk tsk tsk."
+			content "I told you, this isn't going to work."
 		*
 			display none
