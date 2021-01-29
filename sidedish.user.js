@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.1.0
+// @version     2.1.1
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -308,6 +308,7 @@
       countBacks();
       swapInfo();
     }
+
     /*
     function imgOpacity() {
       ready('#shortcuts', (element) => {
@@ -420,6 +421,7 @@
 <li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
 <li><a href="//boards.4channel.org/n/" class="boardlink">Transportation</a></li>
 <li><a href="//boards.4channel.org/jp/" class="boardlink">Otaku Culture</a></li>
+<li><a href="//boards.4channel.org/vt/" class="boardlink">Virtual YouTubers</a></li>
 </ul>
 <h3>Video Games</h3>
 <ul>
@@ -578,12 +580,13 @@
           newtoggleExif = String(newtoggleExif);
           newtoggleExif = newtoggleExif.slice(1, -1);
           let el = $("#" + newtoggleExif);
-          el.style.display = "block" != el.style.display ? "block" : "none";
+          el.style.display = "table" != el.style.display ? "table" : "none";
         });
       }
     }
 
     exifToggle();
+    on(d, "IndexRefresh", exifToggle);
 
     // this only works when the global message is already there. ideally, we'd have to observe the element for children changes and wrap the new children
     // it also means the toggle doesn't hide the element because it is looking for the parent
@@ -664,9 +667,29 @@
     if (config === "thread") {
       OPAsBanner();
     }
+
+      ready("#mascot", (element) => {
+        let _this = element;
+        if (_this) {
+          make({
+            el: "aside",
+            cl4ss: "fcx-announcement warning",
+            html: `ss21 is <b>not</b> compatible with OneeChan; please disable it to continue using ss21 as intended.`,
+            appendTo: "body",
+          });
+      }
+      });
   }
 
   on(d, "4chanXInitFinished", init);
+
+	function backup() {
+		doc.classList.remove('site-loading');
+		doc.classList.add('no-fourchan-x');
+		on(d, "4chanXInitFinished", doc.classList.remove('no-fourchan-x'));
+	}
+
+	on(d, 'DOMContentLoaded', backup);
 
   /*
    function backup() {
