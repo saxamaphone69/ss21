@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.1.1
+// @version     2.1.2
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -451,6 +451,7 @@
 <li><a href="//boards.4channel.org/his/" class="boardlink">History &amp; Humanities</a></li>
 <li><a href="//boards.4channel.org/int/" class="boardlink">International</a></li>
 <li><a href="//boards.4channel.org/out/" class="boardlink">Outdoors</a></li>
+<li><a href="//boards.4channel.org/pw/" class="boardlink">Professional Wrestling</a></li>
 <li><a href="//boards.4channel.org/toy/" class="boardlink">Toys</a></li>
 </ul>
 </div>
