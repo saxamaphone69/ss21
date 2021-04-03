@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.4
+@version        2.1.5
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -422,10 +422,13 @@
 	// one day:
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/text-underline-offset
 	.linkify,
+	.globalMessage a:not(.fa),
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
 		text-decoration solid underline
 		text-underline-offset 1px
 		color ss21primary
+		&:hover
+			color shade(ss21primary, 15%)
 	
 	.linkify
 		&.twitter::before
@@ -1389,7 +1392,7 @@
 			background-size 400% 400%
 			overflow hidden
 			user-select none
-			contain strict
+			contain layout
 			transform translate3d(0, 0, 0)
 			will-change transform
 			//box-shadow inset 0 0 0px 20px red
@@ -1481,6 +1484,7 @@
 	// ideally the icon should just be a dismiss label button
 	// and since the announcement is always inconsistent with h* and links,
 	// it's difficult to style this consistently and per material spec
+	// XXX: FIX FOR UNDER 75REM
 	.globalMessage
 		background-color ss21BackgroundElevated
 		position fixed
@@ -1513,9 +1517,6 @@
 			transition opacity .25s
 			&:hover
 				opacity .84
-		a:not(.fa)
-			color ss21primary
-			border-bottom 1px solid
 	
 	:root.top-header
 		#header-bar.autohide ~ .globalMessage
@@ -2171,7 +2172,7 @@
 	
 	.filtered,
 	.deadlink
-		text-decoration line-through
+		text-decoration line-through !important // only because of the highly specific "links in a post" selector earlier
 		opacity .6
 	
 	:root.hide-backlinks .backlink.filtered,
@@ -2439,7 +2440,7 @@
 		a
 			color ss21primary
 	
-	// catalogue styling
+	// catalogue mode styling/support
 	// because normal threads/posts are given their own visual style,
 	// and because most of the information is hidden when shown in this particular
 	// card style, a lot of that has to get reset when represented here
@@ -2456,198 +2457,191 @@
 	// removes the direct link to thread thumbnail and thread stats when switching between 4chan x index and catalog
 	:root:not(.catalog-mode)
 		.catalog-link,
-		.catalog-stats
+		.catalog-stats,
+		.catalog-replies
 			display none
 	
 	:root.catalog-mode .board
+		max-width 100% // set to `75rem` normally
+		padding 0 1.5rem // set to `0 1rem` normally
 		display grid
 		grid-gap 1rem
-		grid-auto-flow dense
-		max-width none // allows the catalogue cards to take up the whole screen width
-		padding 0 4rem // so hovered threads in catalogue don't appear offscreen
+		grid-template-columns repeat(10, 1fr)
+		//grid-template-rows repeat(20, 15rem)
 		grid-auto-rows 15rem
-		&.catalog-small
-			grid-template-columns repeat(auto-fit, minmax(7.5rem, 1fr))
-		&.catalog-large
-			grid-template-columns repeat(auto-fit, minmax(12.5rem, 1fr))
+		grid-auto-flow dense
+		place-content stretch stretch
+		place-items stretch stretch
 	
-	// https://www.smashingmagazine.com/native-css-masonry-layout-css-grid/
-	// https://css-tricks.com/a-lightweight-masonry-solution/
-	// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Masonry_Layout
+	:root.catalog-mode
+		.board.catalog-small
+			grid-template-columns repeat(12, 1fr)
+		.board.catalog-large
+			grid-template-columns repeat(8, 1fr)
 	
-	// `.thread`
-	.catalog-thread
+	@media (max-width 75rem)
+		:root.catalog-mode
+			.board.catalog-small
+				grid-template-columns repeat(5, 1fr)
+			.board.catalog-large
+				grid-template-columns repeat(4, 1fr)
+	
+	.catalog-thread // this is `.thread`
 		padding 0
 		margin 0
-		grid-column span 1
-		word-wrap break-word
-		position relative
-		// display inline-block
-		// vertical-align top
-		//max-height 17.5rem
-		height 15rem
-		&.thread--long
-			grid-column span 2
-		&.thread--extra-long
-			grid-column span 2
-			grid-row span 2
-			height 31rem
-		&.thread--silly-long
-			grid-column span 2 // was 3
-			grid-row span 2
-			height 31rem
+		//grid-column span 1
+		max-height 15rem
+		//overflow hidden
+		// XXX: can't use `hidden` here because it messes with chips
+		//z-depth(4)
 	
 	:root.catalog-hover-expand .catalog-thread:hover
-		z-index 2
+		z-index 1
 	
-	//.catalog-container:not(:hover),
-	//:root:not(.catalog-hover-expand) .catalog-container
-	//	overflow hidden
+	.thread--extra-long
+		grid-column span 2
+		grid-row span 2
+		max-height 31rem
+	
+	.thread--silly-long
+		grid-column span 3
+		grid-row span 2
+		max-height 31rem
+	
+	.thread--new-lines
+		grid-column span 2
+		grid-row span 2
+		max-height 33rem
 	
 	.catalog-container
-		//borderRadius()
-		//overflow hidden
-		z-depth(2)
-		//height 12.5rem
 		position absolute
 		top 0
 		right 0
 		bottom 0
 		left 0
+		max-width none // set to `100%` normally
+		z-depth(4)
+		transition all .25s
+		//height 100%
+	
+	.catalog-thread:hover
+		z-index 5
+	
+	.catalog-thread:hover .catalog-container
+		top -1rem
+		right -1rem
+		bottom -1rem
+		left -1rem
+		z-depth(8)
+	
+	.catalog-container:not(:hover) .postInfo > :not(.subject)
+		display none
+	
+	.catalog-post // this is .`post`
+		all unset
+		borderRadius()
 		background-color ss21BackgroundElevated
-		& > .catalog-post
-			all unset
-			display flex
-			flex-direction column
-			align-items stretch
-			position aboslute
-			min-height 15rem
+		display flex
+		flex-direction column
+		//overflow hidden
+		min-height 100%
+	
+	.catalog-link // used to link to the thread
+		order 1
+		display block
+		width 100%
+		height 7.5rem
+		text-align center
+		overflow hidden
+		.catalog-thumb
+			border-radius 4px 4px 0 0
+			width 100% !important
+			height auto !important
+			min-height 100%
+			if ss21readingMode == ss21dark
+				opacity .8
+			&.deleted-file
+				min-height auto
+	
+	.catalog-stats
+		order 4
+		padding .25rem .5rem
+		display flex
+		align-items center
+		border-top 1px solid darken(ss21BackgroundElevated, 25%)
+		span[title]
+			color var(--text-hint-on-background)
+			cursor help
+			span
+				color var(--text-primary-on-background)
+		.catalog-icons
+			flex 1
+			text-align right
+		.menu-button
+			opacity 1
+			transition opacity .25s
+			will-change opacity
+	
+	.catalog-thread:not(:hover):not(:focus-within) .menu-button
+		opacity 0
+	
+	.catalog-container > .catalog-post > .postInfo
+		all unset
+		order 2
+		position relative
+		.subject:not(:empty)
+			max-width none
+			box-sizing border-box
+			background-image: linear-gradient(to bottom,
+    hsla(0, 0%, 13%, 0) 0%,
+    hsla(0, 0%, 13%, 0.034375) 16.36%,
+    hsla(0, 0%, 13%, 0.125) 33.34%,
+    hsla(0, 0%, 13%, 0.253125) 50.1%,
+    hsla(0, 0%, 13%, 0.4) 65.75%,
+    hsla(0, 0%, 13%, 0.546875) 79.43%,
+    hsla(0, 0%, 13%, 0.675) 90.28%,
+    hsla(0, 0%, 13%, 0.765625) 97.43%,
+    hsla(0, 0%, 13%, .8) 100%
+  )
+			text-shadow 0 1px 2px rgba(0 0 0 .3)
+			display block
+			position absolute
+			font-size .875rem
+			width 100%
+			top -2.75rem
+			padding 1rem .5rem .5rem
 			overflow hidden
-			.catalog-link
-				display block
-				position relative
-				order 2
-				text-align center // XXX: at this stage, used to center exceptions to catalogue thumbnails
-				.catalog-thumb
-					// XXX: this could be better
-					object-fit cover
-					object-position 50% 50%
-					width 100% !important
-					min-height 7.5rem !important
-					&.deleted-file
-						width 127px !important
-						min-height auto !important
-						height 13px
-					&.spoiler-file
-						width 100px !important
-						min-height auto !important
-						height 100px
-					&.no-file
-						width 77px !important
-						min-height auto !important
-						height 13px
-			.catalog-stats
-				order 3
-				line-height 1
-				padding .25rem
-				position relative
-				display flex
-				align-items center
-				if ss21readingMode == ss21light
-					background-color rgba(33, 33, 33, .02)
-				else if ss21readingMode == ss21dark
-					background-color rgba(255, 255, 255, .05)
-				& > span[title]
-					cursor help
-					font-size .75rem
-					color var(--text-hint-on-background)
-					& > span
-						color var(--text-primary-on-background)
-				.catalog-icons
-					display inline-flex
-					height 1rem
-					flex 1
-					& > img
-						margin-left .25rem
-				& > .menu-button
-					all unset
-					display block
-					height 1rem
-					width 1rem
-					cursor pointer
-					&::after
-						font-size 1rem
-			& > .postInfo
-				all unset
-				order 4
-				text-align center
-				.subject
-					font-size .875rem
-					padding 0 .25rem
-					&::after
-						display none
-				.nameBlock,
-				.dateTime
-					display none
-			& .postMessage
-				order 5
-				font-size .75rem
-				// XXX: the line-height needs work
-				padding .25rem
-				margin 0
-
-	.catalog-thread.thread--extra-long .catalog-post {
-		min-height: 31rem;
-	}
-
-	.catalog-container:not(:hover) {
-		overflow: hidden;
-		box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),
-					0 2px 2px 0 rgba(0,0,0,.14),
-					0 1px 5px 0 rgba(0,0,0,.12);
-	}
+			white-space nowrap
+			text-overflow ellipsis
+			pointer-events none
+			tc(black, high)
+			&::after
+				display none
+		.nameBlock
+			font-size .75rem
+			margin 0
+		.dateTime
+			font-size .75rem
+			margin 0
 	
-	.catalog-container {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		transition: all .25s;
-		//z-index: 9;
-	}
+	.catalog-post > .postMessage
+		order 3
+		font-size .75rem
+		flex-grow 2
+		min-height 0
+		//max-height 5rem
+		overflow hidden
+		padding .5rem
+		&:empty
+			display block
 	
-	.catalog-post {
-		margin: 0;
-		overflow: visible;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		transition: all .25s;
-	}
-	
-	.catalog-container:hover .catalog-post {
-		background-color: ss21BackgroundElevated;
-		top: .5rem;
-		margin: -1rem -3rem;
-		transform: scale(1.02) translateY(-1%);
-		box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14),
-			0 3px 14px 2px rgba(0,0,0,0.12),
-			0 5px 5px -3px rgba(0,0,0,0.2);
-	}
-	
-	.catalog-thread:hover {
-		z-index: 10;
-	}
-
-	// XXX: threads furthest to the left and right of the browser edge
-	// will have content cut off on hover
+	.catalog-container:not(:hover) .catalog-post > .postMessage
+		height 4.5rem
 	
 	// 4CHANX: if 'show replies' is enabled, on catalogue they are added to
 	// `.catalog-post` upon hovering over `.thread`
 	.catalog-replies
-		order 6
+		order 5
 		font-size .75rem
 		.catalog-reply
 			white-space nowrap
@@ -2665,10 +2659,8 @@
 			.catalog-reply-preview
 				margin-left .25rem
 	
+	// hide replies after hovering is done so they don't stay rendered
 	.catalog-thread:not(:hover) .catalog-replies
-		display none
-	
-	.catalog-thread:not(.thread--subject) .postInfo
 		display none
 	
 	// pagelist styling
@@ -2753,6 +2745,8 @@
 			letter-spacing 0.03em
 			text-transform uppercase
 			color var(--grey-300)
+			text-decoration none !important
+			display inline-block !important
 		ul
 			list-style none
 			padding 0
@@ -2762,10 +2756,12 @@
 		sup
 			//color lighten(rgba(244, 67, 54, 1), 15)
 			color ss21red
-			margin-left .25rem
+			vertical-align baseline !important
 		a:hover,
 		.current
 			color var(--grey-300)
+		.clear-bug
+			display none
 	
 	// copyright information in the footer
 	:root.hide-bottom-board-list .absBotDisclaimer
@@ -4021,7 +4017,43 @@
 			transform rotate(180deg)
 			bottom auto
 			top 0
-
+	
+	// 2021 april fools support
+	
+	.xa21-notice
+		display block !important
+		text-align center
+		margin-top 1rem
+	
+	.is_index .xa21-notice
+		margin 0 0 2rem 0
+	
+	.rake-btn
+		height 24px
+		margin-left .5rem
+	
+	.rake-btn::after
+		font-family material icons
+		font-weight normal
+		font-style normal
+		font-size 1.5rem // 24px, ideally
+		display inline-flex // better vertical alignment
+		justify-content center
+		align-items center
+		line-height 1 // might not be needed
+		text-transform none
+		letter-spacing normal
+		word-wrap normal
+		white-space nowrap
+		direction ltr
+		-webkit-font-smoothing antialiased
+		text-rendering optimizeLegibility
+		-moz-osx-font-smoothing grayscale
+		font-feature-settings 'liga'
+		tc(ss21BackgroundElevated, medium) // generally not explicity set, but should be
+		visibility visible // added from 4chan x
+		content 'brush'
+	
 	// XXX: archive and /f/ `table` support
 	// fun fact, the archive has about 10,000 entries displayed at any one time
 	// in the archive table, `.teaser-col` can contain the subject (`b`), `.quote`,
