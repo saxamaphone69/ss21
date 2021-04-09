@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.5
+@version        2.1.6
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -392,7 +392,7 @@
 		margin-bottom 1rem
 	
 	// ensure the correct `font-size` in all browsers
-	small
+	:where(small)
 		font-size .875em
 	
 	// prevent `sup` and `sub` elements from affecting line height
@@ -890,9 +890,9 @@
 	#navlinks a:last-of-type::after
 		content 'keyboard_arrow_down' // navigate down
 	.postJumper a:first-of-type::after
-		content 'arrow_upwards' // jump to previous post by id
+		content 'arrow_upward' // jump to previous post by id
 	.postJumper a:last-of-type::after
-		content 'arrow_downwards' // jump to next post by id
+		content 'arrow_downward' // jump to next post by id
 	#index-rev::after
 		content 'swap_vert' // reverse index order
 	.pagelist .prev a::after
@@ -908,7 +908,8 @@
 		content 'content_paste' // paste mode in qr
 	.fa-clock-o::after
 		content 'timer' // auto poster in qr
-	#qr .fa-plus-square::after
+	#qr .fa-plus-square::after,
+	#add-post::after
 		content 'add_box' // dump list in qr
 	#index-search-clear::after,
 	.fa-times-circle::after
@@ -916,8 +917,6 @@
 	.qr-preview-spoiler::after,
 	.checkbox-letter::after
 		content 'strikethrough_s' // spoilers in qr
-	#add-post::after
-		content 'add_box' // add post in dump list in qr
 	.gal-start::after
 		content 'play_arrow' // gallery mode
 	.gal-stop::after
@@ -1647,8 +1646,11 @@
 	.postNum a:not(.replylink),
 	.quotelink,
 	.backlink,
-	.embedder
+	.embedder,
+	.hashlink
 		color ss21primary
+		&:hover
+			color shade(ss21primary, 15%)
 	
 	// a very crude and simple sidebar, for those that can't let go of oneechan
 	if ss21sidebar == 1
@@ -2498,17 +2500,17 @@
 	:root.catalog-hover-expand .catalog-thread:hover
 		z-index 1
 	
-	.thread--extra-long
+	.catalog-thread.thread--extra-long
 		grid-column span 2
 		grid-row span 2
 		max-height 31rem
 	
-	.thread--silly-long
+	.catalog-thread.thread--silly-long
 		grid-column span 3
 		grid-row span 2
 		max-height 31rem
 	
-	.thread--new-lines
+	.catalog-thread.thread--new-lines
 		grid-column span 2
 		grid-row span 2
 		max-height 33rem
@@ -2671,7 +2673,7 @@
 	
 	.pagelist
 		a
-			color var(--text-secondary-on-background)
+			tc(ss21BackgroundElevated, medium)
 			display block
 			transition color .25s, background-color .25s
 			&:hover
@@ -2682,7 +2684,8 @@
 		strong
 			flex 1
 			background-color ss21primary
-			tc(@background-color, high) !important
+			a
+				tc(ss21primary, high) !important
 		.prev,
 		.next
 			width 10%
@@ -2849,8 +2852,12 @@
 				text-transform lowercase
 			> .close
 				font-size 0
+				tc(ss21primary, medium)
+				transition color .25s
 				order 3
 				margin-left 1.5rem
+				&:hover
+					tc(ss21primary, high)
 		form
 			padding 1rem
 			max-height calc(100vh - 5rem)
@@ -3500,18 +3507,22 @@
 			align-items center
 			padding 0 1.5rem
 			height 3rem
+			border-top-left-radius 4px
+			border-top-right-radius 4px
+			& > a
+				tc(ss21primary, medium)
+				transition color .25s
+				&:hover
+					tc(ss21primary, high)
 			& > .refresh
 				display inline-flex
 				align-items center
 				margin-left .5rem
-				opacity .67
 			& > .menu-button
 				display inline-flex
-				opacity .67
 				min-width 2rem
 			& > .close
 				font-size 0
-				opacity .67
 		#menu
 			text-transform capitalize // because of the lowercase aesthetic, the menu is affected
 	
@@ -3660,6 +3671,8 @@
 	.post > .postInfo > .menu-button.active,
 	.post:hover > .postInfo > .menu-button
 		opacity .6
+		&:hover
+			opacity .87
 	
 	// XXX: icons are added to some menu entries to look fancy
 	.entry::after
@@ -3704,7 +3717,7 @@
 		a:hover::after
 			background-color darken(ss21primary, 15%)
 			transition background-color .25s
-
+	
 	// 4CHANX: embedding
 	// if media is embedded, remove the un prefix from inside the post
 	.embedder:not(.embedded) > span
@@ -3840,6 +3853,7 @@
 		max-height 85vh
 	
 	// previous and next buttons for gallery
+	// XXX: this can look misaligned, and hovering prev/next is weird with overlapping of actual media
 	.gal-prev
 		position absolute
 		z-index 1
@@ -3885,7 +3899,6 @@
 		background-color alpha(invert(ss21primary), .5)
 	
 	// SIDEDISH: support for the board drawer added by sidedish
-	
 	.ss21--board-drawer-background
 		position fixed
 		overflow hidden
@@ -3943,6 +3956,7 @@
 			&:hover
 				background-color darken(#f0e0d6, 5%)
 	
+	// SIDEDISH: convert imperial (a.k.a. inferior) to metric
 	.ss21--fit
 		position fixed
 		right 1rem
@@ -4019,7 +4033,6 @@
 			top 0
 	
 	// 2021 april fools support
-	
 	.xa21-notice
 		display block !important
 		text-align center
@@ -4128,12 +4141,121 @@
 					background #fff
 	
 	// please turn off oneechan...
-	.fa-gears::after
+	:root.oneechan .fa-gears::after
 		content 'sentiment_very_dissatisfied'
+	:root.oneechan .tab-select:not(:checked) + .options-section
+		display none !important
+	#oneechan-options
+		background-color ss21BackgroundElevated
+		width 75rem
+		max-width 90%
+		height 90vh
+		margin auto
+		display flex
+		flex-direction column
+		contain paint
+		z-depth(24)
+	#options-tabs
+		padding 0
+		margin 0
+		list-style none
+		display flex
+		flex-direction row
+		background-color ss21primary
+		padding 0 1.5rem
+		text-transform lowercase
+		.tab-label
+			display inline-flex
+			align-items center
+			height 3rem
+			padding 0 .5rem
+			position relative
+			tc(ss21primary, medium)
+			transition color .25s
+			&:hover
+				tc(ss21primary, high)
+			&::after
+				display none
+				position absolute
+				bottom 0
+				left 0
+				width 100%
+				height 2px
+				content ''
+				pointer-events none
+				background-color var(--secondary)
+			&.selected::after
+				display block
+	#options-container
+		padding 1rem
+		position relative
+		flex 1
+		overflow-y scroll
+		overscroll-behavior contain
+	
+	// oneechan mascot selection
+	#mascot-section
+		display grid
+		grid-gap 1rem
+		grid-template-rows 1.5rem 1fr
+		grid-template-columns repeat(auto-fit, minmax(200px, 1fr))
+	.buttons-container
+		grid-column 1 / -1
+		margin 0
+	.mascot-preview
+		// these importants are needed because oneechan applies `background` instead of just `background-image`?
+		background-position center !important
+		background-repeat no-repeat !important
+		background-size contain !important
+		height 250px
+		position relative
+		text-align center
+		&:not(:hover) a:not(.mascot-name)
+			opacity 0
+		&.selected
+			background-color rgba(0 0 0 .3) !important
+		.mascot-buttons
+			position absolute
+			bottom 0
+			left 0
+			right 0
+		.mascot-link
+			background-color rgba(0 0 0 .3)
+			tc(@background-color, high)
+			borderRadius()
+			cursor pointer
+			padding .25rem .5rem
+		.mascot-name
+			display block
+		br
+			display none
+	
+	:root.oneechan #id_css::after
+		display none
+	#mascot
+		position fixed
+		right 0
+		bottom 0
+		z-index -1
+		img
+			height auto
+			width auto
+			max-width 20rem
+			opacity .25
+			filter grayscale(.69)
+			pointer-events none
+	
+	// XXX: `style#fourchanx-bgcolor-css` needs to go
+	:root.oneechan .watch-thread-link
+		background-image none !important
+	/*
 	#oneechan-options
 		background-color var(--background-primary)
 		padding 1rem
+		borderRadius()
+		z-depth(8)
 		&::after
 			content "I told you, this isn't going to work."
 		*
 			display none
+	*/
