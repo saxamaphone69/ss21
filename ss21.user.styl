@@ -1,11 +1,11 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.6
+@version        2.1.7
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
-@updateURL      https://github.com/saxamaphone69/ss21/raw/master/ss21.user.css
+@updateURL      https://github.com/saxamaphone69/ss21/raw/master/ss21.user.styl
 @supportURL     https://github.com/saxamaphone69/ss21/issues
 @license        CC-BY-SA-4.0
 @preprocessor   stylus
@@ -31,6 +31,7 @@
 @var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
 @var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
+@var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered"]
 ==/UserStyle== */
 
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
@@ -137,6 +138,8 @@
 		if ss21roundedCorners
 			border-radius 4px
 	
+	i = !important
+	
 	/* thankfully we have css custom properties (a.k.a. variables) we can use,
 	 * along with stylus-lang to create a dynamic and truly customisable
 	 * userstyle
@@ -191,7 +194,7 @@
 		--grey-700 #737376
 		--grey-900 #303033
 		--font-default 'Inter var', arimo, roboto, helvetica, arial, system-ui
-		--font-monospace inconsolata, monospace, monospace
+		--font-monospace 'fira code', inconsolata, monospace, monospace
 		--font-icon material icons
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
@@ -292,8 +295,11 @@
 		if ss21spacingLevel == 1
 			font-size .5rem
 	
-	body
-		font-size ss21fontSize
+	:where(body)
+		block-size -moz-available
+		block-size -webkit-fill-available
+		block-size stretch
+		//font-size ss21fontSize
 	
 	// let's reset `box-sizing` so that when we say `1rem`, we mean it
 	// http://www.paulirish.com/2012/box-sizing-border-box-ftw/ along with
@@ -343,6 +349,7 @@
 	
 	// address `font-weight` set incorrectly in all browsers. while we're here we
 	// set other elements we want to `bold`, too
+	/*
 	b,
 	strong,
 	th,
@@ -350,11 +357,14 @@
 	.subject,
 	.name
 		font-weight 700
+	*/
+	:where(b, strong, th, legend, .subject, .name)
+		font-weight 700
 	
 	// XXX: potentially expensive override to inline-styled elements to ensure
 	// consistent styling
 	[style*="weight:"]
-		font-weight 700 !important
+		font-weight 700 i
 	
 	// reset the default margin given to these elements
 	blockquote,
@@ -414,8 +424,7 @@
 	// XXX: linkify links should be the option, not the exception
 	a
 		color inherit
-		unless ss21underlineLink
-			text-decoration none
+		text-decoration none
 		transition color .25s
 	
 	// the exception being linkified links
@@ -426,6 +435,8 @@
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
 		text-decoration solid underline
 		text-underline-offset 1px
+		unless ss21underlineLink
+			text-decoration none
 		color ss21primary
 		&:hover
 			color shade(ss21primary, 15%)
@@ -1314,10 +1325,7 @@
 	
 	#notifications
 		position fixed
-		top 0
-		right 0
-		left 0
-		height 0
+		inset 0
 		&:empty
 			display none
 	
@@ -1727,6 +1735,16 @@
 		borderRadius()
 		max-width 100%
 		transition background-color .25s
+	
+	if ss21flatness == 2
+		.post,
+		.summary,
+		.stub,
+		#menu
+			if ss21readingMode == ss21light
+				border 1px solid rgba(33, 33, 33, .2)
+			else if ss21readingMode == ss21dark
+				border 1px solid rgba(255, 255, 255, .2)
 	
 	if ss21evenPosts
 		.postContainer:nth-of-type(even) > .post
@@ -2316,6 +2334,12 @@
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 			> .postInfo > .nameBlock
 				color ss21posterPass
+		+ .summary
+			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
+	
+	.postContainer.post--aus
+		> .post
+			background-color mix(blue, ss21BackgroundColour, 3%)
 	
 	.n-pu
 		display inline-flex
@@ -2334,11 +2358,7 @@
 			& > .fileThumb::after
 				font-size 3rem
 				position absolute
-				//inset 0 // XXX: FIREFOX ONLY
-				top 0
-				right 0
-				bottom 0
-				left 0
+				inset 0
 				display inline-flex
 				align-items center;
 				justify-content center
@@ -2502,7 +2522,7 @@
 	
 	.catalog-thread.thread--extra-long
 		grid-column span 2
-		grid-row span 2
+		grid-row span 1
 		max-height 31rem
 	
 	.catalog-thread.thread--silly-long
@@ -2510,17 +2530,14 @@
 		grid-row span 2
 		max-height 31rem
 	
-	.catalog-thread.thread--new-lines
+	.catalog-thread.thread--new-lines.thread--long
 		grid-column span 2
 		grid-row span 2
 		max-height 33rem
 	
 	.catalog-container
 		position absolute
-		top 0
-		right 0
-		bottom 0
-		left 0
+		inset 0
 		max-width none // set to `100%` normally
 		z-depth(4)
 		transition all .25s
@@ -3404,10 +3421,6 @@
 	
 	// thread updater and stats. ideally, leave these in the header. but if
 	// you prefer it to be floating and fixed, support that too
-	#updater,
-	#thread-stats
-		font-family var(--font-monospace)
-	
 	#updater
 		tc(ss21primary, medium)
 	
@@ -3763,10 +3776,7 @@
 	// TODO: when you work out text colour, make the '/' in the counter lighter
 	#a-gallery
 		position fixed
-		top 0
-		right 0
-		bottom 0
-		left 0
+		inset 0
 		display flex
 		flex-direction row
 		background-color rgba(33, 33, 33, .75)
@@ -3913,7 +3923,7 @@
 			content ''
 			display block
 			will-change opacity
-			background-color rgba(33, 33, 33, .6)
+			background-color rgba(0, 0, 0, .6)
 			position absolute
 			top 0
 			left 0
@@ -3932,6 +3942,7 @@
 		left 0
 		right initial
 		height 100%
+		background-color ss21BackgroundElevated
 		display flex
 		position absolute
 		flex-direction column
@@ -3940,20 +3951,25 @@
 		transition transform .25s
 		overflow-y scroll
 	.board-list-entry
+		color tc(ss21BackgroundElevated, high)
 		display block
 		height 3rem
 		line-height 3
-		padding 0 1rem
-		transition background-color .25s
+		padding 0 .5rem
+		margin .5rem .5rem 0
+		transition color .25s, background-color .25s
+		borderRadius()
+		&:last-child
+			margin-bottom .5rem
 		&.board--ws
-			color #000
-			background-color #d6daf0
+			//background-color rgba(#d6daf0, .6)
 			&:hover
+				color #000
 				background-color darken(#d6daf0, 5%)
 		&.board--nws
-			color #800000
-			background-color #f0e0d6
+			//background-color rgba(#f0e0d6, .6)
 			&:hover
+				color #800000
 				background-color darken(#f0e0d6, 5%)
 	
 	// SIDEDISH: convert imperial (a.k.a. inferior) to metric
