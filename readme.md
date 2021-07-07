@@ -16,7 +16,7 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
 | **variables** | thankfully, we now use the preprocessor `.styl` within stylus for built in functions not previously possible |
 | **sidedish** |  unlike most userstyles, `ss21` requires a companion userscript for additonal rice and features not found in 4chan X |
 | **filters** | through the use of 4chan X's filtering system, additional classes are added to certain posts for further enhancements |
-| **web fonts** | using `@import`, we can load fonts from the web, not longer requiring downloaded and locally installed fonts |
+| **web fonts** | using `@import`, we can load fonts from the web, no longer requiring downloaded and locally installed fonts |
 | **rebase** | utilising code from well-established web projects such as bootstrap, carbon, and the material design guidelines, elements are rendered consistently and correctly across browsers |
 
 it should be noted that `ss21` **does not** function with the default 4chan extension or App/OneeChan
@@ -28,7 +28,7 @@ it is **highly** recommended you play with the settings within the userstyle
 ## installation
 this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
-1. install [`ss21.user.css`](https://github.com/saxamaphone69/ss21/raw/master/ss21.user.css) (stylus should prompt you to install)
+1. install [`ss21.user.styl`](https://github.com/saxamaphone69/ss21/raw/master/ss21.user.styl) (stylus should prompt you to install)
 2. install [`ss21font.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21font.css), and (optionally) [`ss21boardbanner.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21boardbanner.css)
  - since these are not `user.css` files, they are not auto-recognised and auto-updated by stylus. the easiest way to install them is to:
    - click on stylus and click on the "manage button"
