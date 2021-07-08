@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.1.4
+// @version     2.1.5
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -61,6 +61,7 @@
         });
       });
     });
+		return this;
   }
 
   function make(obj) {
@@ -106,14 +107,11 @@
         sel
       );
       sel.remove();
+			return true;
     } else {
+			return false;
       console.log("%css21 sidedish was unable to find: ", "color:red;", sel);
     }
-  }
-
-  function removeStyles() {
-    removeStyle($("style[type]", d.head)); // this removes the inline mobile css
-    removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
   }
 
   function sendNotification(type, content) {
@@ -126,6 +124,13 @@
         },
       })
     );
+  }
+
+	function removeStyles() {
+    removeStyle($("style[type]", d.head)); // this removes the inline mobile css
+    removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
+		removeStyle($("#custom-css", d.head)); // this removes the css required by 4chan x
+		removeStyle($("#sound-player-css", d.head)); // sounds player
   }
 
   function init() {
@@ -303,8 +308,8 @@
     }
 
     if (config === "index") {
-      on(d, "IndexRefresh", convertSummaries);
-      on(d, "IndexRefresh", swapInfo);
+      //on(d, "IndexRefresh", convertSummaries);
+      //on(d, "IndexRefresh", swapInfo);
       on(d, "IndexRefresh", checkHeights);
     }
 
@@ -440,7 +445,6 @@
 			let bannerContainer, bannerImg;
 			bannerContainer = $('#bannerCnt');
 			bannerImg = $('#bannerCnt > img');
-			console.log('nat height is: ' + bannerImg.naturalHeight);
 			if (bannerImg.naturalHeight === 0) {
 				bannerContainer.classList.add('blocked');
 				bannerContainer.removeAttribute('title');
@@ -671,7 +675,8 @@
   }
 
   on(d, "4chanXInitFinished", init);
-
+	//on(d, "PlayerEvent", removeStyle($("#sound-player-css", d.head)));
+/*
 	function backup() {
 		doc.classList.remove('site-loading');
 		doc.classList.add('no-fourchan-x');
@@ -679,7 +684,7 @@
 	}
 
 	on(d, 'DOMContentLoaded', backup);
-
+*/
   /*
    function backup() {
     doc.classList.remove('site-loading');
