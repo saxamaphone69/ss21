@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.8
+@version        2.1.9
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -221,7 +221,7 @@
 		.navLinks,
 		.board,
 		.pagelist
-			display none !important
+			display none i
 	@css {
 		@keyframes loading {
 			to {
@@ -235,7 +235,7 @@
 	.center,
 	.arc-ads,
 	[hidden]
-		display none !important
+		display none i
 	
 	// and while we're here:
 	// 1. mobile elements
@@ -315,8 +315,16 @@
 	// XXX: i actually want to support this
 	:focus
 		outline 0
+		//box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
+		//isolation isolate
+	
+	:focus-visible
 		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
-		isolation isolate
+	
+	// XXX: should only apply when using keyboard
+	:root.keyboard-focus .postContainer:focus-within .post
+		background-color mix(ss21primary, ss21BackgroundElevated, 7%)
+		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
 	// 4CHANX: adds `.keyboard-focus` to `html`
 	// :root:not(.keyboard-focus) a { outline: none; }
@@ -463,7 +471,7 @@
 			background-repeat no-repeat
 			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23f00' d='M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z'/%3E%3C/svg%3E"), radial-gradient(white 3px, transparent 3px) //yes, that just happened
 		&.vocaroo
-			color #CAFF70 !important
+			color #CAFF70 i
 		&[href^="https://github.com"]::before
 			content ''
 			display inline-block
@@ -702,7 +710,7 @@
 			border 1px solid alpha(ss21OppColour, .8)
 		&:focus
 			border 1px solid alpha(tint(ss21primary, 33%), .9)
-			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
+			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
 	option
 		background var(--background-primary)
@@ -775,26 +783,26 @@
 	
 	// ensure the only `hr` you will see, `#unread-line`, is styled consistently
 	// across browsers and also set to green (as opposed to red)
-	#unread-line
+	:where(#unread-line)
 		box-sizing content-box
 		height 0
 		overflow visible
 		border 0
 		border-top 1px solid ss21green
-		margin 0 0 1rem // XXX: this should be the same as the post gap
+		margin 1rem 0
 	
 	// `s` is used for [spoiler] text. occasionally, this has issues with
 	// links and quoted text within spoilers
 	s,
 	s > .quote
 		text-decoration none
-		color var(--grey-900) !important
-		background-color var(--grey-900) !important
+		color var(--grey-900) i
+		background-color var(--grey-900) i
 		transition color .25s
 	
 	s:hover,
 	s:hover .quote
-		color var(--grey-100) !important
+		color var(--grey-100) i
 	
 	/*
 <blockquote class="postMessage" id="m561357917"><a href="#p561357657" class="quotelink">&gt;&gt;561357657</a><br>Compare pic related to his Dx2 model which looks great<br><s><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://static.wikia.nocookie.net/megamitensei/images/9/95/Metatron_in_DX2.png/revision/latest?cb=20191110121222">https://static.wikia.nocookie.net/m<wbr>egamitensei/images/9/95/Metatron_in<wbr>_DX2.png/revision/latest?cb=2019111<wbr>0121222</a></s></blockquote>
@@ -802,6 +810,9 @@
 <blockquote class="postMessage" id="m82226876">/mkg/ - God damn it dude I'm so fucking sick of Cherry MX edition<br><br><span class="quote">&gt;Keyboard recommendation template</span><br><a class="linkify pastebin" rel="noreferrer noopener" target="_blank" href="https://pastebin.com/n220xk9V">https://pastebin.com/n220xk9V</a> <a class="embedder" href="javascript:;" data-key="Pastebin" data-uid="n220xk9V" data-options="undefined" data-href="https://pastebin.com/n220xk9V">(<span>un</span>embed)</a><br><br><span class="quote">&gt;Where to buy keyboards</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://www.alexotos.com/keyboard-vendor-list/">https://www.alexotos.com/keyboard-v<wbr>endor-list/</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://www.mechmap.tech/themap">https://www.mechmap.tech/themap</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://keycaplendar.firebaseapp.com">https://keycaplendar.firebaseapp.co<wbr>m</a><br><br><span class="quote">&gt;Charts!</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://kiibohd.com">https://kiibohd.com</a><br><br><span class="quote">&gt;QMK</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://config.qmk.fm/">https://config.qmk.fm/</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://beta.docs.qmk.fm">https://beta.docs.qmk.fm</a><br><br>Last thread: <a href="https://boards.4channel.org/g/thread/82209582/" target="_blank">https://boards.4channel.org/g/threa<wbr>d/82209582/</a></blockquote>
 
 <blockquote class="postMessage" id="m561402095"><a href="#p561401769" class="quotelink">&gt;&gt;561401769</a><br>This is unironically him trying to sweep shit under the rug lmao<br><a href="#p561401960" class="quotelink">&gt;&gt;561401960</a><br>There's archived threads in which he got mass banned, I think this was the first mass ban he scored <a class="linkify quotelink" rel="noreferrer noopener" target="_blank" href="https://arch.b4k.co/v/thread/499343579/#q499358153" data-board-i-d="v" data-thread-i-d="499343579" data-post-i-d="499358153">https://arch.b4k.co/v/thread/499343<wbr>579/#q499358153</a><br>Look for how many posts got deleted</blockquote>
+
+<blockquote class="postMessage" id="m4662311"><a href="#p4662298" class="quotelink">&gt;&gt;4662298</a><br><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
+
 */
 	
 	// 4CHANX: technically not a reset, but this is the only time we mention spoilers
@@ -809,7 +820,7 @@
 	:root.reveal-spoilers
 		s,
 		s > a
-			color var(--grey-100) !important
+			color var(--grey-100) i
 		.removed-spoiler
 			&::before
 				content '[spoiler]'
@@ -979,7 +990,9 @@
 	.contact-links::after
 		content 'contact_support' // for admins and mods
 	.post--dubs .postNum a:nth-child(2n)::after
-		content 'check'
+		content 'check' // dubs if filtered
+	.dead-thread .fa-times::after
+		content 'delete_forever' // dead thread and remove from thread watcher
 	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
@@ -1039,9 +1052,9 @@
 	// on /gd/'s pinned thread, quotes are hardcoded colour
 	[style*="color:#789922"]
 		if ss21quoteColour
-			color #789922 !important
+			color #789922 i
 		else
-			color ss21green !important
+			color ss21green i
 	
 	// make warning text visually different
 	.warning
@@ -1053,7 +1066,7 @@
 	[style*="color:red"],
 	[style*="color: red"],
 	[style*="color:#ff0000"]
-		color ss21red !important
+		color ss21red i
 	
 	.hand
 		cursor pointer
@@ -1090,7 +1103,7 @@
 			height auto
 			text-align center
 		.autoplay-removed
-			visibility visible !important
+			visibility visible i
 			min-width 640px
 			min-height 360px
 	
@@ -1102,8 +1115,8 @@
 	//:root.fixed.top-header body
 	//	padding-top 3rem
 	
-	:root.fixed.bottom-header body
-		padding-bottom 3rem
+	//:root.fixed.bottom-header body
+	//	padding-bottom 3rem
 	
 	#header-bar
 		right 0
@@ -1218,7 +1231,8 @@
 			&.current::after
 				display block
 	
-	// 4CHANX: in the event there are no shortcuts (not sure when this is), hide the whole element
+	// 4CHANX: in the event there are no shortcuts (not sure when this is),
+	// hide the whole element
 	#shortcuts:empty
 		display none
 	
@@ -1271,16 +1285,6 @@
 	:root:not(.werkTyme) #shortcut-werk
 		display none
 	
-	// SIDEDISH: we add an image opacity toggler-thing
-	// XXX: i don't think we do this anymore...
-	.ss21--img-toggle
-		tc(ss21primary, medium)
-		cursor pointer
-		transition color .25s
-	
-	:root.ss21--img-opacity .ss21--img-toggle
-		tc(ss21primary, high)
-	
 	// 4CHANX: `#scroll-marker` is used to determine unread post position, amongst
 	// other things
 	#scroll-marker
@@ -1328,6 +1332,18 @@
 	
 	#header-bar.scrolled #scroll-progress
 		opacity 1
+	
+	@media (max-width: 66rem)
+		#header-bar
+			padding 0 .5rem
+		.ss21--board-drawer-toggle
+			min-width 1.5rem
+		#board-list a
+			font-size .875rem
+			min-width 1.5rem
+		.shortcut
+			min-width 1.5rem
+			padding 0 .25rem
 	
 	// notifications
 	// styled half-way between an alert and a snackbar
@@ -1501,7 +1517,7 @@
 		.boardBanner
 			display none
 		.navLinks.json-index
-			margin 1rem auto !important
+			margin 1rem auto i
 	
 	// announcement hiding
 	:root.hide-announcement .globalMessage
@@ -1547,8 +1563,8 @@
 	:root.top-header
 		#header-bar.autohide ~ .globalMessage
 			top 0
-		#header-bar.autohide.scrolled ~ .globalMessage
-			top .25rem
+		//#header-bar.autohide.scrolled ~ .globalMessage
+		//	top .5rem
 	:root.bottom-header,
 	:root.top-header:not(.fixed) #header-bar.scrolled ~ 
 		.globalMessage
@@ -1559,7 +1575,7 @@
 	// content changes
 	if ss21blotter == 1
 		#blotter
-			display block !important
+			display block i
 			margin 4rem 0 // need to account for boardBanner being present or not, plus header-bar/autohide
 			background-color ss21BackgroundElevated
 			thead
@@ -1598,26 +1614,34 @@
 	.navLinks.json-index
 		background-color ss21primary
 		tc(@background-color, high)
-		width 75rem
-		max-width 100%
+		//width 100%
+		max-width 75rem
 		height 3rem
 		padding 0 1.5rem
-		margin -2rem auto 2rem
+		margin -1.5rem auto 1.5rem
 		position relative
 		z-index 1
 		display flex
 		align-items center
 		justify-content center
+		borderRadius()
 		select
 			background-color ss21BackgroundElevated
 			tc(@background-color, high)
 			margin-right .25rem
+			&:last-child
+				margin-right 0
+	
+	@media (max-width: 77rem)
+		.navLinks.json-index
+			margin -1.5rem 1rem 1.5rem
+			max-width none
 	
 	#index-search
 		background-color ss21BackgroundElevated
 		tc(@background-color, high)
-		padding-right 1.5rem
-		margin 0 1rem
+		padding-right 1rem
+		margin-left .5rem
 	
 	#hidden-label
 		tc(ss21primary, medium)
@@ -1626,7 +1650,7 @@
 		visibility hidden
 		width 1.5rem
 		height 100%
-		margin 0 .25rem
+		//margin 0 .25rem
 		display inline-flex
 		align-items center
 		&::after
@@ -1661,7 +1685,7 @@
 		&::after
 			position relative
 			color ss21red
-			left -3rem
+			left -2rem
 			opacity .54
 			transition opacity .25s
 		&:hover::after
@@ -1688,7 +1712,7 @@
 			width 25rem
 			top 0
 			right 0
-			transform none !important
+			transform none i
 			.boardTitle
 				font-size 2rem
 	
@@ -1781,10 +1805,9 @@
 		flex-flow row wrap
 		align-items center
 		//flex-wrap nowrap // XXX: not ideal, especially on boards like /pol/
-		padding 0 1rem
+		padding .125rem 4rem .25rem 1rem
 		// XXX: provides space for menu/hide button on long post infos
-		padding-right 4rem
-		min-height 2rem
+		min-height 1.5rem
 		borderRadius()
 		border-bottom-left-radius 0
 		border-bottom-right-radius 0
@@ -1793,13 +1816,15 @@
 		if ss21readingMode == ss21light
 			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
-			box-shadow none
+			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
-	.subject:empty
-		display none
+	.postContainer:not(.noFile) .postInfo
+		padding-bottom .125rem
 	
 	.subject
 		max-width 45%
+		&:empty
+			display none
 	
 	.nameBlock
 		margin-right .25rem
@@ -1810,7 +1835,7 @@
 		.nameBlock
 			display none
 		.subject:not(:empty)::after
-			display none !important
+			display none i
 		.subject
 			margin-right .25rem
 	
@@ -1867,6 +1892,8 @@
 		z-index 1
 		position relative
 		borderRadius()
+		&:focus
+			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
 	// XXX: when a thread is expanded on index, maintain our usual margins
 	.is_index .summary + .postContainer,
@@ -1888,6 +1915,7 @@
 		// turn it into a FAB
 		.summary
 			all unset
+			tc(ss21primary, high)
 			display inline-flex
 			background-color ss21primary
 			font-size 0
@@ -1905,7 +1933,7 @@
 				background-color lighten(ss21primary, 5%)
 			&::before
 				content 'open_in_new'
-				tc(ss21primary, high)
+				tc(ss21primary, medium)
 				font-family material icons
 				font-weight normal
 				font-style normal
@@ -1923,6 +1951,9 @@
 				-moz-osx-font-smoothing grayscale
 				font-feature-settings 'liga'
 				margin-right .25rem
+				transition color .25s
+			&:hover::before
+				tc(ss21primary, high)
 			b
 				font-size .875rem
 				font-weight 400
@@ -2006,6 +2037,8 @@
 		align-items center
 		height 2rem
 		transition opacity .25s
+		&:focus
+			opacity .54
 		& > span
 			display inline-flex
 			align-items center
@@ -2054,10 +2087,18 @@
 	.file
 		color var(--text-hint-on-background)
 		position relative
-	
+	/*
+<div class="file" id="f82365267"><div class="fileText" id="fT82365267"><span class="file-info"><a href="https://i.4cdn.org/g/1625305273170.jpg" target="_blank">4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85-4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85.jpg</a> (153 KB, 1200x1600) <a href="https://i.4cdn.org/g/1625305273170.jpg" download="4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85-4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85.jpg" class="fa fa-download download-button"></a> <a href="javascript:;" class="fa fa-times quick-filter-md5"></a></span><span class="fileText-original">File: <a title="4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85-4327773466e141f8b5cdbf29b5c4ad3b.jpeg.1280x0_q85.jpg" href="https://i.4cdn.org/g/1625305273170.jpg" target="_blank">4327773466e141f8b5cdbf29b(...).jpg</a> (153 KB, 1200x1600)</span> <a target="_blank" class="sauce" href="https://www.google.com.au/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2Fg%2F1625305273170.jpg&amp;safe=off">g</a> <a target="_blank" class="sauce" href="https://yandex.com/images/search?rpt=imageview&amp;url=https%3A%2F%2Fi.4cdn.org%2Fg%2F1625305273170.jpg">yan</a> <a target="_blank" class="sauce" href="//iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2Fg%2F1625305273170.jpg">iqdb</a> <a target="_blank" class="sauce" href="https://trace.moe/?auto&amp;url=https%3A%2F%2Fi.4cdn.org%2Fg%2F1625305273170.jpg">trace</a> <a target="_blank" class="sauce" href="//saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2Fg%2F1625305273170.jpg">sauce</a></div><a class="fileThumb" href="https://i.4cdn.org/g/1625305273170.jpg" target="_blank"><img src="//i.4cdn.org/g/1625305273170s.jpg" alt="153 KB" data-md5="xVHNvpcDjD6lFlYEvST5Pw==" style="height: 250px; width: 187px;" loading="lazy"></a></div>
+
+<div class="fileText" id="fT4662288"><span class="file-info"><a href="https://i.4cdn.org/qa/1625528343446.jpg" target="_blank">__shikinami_asuka_langley_and_souryuu_asuka_langley_evangelion_3_0_you_can_not_redo_neon_genesis_evangelion_and_rebuild_of_evangelion_drawn_by_rabbit_wlsdnjs950__7da53d97f3f82326f2420446d168ddcc.jpg</a> (103 KB, 609x1000) <a href="https://i.4cdn.org/qa/1625528343446.jpg" download="__shikinami_asuka_langley_and_souryuu_asuka_langley_evangelion_3_0_you_can_not_redo_neon_genesis_evangelion_and_rebuild_of_evangelion_drawn_by_rabbit_wlsdnjs950__7da53d97f3f82326f2420446d168ddcc.jpg" class="fa fa-download download-button"></a> <a href="javascript:;" class="fa fa-times quick-filter-md5"></a></span><span class="fileText-original">File: <a title="__shikinami_asuka_langley_and_souryuu_asuka_langley_evangelion_3_0_you_can_not_redo_neon_genesis_evangelion_and_rebuild_of_evangelion_drawn_by_rabbit_wlsdnjs950__7da53d97f3f82326f2420446d168ddcc.jpg" href="https://i.4cdn.org/qa/1625528343446.jpg" target="_blank">__shikinami_asuka_langley(...).jpg</a> (103 KB, 609x1000)</span> <a target="_blank" class="sauce" href="https://www.google.com.au/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2Fqa%2F1625528343446.jpg&amp;safe=off">g</a> <a target="_blank" class="sauce" href="https://yandex.com/images/search?rpt=imageview&amp;url=https%3A%2F%2Fi.4cdn.org%2Fqa%2F1625528343446.jpg">yan</a> <a target="_blank" class="sauce" href="//iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2Fqa%2F1625528343446.jpg">iqdb</a> <a target="_blank" class="sauce" href="https://trace.moe/?auto&amp;url=https%3A%2F%2Fi.4cdn.org%2Fqa%2F1625528343446.jpg">trace</a> <a target="_blank" class="sauce" href="//saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2Fqa%2F1625528343446.jpg">sauce</a></div>
+
+
+<blockquote class="postMessage" id="m149986685"><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
+*/
 	.fileText
 		font-size .875rem
 		padding 0 1rem .125rem
+		//min-height 1.5rem
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
 			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
@@ -2245,7 +2286,7 @@
 			width 100%
 			img
 				object-fit cover
-				width 100% !important
+				width 100% i
 	
 	.file-info
 		display inline-flex
@@ -2290,7 +2331,7 @@
 	
 	.filtered,
 	.deadlink
-		text-decoration line-through !important // only because of the highly specific "links in a post" selector earlier
+		text-decoration line-through i // only because of the highly specific "links in a post" selector earlier
 		opacity .6
 	
 	:root.hide-backlinks .backlink.filtered,
@@ -2311,7 +2352,7 @@
 	// 4CHANX: backlinks
 	// XXX: a little too specific, so we require an !important
 	.container:empty
-		display none !important
+		display none i
 	
 	.container
 		display block
@@ -2345,8 +2386,10 @@
 		padding .25rem .5rem
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
+			box-shadow inset 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
 			background-color rgba(255, 255, 255, .05)
+			box-shadow inset 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
@@ -2639,7 +2682,7 @@
 		grid-row span 2
 		max-height 31rem
 	
-	.catalog-thread.thread--new-lines.thread--long
+	.catalog-thread.thread--new-lines.thread--extra-long
 		grid-column span 2
 		grid-row span 2
 		max-height 33rem
@@ -2683,8 +2726,8 @@
 		overflow hidden
 		.catalog-thumb
 			border-radius 4px 4px 0 0
-			width 100% !important
-			height auto !important
+			width 100% i
+			height auto i
 			min-height 100%
 			if ss21readingMode == ss21dark
 				opacity .8
@@ -2804,14 +2847,14 @@
 			transition color .25s, background-color .25s
 			&:hover
 				background-color ss21primary
-				tc(@background-color, high) !important
+				tc(@background-color, high) i
 		button
 			display none
 		strong
 			flex 1
 			background-color ss21primary
 			a
-				tc(ss21primary, high) !important
+				tc(ss21primary, high) i
 		.prev,
 		.next
 			width 10%
@@ -2842,6 +2885,8 @@
 	:root.hide-bottom-board-list #boardNavDesktopFoot
 		display none
 	
+	// SIDEDISH: this grabs the current board list and categories from 4chan.org
+	// !important is used because it grabs the literal HTML, inline styles and all
 	#boardNavDesktopFoot
 		color var(--grey-500)
 		background-color var(--grey-900)
@@ -2853,29 +2898,13 @@
 			max-width 75rem
 			margin auto
 			overflow-x auto
-		/*
-		.boardList
-			display flex
-			flex-wrap wrap
-			flex-direction column
-			height calc(2rem * 16.5)
-			width 100%
-			max-width 75rem
-			margin auto
-			transition height .25s
-			overflow-x auto
-		:not(.is-active) .boardList
-			height 0
-			padding 0
-			overflow hidden
-			*/
 		h3
 			font-size 1.25rem
 			letter-spacing 0.03em
 			text-transform uppercase
 			color var(--grey-300)
-			text-decoration none !important
-			display inline-block !important
+			text-decoration none i
+			display inline-block i
 		ul
 			list-style none
 			padding 0
@@ -2883,9 +2912,8 @@
 		li
 			margin-bottom .25rem
 		sup
-			//color lighten(rgba(244, 67, 54, 1), 15)
 			color ss21red
-			vertical-align baseline !important
+			vertical-align baseline i
 		a:hover,
 		.current
 			color var(--grey-300)
@@ -2951,6 +2979,8 @@
 	#file-n-submit:not(.has-file) #qr-filerm // file remove icon if there is no file
 		display none
 	
+	// XXX: auto-hide checkbox should be keyboard accessible
+	
 	#qr
 		position fixed
 		z-index 10
@@ -2961,10 +2991,10 @@
 		borderRadius()
 		contain paint
 		if ss21QRPosition == 2
-			top auto !important
-			right 0 !important
-			bottom 0 !important
-			left auto !important
+			top auto i
+			right 0 i
+			bottom 0 i
+			left auto i
 			width 25rem
 		> .move
 			background-color ss21primary
@@ -3113,6 +3143,8 @@
 		input[type="submit"]
 			width 15%
 			margin-left .25rem
+			&:focus
+				box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 			if ss21buttonStyle == 1
 				background-color ss21green
 				tc(ss21green, high)
@@ -3144,6 +3176,8 @@
 	#qr-file-button
 		width 15%
 		margin-right .25rem
+		&:focus
+			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
 	// this element is given the `.field` class despite not being one, so we can
 	// use the handy `all: unset` to help us out and reset it
@@ -3314,7 +3348,47 @@
 		&::after
 			font-size 3rem
 			color ss21blue
-
+	
+	// XXX: july 2021: new captcha system
+	#t-resp
+		font inherit i
+		text-transform initial i
+		width auto i
+		height auto i
+		margin-right .5rem i
+		display inline-block
+		background inherit
+		padding .5rem .75rem i
+		border 1px solid alpha(ss21OppColour, .33)
+		borderRadius()
+		transition border .25s, box-shadow .25s
+		&:hover
+			border-color alpha(ss21OppColour, .8)
+		&:focus
+			border-color ss21primary
+			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
+	
+	#t-cnt:not([style*="width"]),
+	#t-slider[style*="vis"]
+		display none
+	
+	#t-slider
+		margin-top .25rem i
+	
+	if ss21readingMode == ss21dark
+		#t-cnt
+			filter invert(.935)
+	
+	.captcha-container
+		button
+			font-size .875rem i
+			padding 0 .75rem i
+			margin 0 i
+			width auto i
+			height auto i
+			&:first-of-type
+				margin-right .5rem i
+	
 	// 4CHANX: settings
 	// easier styling thanks to https://github.com/ccd0/4chan-x/pull/2322
 	#overlay
@@ -3675,7 +3749,7 @@
 			max-height 12rem
 			overflow-y hidden
 		& > div
-			padding 0 1.5rem
+			padding 0 1rem
 			height 3rem
 			display flex
 			align-items center
@@ -3686,11 +3760,12 @@
 					background-color lighten(ss21BackgroundElevated, 6%)
 		.fa-times
 			display inline-flex
-			margin-right .25rem
+			margin-right .5rem
 			color ss21red
-			opacity .6
-			transition color .25s
-			&:hover
+			&::after
+				opacity .6
+				transition opacity .25s
+			&:hover::after
 				opacity .87
 		.watcher-link
 			display inline-flex
@@ -3715,8 +3790,8 @@
 		.last-page .watcher-page
 			color ss21red
 	
-	.shortcut .replies-quoting-you::after
-		color ss21red
+	.shortcut #watcher-link.replies-quoting-you::after
+		color invert(ss21primary)
 	
 	// menus
 	// styled based on:
@@ -3796,6 +3871,8 @@
 		opacity 0
 		will-change opacity
 		transition opacity .25s
+		&:focus
+			opacity .6
 	
 	.post > .postInfo > .menu-button.active,
 	.post:hover > .postInfo > .menu-button
@@ -3811,15 +3888,109 @@
 		height 2.5rem
 		color var(--text-hint-on-background)
 	
-	// 4CHANX: volume control; located here because it's only found in the header menu
-	input[name="Default Volume"]
-		vertical-align middle
-		padding 0
-		margin 0
-		width 5rem
-		height 1rem
-	// XXX: custom style
+	.entry[title*="volume"]
+		display inline-flex
+		align-items center
+		justify-content center
+		input
+			order 1
+			margin-left .5rem
 	
+	//XXX: webkit doesn't support ::-ms-upper|lower-fill, so ranges don't appear
+	// "filled". so either leave it native or style the thumb as per material
+	// 4CHANX: volume control; located here because it's only found in the header menu
+	/*
+	input[type="range"] {
+		width: 100%
+		height 1.5rem
+		padding: 0;
+		background-color: transparent;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		margin-right .5rem
+	}
+	input[type="range"]:focus {
+		outline: 0;
+	}
+	input[type="range"]:focus::-webkit-slider-thumb {
+		box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+	}
+	input[type="range"]:focus::-moz-range-thumb {
+		box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+	}
+	input[type="range"]::-moz-focus-outer {
+		border: 0;
+	}
+	input[type="range"]::-webkit-slider-thumb {
+		width: 1rem;
+		height: 1rem;
+		margin-top: -0.25rem;
+		background-color: #0d6efd;
+		border: 0;
+		border-radius: 1rem;
+		-webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		input[type="range"]::-webkit-slider-thumb {
+			-webkit-transition: none;
+			transition: none;
+		}
+	}
+	input[type="range"]::-webkit-slider-thumb:active {
+		background-color: #b6d4fe;
+	}
+	input[type="range"]::-webkit-slider-runnable-track {
+		width: 100%;
+		height: 0.5rem;
+		color: transparent;
+		cursor: pointer;
+		background-color: #dee2e6;
+		border-color: transparent;
+		border-radius: 1rem;
+	}
+	input[type="range"]::-moz-range-thumb {
+		width: 1rem;
+		height: 1rem;
+		background-color: #0d6efd;
+		border: 0;
+		border-radius: 1rem;
+		-moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		-moz-appearance: none;
+		appearance: none;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		input[type="range"]::-moz-range-thumb {
+			-moz-transition: none;
+			transition: none;
+		}
+	}
+	input[type="range"]::-moz-range-thumb:active {
+		background-color: #b6d4fe;
+	}
+	input[type="range"]::-moz-range-track {
+		width: 100%;
+		height: 0.5rem;
+		color: transparent;
+		cursor: pointer;
+		background-color: #dee2e6;
+		border-color: transparent;
+		border-radius: 1rem;
+	}
+	input[type="range"]:disabled {
+		pointer-events: none;
+	}
+	input[type="range"]:disabled::-webkit-slider-thumb {
+		background-color: #adb5bd;
+	}
+	input[type="range"]:disabled::-moz-range-thumb {
+		background-color: #adb5bd;
+	}
+	*/
 	/**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
 	 * top and bottom of the page within threads. not needed in catalogue mode, so it
@@ -3851,6 +4022,9 @@
 	// if media is embedded, remove the un prefix from inside the post
 	.embedder:not(.embedded) > span
 		display none
+	
+	.media-embed
+		clear both
 	
 	#embedding
 		background-color var(--background-primary)
@@ -4153,7 +4327,7 @@
 	
 	// halloween 2020 support
 	#skellington
-		display block !important
+		display block i
 		position fixed
 		right 0
 		bottom 0
@@ -4166,7 +4340,7 @@
 	
 	// 2021 april fools support
 	.xa21-notice
-		display block !important
+		display block i
 		text-align center
 		margin-top 1rem
 	
@@ -4276,7 +4450,7 @@
 	:root.oneechan .fa-gears::after
 		content 'sentiment_very_dissatisfied'
 	:root.oneechan .tab-select:not(:checked) + .options-section
-		display none !important
+		display none i
 	#oneechan-options
 		background-color ss21BackgroundElevated
 		width 75rem
@@ -4336,16 +4510,16 @@
 		margin 0
 	.mascot-preview
 		// these importants are needed because oneechan applies `background` instead of just `background-image`?
-		background-position center !important
-		background-repeat no-repeat !important
-		background-size contain !important
+		background-position center i
+		background-repeat no-repeat i
+		background-size contain i
 		height 250px
 		position relative
 		text-align center
 		&:not(:hover) a:not(.mascot-name)
 			opacity 0
 		&.selected
-			background-color rgba(0 0 0 .3) !important
+			background-color rgba(0 0 0 .3) i
 		.mascot-buttons
 			position absolute
 			bottom 0
@@ -4379,7 +4553,7 @@
 	
 	// XXX: `style#fourchanx-bgcolor-css` needs to go
 	:root.oneechan .watch-thread-link
-		background-image none !important
+		background-image none i
 	/*
 	#oneechan-options
 		background-color var(--background-primary)
@@ -4391,3 +4565,10 @@
 		*
 			display none
 	*/
+	
+	// XXX: https://github.com/rcc11/4chan-sounds-player
+	// might be too complicated to support honestly
+	// users really should disable thread > limit post widths
+	.fa-play-circle::after
+		content 'music_note'
+	
