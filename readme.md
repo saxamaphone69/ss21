@@ -56,7 +56,7 @@ go to your blocker-of-choice options, and locate where you can add your own filt
 *//s.4cdn.org/css^$domain=boards.4channel.org
 *//s.4cdn.org/image/title/*
 *//s.4cdn.org/image/contest_banners/*
-*//s.4cdn.org/js/core.min.*.js
+!*//s.4cdn.org/js/core.min.*.js
 *//s.4cdn.org/js/extension.min.*.js
 
 @@||s.4cdn.org/css/flags.*.css
