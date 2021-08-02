@@ -1,4 +1,4 @@
 @-moz-document regexp("https://boards\\.4chan(?:nel)?\\.org.*") {
   @import url('https://rsms.me/inter/inter.css');
-  @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Material+Icons&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Material+Icons&display=swap');
 }
