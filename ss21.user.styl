@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.9
+@version        2.1.10
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -11,7 +11,7 @@
 @preprocessor   stylus
 @var range      ss21fontSize         "Default font size" [16, 10, 18, 2, "px"]
 @var checkbox   ss21roundedCorners   "Rounded corners" 1
-@var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba"]
+@var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba", "ss21tomorrow:Tomorrow", "ss21photon:Photon"]
 @var color      ss21primary          "Primary colour" #7c20ed
 @var select     ss21spacingLevel     "Spacing amount" ["0:Comfortable", "1:Compact"]
 @var checkbox   ss21underlineLink    "Underline external links" 0
@@ -33,10 +33,12 @@
 @var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
+@var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
-	
+	@import url('https://rsms.me/inter/inter.css');
+	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Material+Icons&display=swap');
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -118,6 +120,20 @@
 			--4chan-background #ffe
 			--background-primary #f0e0d6 // header and dialogs
 			--4chan-post-border #d9bfb7 // borders and hr
+	else if ss21readingMode == ss21tomorrow
+		ss21OppColour = #212121
+		ss21TextPrimary = alpha(#c5c8c6, .87)
+		ss21TextSecondary = alpha(#c5c8c6, .6)
+		ss21TextHint = alpha(#c5c8c6, .38)
+		ss21BackgroundColour = #1d1f21
+		ss21BackgroundElevated = #282a2e
+	else if ss21readingMode == ss21photon
+		ss21OppColour = #212121
+		ss21TextPrimary = alpha(#333, .87)
+		ss21TextSecondary = alpha(#333, .6)
+		ss21TextHint = alpha(#333, .38)
+		ss21BackgroundColour = #eee
+		ss21BackgroundElevated = #ddd
 	
 	z-depth(n = 1)
 		if n == 1
@@ -159,6 +175,22 @@
 	ss21posterVerified = #007fff
 	ss21posterPass = #afb42b
 	
+	ss21poster(type)
+		if type == 'founder'
+			return #117743
+		if type == 'admin'
+			return #f44336
+		if type == 'mod'
+			return #9c27b0
+		if type == 'dev'
+			return #0000f0
+		if type == 'manager'
+			return #ff0080
+		if type == 'verified'
+			return #007fff
+		if type == 'pass'
+			return #afb42b
+	
 	ss21red = #f44336
 	ss21blue = #2196f3
 	ss21green = #4caf50
@@ -182,6 +214,7 @@
 		--text-primary-on-background ss21TextPrimary
 		--text-secondary-on-background ss21TextSecondary
 		--text-hint-on-background ss21TextHint
+		--text-primary-on-primary ss21-on-primary
 		/*
 		--text-primary-on-primary textContraster(ss21primary, .87)
 		--text-secondary-on-primary textContraster(ss21primary, .6)
@@ -295,10 +328,13 @@
 		}
 	}
 	
+	// https://github.com/csstools/sanitize.css/blob/main/sanitize.css#L54
+	// this doesn't actually work but?
 	:where(body)
 		block-size -moz-available
 		block-size -webkit-fill-available
 		block-size stretch
+		min-height 100vh
 		//font-size ss21fontSize
 	
 	// let's reset `box-sizing` so that when we say `1rem`, we mean it
@@ -494,7 +530,7 @@
 		font-size 1em
 	
 	.prettyprint
-		font-size .875em
+		font-size .875rem
 		-webkit-font-smoothing subpixel-antialiased
 		white-space pre-wrap
 		word-wrap normal
@@ -504,7 +540,7 @@
 		tab-size 4
 		hyphens none
 		overflow auto // don't allow content to break outside
-		padding .5rem
+		padding .125rem .25rem
 		margin 0 // remove browser default
 		display inline-block
 		vertical-align middle
@@ -685,7 +721,11 @@
 			box-shadow 0 0 0 .2rem alpha(lighten(ss21primary, 15%), 25%)
 		&:checked
 			background-color ss21primary
-			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M21 7L9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7z'/%3E%3C/svg%3E")
+			if contrast(#fff, ss21primary).ratio >= 4.5
+				$tick = "%23fff"
+			else
+				$tick = "%23000"
+			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + $tick + "' d='M21 7L9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7z'/%3E%3C/svg%3E")
 			border-color darken(ss21primary, 33%)
 	
 	// XXX: dropdown arrow sometimes covers writing, may need more padding on right
@@ -812,6 +852,8 @@
 <blockquote class="postMessage" id="m561402095"><a href="#p561401769" class="quotelink">&gt;&gt;561401769</a><br>This is unironically him trying to sweep shit under the rug lmao<br><a href="#p561401960" class="quotelink">&gt;&gt;561401960</a><br>There's archived threads in which he got mass banned, I think this was the first mass ban he scored <a class="linkify quotelink" rel="noreferrer noopener" target="_blank" href="https://arch.b4k.co/v/thread/499343579/#q499358153" data-board-i-d="v" data-thread-i-d="499343579" data-post-i-d="499358153">https://arch.b4k.co/v/thread/499343<wbr>579/#q499358153</a><br>Look for how many posts got deleted</blockquote>
 
 <blockquote class="postMessage" id="m4662311"><a href="#p4662298" class="quotelink">&gt;&gt;4662298</a><br><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
+
+<blockquote class="postMessage" id="m563068435"><s>&gt;Is an asshole to you throughout the game<br><span class="quote">&gt;Tries to kill you and won't tell you why</span><br><span class="quote">&gt;Gets all your friends to betray and try to kill you</span><br><span class="quote">&gt;You still hang out with your "friends" like nothing they don't even bother to tell you why they want you dead and you're such a loser that you're fine with that and them continuing to try to oppose you.</span><br><span class="quote">&gt;You are also fine with her killing your dad, being free to kill you along with your friends trying to kill you.</span><br></s><br><br>No sane humans acts like this.<s><br>Yet you are all fine with it, do you enjoy your friends wanting to kill you and your family?</s><br>Explain.</blockquote>
 
 */
 	
@@ -1088,8 +1130,24 @@
 	// if enabled, poster unique id's are painted different colours to easily
 	// identify posters
 	.painted
+		position relative
 		padding .0625rem .25rem .125rem
 		borderRadius()
+		&::after
+			content ''
+			display block
+			position absolute
+			top 0
+			left 0
+			width 100%
+			height 100%
+			borderRadius()
+			background-color rgba(0 0 0 .1)
+			opacity 0
+			transition opacity .25s
+			pointer-events none
+		&:hover::after
+			opacity 1
 	
 	// 4CHANX: anti-autoplay
 	// rarely happens, so this is just taken straight from 4chan x
@@ -1479,6 +1537,7 @@
 		
 		.boardTitle
 			font-size calc(100% + 5vw)
+			color ss21BackgroundColour
 			line-height 1
 			text-transform lowercase
 			--primary-500 ss21primary
@@ -1593,11 +1652,24 @@
 					font-size ss21fontSize
 					color ss21primary
 	
+	// XXX: if you unblock and want to see contest banners, you need to enable
+	// this setting within ss21
+	if ss21allowContest == 1
+		.middlead
+			display block i
+			a
+				display block
+				width 468px
+				height 60px
+				margin 1rem auto 0
+	
+	// XXX: Thread closed. You may not reply at this time.
 	.closed
 		font-size 2rem
 		font-weight 700
 		text-align center
 		background-color ss21red
+		position relative
 	
 	// index sorting and what not. only enabled with json mode in 4chan x
 	// first up, only some elements are shown, depending on which mode is enabled
@@ -1636,6 +1708,15 @@
 		.navLinks.json-index
 			margin -1.5rem 1rem 1.5rem
 			max-width none
+		#index-last-refresh,
+		#hidden-label
+			font-size .875rem
+			min-width 0
+			white-space nowrap
+			overflow hidden
+			text-overflow ellipsis
+		#index-search
+			max-width 10rem
 	
 	#index-search
 		background-color ss21BackgroundElevated
@@ -1645,6 +1726,7 @@
 	
 	#hidden-label
 		tc(ss21primary, medium)
+		margin-left .5rem
 	
 	#index-rev
 		visibility hidden
@@ -1781,6 +1863,7 @@
 	
 	if ss21flatness == 2
 		.post,
+		.post.catalog-post,
 		.summary,
 		.stub,
 		#menu
@@ -1796,7 +1879,7 @@
 			else if ss21readingMode == ss21dark
 				background-color lighten(ss21BackgroundElevated, 5%)
 	
-	.postContainer > .post > .postInfo
+	:where(.postContainer) > :where(.post) > .postInfo
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
 		else if ss21readingMode == ss21dark
@@ -1805,24 +1888,28 @@
 		flex-flow row wrap
 		align-items center
 		//flex-wrap nowrap // XXX: not ideal, especially on boards like /pol/
-		padding .125rem 4rem .25rem 1rem
+		//padding .125rem 4rem .25rem 1rem
+		padding 0 4rem 0 1rem
 		// XXX: provides space for menu/hide button on long post infos
-		min-height 1.5rem
+		height 1.75rem
 		borderRadius()
 		border-bottom-left-radius 0
 		border-bottom-right-radius 0
 	
-	.noFile .postInfo
+	.noFile > .post > .postInfo
 		if ss21readingMode == ss21light
-			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
+			box-shadow 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
-			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
+			box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
 	.postContainer:not(.noFile) .postInfo
 		padding-bottom .125rem
 	
 	.subject
 		max-width 45%
+		overflow hidden
+		white-space nowrap
+		text-overflow ellipsis
 		&:empty
 			display none
 	
@@ -1900,6 +1987,9 @@
 	.summary-bottom
 		margin-top 1rem
 	
+	.is_thread .summary
+		display none
+	
 	if ss21postWidth == 0
 		.summary
 			display inline-block
@@ -1975,7 +2065,7 @@
 		display none
 		font-size .75rem
 	
-	// on october 1st, we celebrate 4chan's birthday (2003)
+	// on october 1st, we celebrate 4chan's birthday (est. 2003)
 	.party-hat
 		position absolute
 		margin-top -2.5rem
@@ -2035,7 +2125,7 @@
 		will-change opacity
 		display inline-flex
 		align-items center
-		height 2rem
+		height 1.75rem
 		transition opacity .25s
 		&:focus
 			opacity .54
@@ -2099,17 +2189,33 @@
 		font-size .875rem
 		padding 0 1rem .125rem
 		//min-height 1.5rem
+		margin-top -4px
 		if ss21readingMode == ss21light
-			background-color rgba(33, 33, 33, .02)
+			//background-color rgba(33, 33, 33, .02)
 			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
-			background-color rgba(255, 255, 255, .05)
+			//background-color rgba(255, 255, 255, .05)
 			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
 		// these are from 4CHANX
 		white-space normal
+		&::before
+			content ''
+			display block
+			pointer-events none
+			if ss21readingMode == ss21light
+				background-color rgba(33, 33, 33, .02)
+			else if ss21readingMode == ss21dark
+				background-color rgba(255, 255, 255, .05)
+			height calc(100% - 4px)
+			width 100%
+			position absolute
+			top 4px
+			left 0
 		a
 			color ss21primary
 			unicode-bidi isolate
+			&:hover
+				color shade(ss21primary, 10%)
 	
 	.fileText-original, // the original file text
 	.fnswitch:hover > .fntrunc, // when hovering over a filename, hide the truncated version
@@ -2155,6 +2261,11 @@
 			opacity .8
 		& > .warning
 			clear both // if the file is deleted
+	
+	/*
+	<a class="fileThumb" href="https://i.4cdn.org/pol/1628658711552.webm" target="_blank"><img src="//i.4cdn.org/pol/1628658711552s.jpg" alt="2.26 MB" data-md5="usgTmBCj/BQFUGOYBO2zpg==" style="height: 125px; width: 125px;" loading="lazy" class=""><div class="warning">Error: Corrupt or unplayable video</div><div data-tip="" data-tip-cb="mShowFull" class="mFileInfo mobile">2.26 MB WEBM</div></a>
+	this is what the html looks like with an error, which messes up webms
+	*/
 	
 	span.fileThumb
 		if ss21readingMode == ss21light
@@ -2221,19 +2332,19 @@
 	
 	// make the icons you can add to the file info a little smaller
 	// XXX: needs better vertical alignment
-	.download-button
-		margin 0 .125rem 0 .25rem
-	
-	.download-button::after,
-	.quick-filter-md5::after
-		font-size 1rem
-		line-height 21px
+	.download-button,
+	.quick-filter-md5
+		display contents
+		&::after
+			font-size 1rem
+			line-height 17px
+			vertical-align text-bottom
 	
 	// XXX: convert sauce links to icons for fun
 	// XXX: on mac + chrome, have to add `white-space: pre` otherwise it still renders
 	// the text
 	.sauce[href*='google']
-		color transparent
+		color transparent i
 		display inline-block
 		white-space pre
 		width .75rem
@@ -2287,12 +2398,6 @@
 			img
 				object-fit cover
 				width 100% i
-	
-	.file-info
-		display inline-flex
-		align-items stretch
-		& > a:first-child
-			margin-right .25rem
 	
 	if ss21fileInfo == 2
 		.file .fileText
@@ -2349,12 +2454,28 @@
 		borderRadius()
 		z-depth(2)
 	
-	// 4CHANX: backlinks
-	// XXX: a little too specific, so we require an !important
-	.container:empty
-		display none i
+	// XXX: make special kinds of quotelinks appear `sup`-scripted
+	+prefix-classes('qmark-')
+		.ct
+			font-size 0
+			&::after
+				content ' (CT)'
+		.op,
+		.you,
+		.ct::after,
+		.dead
+			position relative
+			font-size .75rem
+			line-height 0
+			vertical-align baseline
+			top -.5em
+			left -.25ch
 	
-	.container
+	// 4CHANX: backlinks
+	.container:empty
+		display none
+	
+	:where(.container)
 		display block
 		font-size .875em
 		font-family var(--font-monospace)
@@ -2453,24 +2574,38 @@
 	
 	.postContainer.post--hot > .post
 		background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(140, 35, 50, .33))
-
+	
 	.postContainer.poster--admin
 		> .post
 			background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
+			.identityIcon
+				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(admin)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 			> .postInfo > .nameBlock
 				color ss21posterAdmin
-
+	
 	.postContainer.poster--mod
 		> .post
-			background-color mix(ss21posterMod, ss21BackgroundColour, 10%)
+			background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
+			.identityIcon
+				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(mod)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 			> .postInfo > .nameBlock
-				color ss21posterMod
-
+				color ss21poster(mod)
+	
 	.postContainer.poster--verified
 		> .post
 			background-color mix(ss21posterVerified, ss21BackgroundColour, 10%)
+			.identityIcon
+				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(verified)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 			> .postInfo > .nameBlock
 				color ss21posterVerified
+	
+	.identityIcon
+		height 0
+		width 1rem
+		padding-top 1rem
+		margin-right .125rem
+		background-repeat no-repeat
+		opacity .87
 	
 	:root:not(.anonymize) .postContainer.poster--pass
 		> .post
@@ -2735,11 +2870,12 @@
 				min-height auto
 	
 	.catalog-stats
+		font-size .75rem
 		order 4
 		padding .25rem .5rem
 		display flex
 		align-items center
-		border-top 1px solid darken(ss21BackgroundElevated, 25%)
+		border-top 1px solid tint(ss21BackgroundElevated, 5%)
 		span[title]
 			color var(--text-hint-on-background)
 			cursor help
@@ -3864,7 +4000,7 @@
 	// moves the menu button of posts to the top right. reset for catalogue posts
 	.post .menu-button
 		position absolute
-		top .25rem
+		top 2px
 		right 1rem
 	
 	.post > .postInfo > .menu-button
@@ -3991,6 +4127,10 @@
 		background-color: #adb5bd;
 	}
 	*/
+	
+	.catalog-thread[class*="thread-chip"]::before
+		tc(ss21primary, high)
+	
 	/**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
 	 * top and bottom of the page within threads. not needed in catalogue mode, so it
@@ -4446,6 +4586,11 @@
 				.field
 					background #fff
 	
+	if ss21readingMode == ss21tomorrow
+		:root
+			color #c5c8c6
+			background-color #1d1f21
+	
 	// please turn off oneechan...
 	:root.oneechan .fa-gears::after
 		content 'sentiment_very_dissatisfied'
@@ -4571,4 +4716,35 @@
 	// users really should disable thread > limit post widths
 	.fa-play-circle::after
 		content 'music_note'
+	
+	#fcsp-container
+		z-depth(8)
+		border 0
+		borderRadius()
+	.fcsp-header
+		height 3rem
+		line-height 3rem
+		background-color ss21primary
+		border 0
+		border-top-right-radius 4px
+		border-top-left-radius 4px
+		a[title]
+			--icon-color red
+			width 1rem
+			height 1rem
+			svg
+				display none
+		a[title="Repeat All"]
+			background-color var(--icon-color)
+			-webkit-mask-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='18px' viewBox='0 0 24 24' width='18px' fill='%23FFFFFF'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z'/%3E%3C/svg%3E")
+	.fcsp-title-marquee
+		text-transform lowercase
+	
+	.ss21--download-all
+		tc(ss21primary, medium)
+		cursor pointer
+		transition text-shadow .25s
+		&:hover
+			tc(ss21primary, high)
+			text-shadow 0 0 1rem invert(ss21primary)
 	
