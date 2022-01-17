@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.1.5
+// @version     2.2.0
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
 // @match       *://boards.4chan.org/*
 // @match       *://boards.4channel.org/*
+// @match       *://find.4chan.org/*
+// @match       *://find.4channel.org/*
 // @match       *://www.4chan.org/*
 // @connect     4chan.org
 // @connect     4channel.org
@@ -42,6 +44,11 @@
     })();
 
   doc.classList.add("site-loading");
+
+	if (window.location.host.split('.')[0] === 'find') {
+		doc.classList.remove("site-loading");
+		doc.classList.add("is-search");
+	}
 
   function $(sel, root) {
     return (root || d).querySelector(sel);
@@ -130,7 +137,7 @@
     removeStyle($("style[type]", d.head)); // this removes the inline mobile css
     removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
 		removeStyle($("#custom-css", d.head)); // this removes the css required by 4chan x
-		removeStyle($("#sound-player-css", d.head)); // sounds player
+		//removeStyle($("#sound-player-css", d.head)); // sounds player
   }
 
   function init() {
@@ -244,7 +251,7 @@
     });
 
     function countBacks() {
-      console.log("Counting backlinks");
+      //console.log("Counting backlinks");
       let posts = $$(".post");
       for (let post of posts) {
         let backlinks = $$(".backlink", post);
@@ -256,7 +263,7 @@
     }
 
     function convertSummaries() {
-      console.log("Converting summaries");
+      //console.log("Converting summaries");
       let summaries = $$(".summary");
       for (let summary of summaries) {
         let oldText, newText;
@@ -267,7 +274,7 @@
     }
 
     function swapInfo() {
-      console.log("Switching OP's post info");
+      //console.log("Switching OP's post info");
       let ops = $$(".op");
       for (let op of ops) {
         let opPostInfo = $(".postInfo", op);
@@ -292,6 +299,21 @@
       }
     }
 
+		function disabledPrevAndNext() {
+			let prevBut = document.querySelector('.pagelist .prev button');
+			if (prevBut.disabled) {
+				document.querySelector('.pagelist .prev').dataset.clickable = 'false';
+			} else {
+				document.querySelector('.pagelist .prev').dataset.clickable = 'true';
+		  }
+			let nextBut = document.querySelector('.pagelist .next button');
+			if (nextBut.disabled) {
+				document.querySelector('.pagelist .next').dataset.clickable = 'false';
+			} else {
+				document.querySelector('.pagelist .next').dataset.clickable = 'true';
+		  }
+		}
+
     if (config === "index") {
       const target = $(".board");
       const config = {
@@ -301,6 +323,7 @@
       function subscriber(mutations) {
         convertSummaries();
         swapInfo();
+				disabledPrevAndNext();
 				//mason();
       }
       const observer = new MutationObserver(subscriber);
@@ -308,8 +331,8 @@
     }
 
     if (config === "index") {
-      //on(d, "IndexRefresh", convertSummaries);
-      //on(d, "IndexRefresh", swapInfo);
+      on(d, "IndexRefresh", convertSummaries);
+      on(d, "IndexRefresh", swapInfo);
       on(d, "IndexRefresh", checkHeights);
     }
 
@@ -340,6 +363,47 @@
 
     imgOpacity();
 */
+
+		// two from https://github.com/duanemoody
+		// javascript:let p=$$("a.download-button"), i=0, v=setInterval(() => {p[i++].click(); (i>p.length) && clearInterval(v);}, 1000);
+		// javascript:var pics=document.querySelectorAll("a.download-button"), counter=0, interval=setInterval(function() {pics[counter].click(); counter++; if (counter > pics.length) {clearInterval(interval);}}, 1000);
+		// https://stackoverflow.com/questions/30088897/trying-to-download-all-of-the-images-on-the-website-using-javascript
+		// https://gist.github.com/sfrdmn/8834747
+		// https://gist.github.com/lucidBrot/432d2c6184a188a060e58dbb36bd2084
+		function downloadMedia() {
+      ready('#shortcuts', (element) => {
+        let _this = element;
+        make({
+          el: 'a',
+          cl4ss: 'material-icons shortcut ss21--download-all',
+          attr: {
+            title: 'Download all media in thread'
+          },
+          prepend: _this,
+          html: `download_for_offline`
+        });
+      });
+      let imgToggle = $('.ss21--download-all');
+      imgToggle.addEventListener('click', function() {
+        let allMedia = [].slice.call(document.querySelectorAll('.download-button'));
+				let i = 0;
+				try {
+					allMedia.forEach(function(media) {
+						downloadThem(media, i++);
+					})
+				} catch(e) {
+					console.log('Something went wrong...', e);
+				}
+				function downloadThem(media) {
+					setTimeout(() => {
+						media.click();
+					}, i * 500)
+				}
+      });
+    }
+
+    downloadMedia();
+
     function boardDrawer() {
       let boardDrawer = make({
         el: "aside",
@@ -445,7 +509,7 @@
 			let bannerContainer, bannerImg;
 			bannerContainer = $('#bannerCnt');
 			bannerImg = $('#bannerCnt > img');
-			if (bannerImg.naturalHeight === 0) {
+			if (bannerImg === null) {
 				bannerContainer.classList.add('blocked');
 				bannerContainer.removeAttribute('title');
 			} else {
@@ -453,7 +517,24 @@
 			}
 		}
 
-		on(window, "load", checkBanner);
+		window.onload = checkBanner;
+
+		function getSortMode() {
+			//console.log('sorting mode');
+			let sorter, boardCon, oldVal;
+			sorter = $("#index-sort");
+			boardCon = $(".board");
+			oldVal = sorter.value;
+			boardCon.classList.add(oldVal);
+			on(sorter, "change", () => {
+				boardCon.classList.remove(oldVal);
+				boardCon.classList.add(sorter.value);
+			});
+		}
+
+		if (config === "index") {
+			on(d, "IndexRefresh", getSortMode);
+		}
 
     function passLinker() {
       let passLink, bottomLinks;
@@ -468,6 +549,21 @@
     }
 
     passLinker();
+
+		function spinnerText() {
+			let footer = $("#absbot");
+			let svgSpin = make({
+          el: "div",
+          cl4ss: "ss21--spinner-text",
+          html: `<div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><defs><path d="M50,250c0-110.5,89.5-200,200-200s200,89.5,200,200s-89.5,200-200,200S50,360.5,50,250" id="textcircle"></path></defs><text><textPath xlink:href="#textcircle">4chan4chan4chan4chan</textPath></text></svg></div>`
+        });
+			function append(parent, el) {
+        return parent.appendChild(el);
+      }
+      append(footer, svgSpin);
+		}
+
+		spinnerText();
 
     if (location.pathname.split("/")[1] === "fit") {
       function weightConverter() {
@@ -660,6 +756,34 @@
     if (config === "thread") {
       OPAsBanner();
     }
+/*
+// https://css-tricks.com/userainbow/
+function useEffect() {
+  const cb = () => {
+    const viewportHeight = window.innerHeight
+    const contentHeight = document.body.getBoundingClientRect().height
+    const viewportsPerRotation = Math.min(
+      3,
+      contentHeight / viewportHeight
+    )
+    const from = 51
+    const progress =
+      window.scrollY / (viewportHeight * viewportsPerRotation)
+    const h = (from + 360 * progress) % 360
+
+    document.body.style.backgroundColor = `hsl(${h}deg, 100%, 50%)`
+  }
+  window.addEventListener('scroll', cb, { passive: true })
+  return () => window.removeEventListener('scroll', cb)
+}
+
+		useEffect();
+		*/
+
+		ready("#sound-player-css", (element) => {
+        doc.classList.add('fcsp-enabled');
+      }
+    );
 
       ready("#mascot", (element) => {
         let _this = element;
@@ -675,6 +799,25 @@
   }
 
   on(d, "4chanXInitFinished", init);
+
+	if (window.location.host.split('.')[0] === 'find') {
+		document.addEventListener('DOMContentLoaded', (event) => {
+			function swapInfo() {
+      let ops = $$(".op");
+      for (let op of ops) {
+        let opPostInfo = $(".postInfo", op);
+        op.prepend(opPostInfo);
+        op.classList.add("post--file-swapped");
+      }
+    }
+			swapInfo();
+			function fitText(el) {
+       el.style.fontSize = Math.max(Math.min(el.clientWidth / 10, parseFloat(1/0)), parseFloat(-1/0)) + 'px';
+      }
+
+      fitText($('.boardBanner'));
+		})
+	}
 	//on(d, "PlayerEvent", removeStyle($("#sound-player-css", d.head)));
 /*
 	function backup() {
