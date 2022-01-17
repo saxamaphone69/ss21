@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.1.10
+@version        2.2.0
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -36,7 +36,7 @@
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
 ==/UserStyle== */
 
-@-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org.*')
+@-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
 	@import url('https://rsms.me/inter/inter.css');
 	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Material+Icons&display=swap');
 	/*
@@ -227,8 +227,8 @@
 		--grey-500 #b3b3b6
 		--grey-700 #737376
 		--grey-900 #303033
-		--font-default 'Inter var', arimo, roboto, helvetica, arial, system-ui
-		--font-monospace 'fira code', inconsolata, monospace, monospace
+		--font-default 'Inter var', system-ui
+		--font-monospace 'Inconsolata', monospace, monospace
 		--font-icon material icons
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
@@ -280,7 +280,7 @@
 	// 7. ad pleas (buy a 4chan pass, friend)
 	// 8. the '>>' to the left of posts when reply hiding isn't on
 	.mobile,
-	.desktop:not(#bannerCnt):not(.postInfo):not(.postNum):not(.summary):not(.pagelist):not(#boardNavDesktopFoot),
+	.desktop:not(#bannerCnt, .postInfo, .postNum, .summary, .pagelist, #boardNavDesktopFoot),
 	hr:not(#unread-line),
 	.qr-link-container,
 	.postForm,
@@ -685,6 +685,7 @@
 	// okay, so there are only a handful of input fields used in 4chan x anyway:
 	// index search field (with 3 select dropdowns), qr, and the settings
 	.field
+	:root.is-search .commentForm input[name='q']
 		display inline-block
 		background inherit
 		padding .5rem .75rem
@@ -1289,6 +1290,16 @@
 			&.current::after
 				display block
 	
+	if ss21headerHeight == 2
+		#board-list a
+			font-size .75rem
+			min-width 2rem
+		.ss21--board-drawer-toggle,
+		.ss21--download-all,
+		.shortcut .fa::after,
+		.shortcut .menu-button::after
+			font-size 18px // XXX: it's insane how bad this looks lmao
+	
 	// 4CHANX: in the event there are no shortcuts (not sure when this is),
 	// hide the whole element
 	#shortcuts:empty
@@ -1482,7 +1493,7 @@
 			align-items center
 			justify-content center
 			text-align center
-			height 50vh
+			height 33vh
 			width 100%
 			//z-index -1
 			if ss21readingMode == ss21light
@@ -1546,6 +1557,7 @@
 			transition text-shadow .1s
 			z-index 1
 		
+	
 		// support for custom board titles in 4chan x, making it visually obvious they can be edited
 		.boardTitle,
 		.boardSubtitle
@@ -1816,7 +1828,6 @@
 		margin-bottom 0
 	
 	// XXX: if there are no search results from index
-	/*
 	.board:empty::after
 		content 'no results; try another search term'
 		grid-column span 2
@@ -1824,7 +1835,6 @@
 		min-height 10rem
 		text-align center
 		color var(--text-secondary-on-background)
-	*/
 	
 	if ss21twoWide
 		@media (min-width: 75rem)
@@ -1833,14 +1843,8 @@
 				display grid
 				grid-gap 0
 				grid-template-columns repeat(2, 1fr)
-				.thread:nth-of-type(15n)
+				.thread:last-of-type:nth-of-type(odd)
 					grid-column span 2
-			
-			:root.paged-mode .is_index
-				&.board_v .board .thread:nth-of-type(15n)
-					grid-column 1
-				&.board_pol .board .thread:nth-of-type(15n)
-					grid-column 1
 	
 	.postContainer
 		position relative
@@ -1889,9 +1893,9 @@
 		align-items center
 		//flex-wrap nowrap // XXX: not ideal, especially on boards like /pol/
 		//padding .125rem 4rem .25rem 1rem
-		padding 0 4rem 0 1rem
+		padding .125rem 4rem .125rem 1rem
 		// XXX: provides space for menu/hide button on long post infos
-		height 1.75rem
+		//height 1.75rem XXX: 2021-12 the cut off subjects always bothered me
 		borderRadius()
 		border-bottom-left-radius 0
 		border-bottom-right-radius 0
@@ -1902,14 +1906,7 @@
 		else if ss21readingMode == ss21dark
 			box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
-	.postContainer:not(.noFile) .postInfo
-		padding-bottom .125rem
-	
 	.subject
-		max-width 45%
-		overflow hidden
-		white-space nowrap
-		text-overflow ellipsis
 		&:empty
 			display none
 	
@@ -2016,7 +2013,7 @@
 			position absolute
 			top -.75rem
 			right 6rem
-			z-index 1
+			z-index 2
 			transition background-color .25s
 			z-depth(2)
 			&:hover
@@ -2253,7 +2250,19 @@
 	
 	:root.ua-gecko.fit-width .full-image
 		width 100%
-	
+	/*
+	.is_thread .expanded-image.file--wide
+		.fileThumb
+			margin 0
+			opacity 1
+			float none
+			display block
+		.full-image
+			max-width none
+			width 80vw
+			position relative
+			left calc(-40vw + (70rem / 2) - 2rem)
+	*/
 	.fileThumb
 		float left
 		margin .5rem
@@ -2356,7 +2365,7 @@
 		&:hover
 			opacity .8
 	
-	.file--huge .fileText .sauce[href*='google']
+	.file--huge > .post > .file .fileText .sauce[href*='google']
 		color transparent
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
 	
@@ -2502,9 +2511,9 @@
 					content ' and '
 					color var(--text-hint-on-background)
 					pointer-events none
-
+	
 	:root.bottom-backlinks .container
-		padding .25rem .5rem
+		padding .125rem .5rem
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
 			box-shadow inset 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
@@ -2565,7 +2574,7 @@
 		border 2px solid rgba(255, 0, 0, .75)
 	
 	// XXX: needs to be coincided with normal .fileText
-	.file--huge .fileText
+	.file--huge > .post > .file .fileText
 		color rgba(ss21green, .87)
 		a
 			color ss21green
@@ -2607,12 +2616,12 @@
 		background-repeat no-repeat
 		opacity .87
 	
-	:root:not(.anonymize) .postContainer.poster--pass
+	:where(:root:not(.anonymize)) :where(.postContainer.poster--pass)
 		> .post
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 			> .postInfo > .nameBlock
 				color ss21posterPass
-		+ .summary
+		+ :where(.summary)
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 	
 	.postContainer.post--aus
@@ -2657,7 +2666,7 @@
 		will-change transform
 		transform perspective(1px) translateZ(0)
 		animation buzz .25s linear infinite
-		z-index 11 // for some reason the menu gets offset when transformed
+		z-index 1 // for some reason the menu gets offset when transformed
 		.postNum a:nth-child(2n)::after
 			color ss21green
 			vertical-align text-bottom
@@ -2970,12 +2979,76 @@
 	.catalog-thread:not(:hover) .catalog-replies
 		display none
 	
+	// 2022 WOW CONTAINER QUERIES
+	/*
+	.catalog-thread
+		container inline-size / post
+	
+	@container post (max-width: 30ch)
+		.catalog-post
+			background red
+	*/
 	// pagelist styling
 	:root .pagelist:not(.json-index),
 	.pagelist
 		display flex
 		text-align center
 	
+	.pagelist
+		margin 1rem
+		button,
+		.cataloglink
+			display none
+		.prev,
+		.next
+			display flex
+			align-items stretch
+			a::after
+				font-size 3rem
+				width 6rem
+				display inline-flex
+				justify-content center
+				align-items center
+				border-radius 100%
+				aspect-ratio 1/1
+		[data-clickable="false"] a
+			opacity .42
+			cursor not-allowed
+		.pages:not(.cataloglink)
+			flex 1
+			font-size 0
+			font-weight 700
+			display flex
+			justify-content space-between
+			align-items stretch
+			*
+				font-size 3rem
+				flex-grow 1
+				max-width 6rem
+				display inline-flex
+				justify-content center
+				align-items center
+				border-radius 100%
+				aspect-ratio 1/1
+				transition color .25s, background-color .25s
+				&:hover
+					background-color ss21primary
+			strong
+				background-color ss21primary
+	
+	// make the page button circles a little smaller when the window is smaller
+	@media (max-width: 75rem)
+		.pagelist
+			.prev,
+			.next
+				a::after
+					font-size 2rem
+					width 4rem
+			.pages:not(.cataloglink)
+				*
+					font-size 2rem
+					max-width 4rem
+	/*
 	.pagelist
 		a
 			tc(ss21BackgroundElevated, medium)
@@ -2998,7 +3071,7 @@
 				font-size 4.25rem
 				flex 1
 				height 3rem
-				overflow hidden
+				//overflow hidden
 				display block
 				padding-top .25rem
 		.pages:not(.cataloglink)
@@ -3012,7 +3085,8 @@
 			padding-top .25rem
 			height 3rem
 			flex 1
-			overflow hidden
+			//overflow hidden
+	*/
 	
 	// XXX: non-json index pagelist looks bad, pls fix
 	
@@ -3027,6 +3101,9 @@
 		color var(--grey-500)
 		background-color var(--grey-900)
 		padding 3rem 1.5rem 1rem
+		position relative
+		border-radius 64px 64px 0 0
+		margin 0 1rem
 		.boardList
 			display grid
 			grid-gap 1rem
@@ -3066,6 +3143,9 @@
 		color var(--grey-500)
 		background-color var(--grey-900)
 		padding 0 1.5rem
+		position relative
+		overflow hidden
+		margin 0 1rem
 		user-select none
 	
 	.absBotDisclaimer
@@ -3095,6 +3175,32 @@
 			margin-right 3rem
 			&:hover
 				color var(--grey-300)
+	
+	.ss21--spinner-text
+		color var(--grey-500)
+		position absolute
+		pointer-events none
+		width 250px
+		top 0
+		right 50px
+		animation spinningText 40s infinite
+		transform-origin 50% 50%
+		svg
+			font-size 63px
+			letter-spacing 22px
+			font-weight 900
+			fill var(--grey-500)
+	
+	@media (max-width: 75rem)
+		.ss21--spinner-text
+			top 69px
+	
+	@keyframes spinningText
+		0%
+			transform rotate(0deg)
+			animation-timing-function linear
+		100%
+			transform rotate(360deg)
 	
 	// the quick reply
 	// XXX: https://developer.mozilla.org/en-US/docs/Web/CSS/::file-selector-button
@@ -3515,6 +3621,10 @@
 		#t-cnt
 			filter invert(.935)
 	
+	// XXX: https://github.com/ccd0/4chan-x/issues/3196
+	#t-bg
+		filter sepia(100%) saturate(500%) hue-rotate(90deg) brightness(100%) contrast(100%)
+	
 	.captcha-container
 		button
 			font-size .875rem i
@@ -3638,6 +3748,10 @@
 		color ss21primary
 		&:hover
 			color shade(@color, 10%)
+	
+	@media (max-width: 60rem)
+		#fourchanx-settings nav a:not([download])
+			font-size .75rem
 	
 	/**
 	 * since `.unscroll` isn't added to `body`, we can make use of some bleeding edge
@@ -3790,7 +3904,7 @@
 		pointer-events none
 	
 	.new
-		color limegreen
+		color ss21green
 		margin-right .5rem
 	
 	// we go a little overboard with the micro-interaction here, but whatever;
@@ -4517,10 +4631,15 @@
 	// fun fact, the archive has about 10,000 entries displayed at any one time
 	// in the archive table, `.teaser-col` can contain the subject (`b`), `.quote`,
 	// or a `wbr` which breaks links
+	.is_archive,
+	.board_f
+		.board
+			max-width none
+	
 	.flashListing
-		width 100%
-		max-width 75rem
+		max-width 100%
 		margin 1rem auto
+		position relative
 		vertical-align top
 		word-break normal
 		background-color var(--background-primary)
@@ -4534,6 +4653,16 @@
 			tc(@background-color, high)
 		tbody
 			vertical-align inherit
+		.subject::after
+			display none
+		.file-col
+			font-size 0
+			a::after
+				content attr(title)
+				font-size 1rem
+				color ss21primary
+		.highlightPost
+			background-color mix(ss21primary, #1f1f1f, 10%)
 	
 	// attempt to get "yotsuba" theme working
 	// since stylus runs after page, it can't retroactively check if the page
@@ -4748,3 +4877,11 @@
 			tc(ss21primary, high)
 			text-shadow 0 0 1rem invert(ss21primary)
 	
+	.is_index .ss21--download-all
+		display none
+	
+	:root.is-search
+		script + .container
+			display none
+		.commentForm
+			margin 0
