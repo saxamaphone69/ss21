@@ -3,7 +3,7 @@ a self-centered, fresh attempt at (user)styling 4chan
 
 ![screenshot of ss21 applied](img/ss21-preview.png)
 
-following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020~~, 2021!
+following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020, 2021~~, 2022!
 
 created by **saxamaphone** "sax" `!3.saxN0DHY`, who has been making userstyles for 4chan since 2009 with styles such as 3 Shades of 4chan (which only exists as Midnight Caek in App/OneeChan now), curabitr, and xl
 
@@ -29,16 +29,9 @@ it is **highly** recommended you play with the settings within the userstyle
 this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
 1. install [`ss21.user.styl`](https://github.com/saxamaphone69/ss21/raw/master/ss21.user.styl) (stylus should prompt you to install)
-2. install [`ss21font.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21font.css), and (optionally) [`ss21boardbanner.css`](https://raw.githubusercontent.com/saxamaphone69/ss21/master/ss21boardbanner.css)
- - since these are not `user.css` files, they are not auto-recognised and auto-updated by stylus. the easiest way to install them is to:
-   - click on stylus and click on the "manage button"
-   - on the left hand side, click on the "write new style" button and make sure "as usercss" is NOT checked
-   - copy (`ctrl+c`) and paste (`ctrl+v`) the content of `ss21font.css` into this new window
-   - stylus doesn't actually allow `@import`... so cut (`ctrl+x`) lines 2 and 3, click on the "override style" button, paste those 2 lines back into the window, name the file ss21font, then click save. yeah, i know.
-   - `ss21boardbanner.css` is the same steps, except once you paste and click the "override style" button, name it ss21boardbanner and click save
-3. install [`sidedish.user.js`](https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js) (your userscript manager should prompt you to install)
-4. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
-5. cross your fingers and hope it works!
+2. install [`sidedish.user.js`](https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js) (your userscript manager should prompt you to install)
+3. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
+4. cross your fingers and hope it works!
 
 ### blocker filters
 a blocker is used to not only hide ads, but also block some other stuff to save on network requests.
@@ -82,7 +75,7 @@ ss21 makes use of the highlighting feature in 4chan x to give certain posts extr
 | **post numbers** | `/(\d)\1$/;highlight:post--dubs;top:no;boards:s4s` |
 | **capcodes** | `/Founder$/;highlight:poster--founder;op:yes`<br>`/Admin$/;highlight:poster--admin;op:yes`<br>`/Mod$/;highlight:poster--mod;op:yes`<br>`/Manager$/;highlight:poster--manager;op:yes`<br>`/Developer$/;highlight:poster--developer;op:yes`<br>`/Verified$/;highlight:poster--verified;op:yes` |
 | **pass dates** | `/./;highlight:poster--pass;top:no;` |
-| **subject** | `/./;op:only;top:no;highlight:thread--subject` |
+| **subject** | `/./;op:only;top:no;highlight:thread--subject`<br>`/(.){40,}/;op:only;top:no;highlight:thread--subject-long` |
 | **comment** | `/^\W*(\w+\b\W*){50,90}$/;op:only;top:no;highlight:thread--long`<br>`/^\W*(\w+\b\W*){91,149}$/;op:only;top:no;highlight:thread--extra-long`<br>`/^\W*(\w+\b\W*){150,}$/;op:only;top:no;highlight:thread--silly-long`<br>`/(?:[^\n]*(\n+)){5,}/;op:only;top:no;highlight:thread--new-lines` |
 | **filenames** | `/.webm$/;highlight:file--video;top:no;`<br>`/.gif$/;highlight:file--gif;top:no;` |
 | **image dimensions** | `/\d{4}x/;highlight:file--wide;top:no;`<br>`/x\d{4}/;highlight:file--high;top:no;` |
