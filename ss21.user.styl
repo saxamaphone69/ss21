@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.0
+@version        2.2.1
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -34,11 +34,18 @@
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
+@var select     ss21iconFont         "Icon font" ["0:Material", "1:Bootstrap", "2:Material Symbol"]
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
 	@import url('https://rsms.me/inter/inter.css');
 	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Material+Icons&display=swap');
+	if ss21iconFont == 1
+		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
+
+	if ss21iconFont == 2
+		@import url('https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -229,7 +236,7 @@
 		--grey-900 #303033
 		--font-default 'Inter var', system-ui
 		--font-monospace 'Inconsolata', monospace, monospace
-		--font-icon material icons
+		--font-icon 'Material Icons'
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
 	// it loads. also create a pseudo element loader/spinner in the mean time
@@ -317,6 +324,9 @@
 		//word-break break-word // XXX: might not even work tbh
 		box-sizing border-box
 		transition color .25s, background-color .25s
+		accent-color ss21primary
+		if ss21readingMode == ss21dark
+			color-scheme dark
 	
 	@css {
 		:root .navLinks {
@@ -597,7 +607,7 @@
 	img,
 	svg,
 	video
-		vertical-align middle // XXX: might be better off with `display: block` instead of messing with vertical alignment
+		display block // was `vertical-align: middle`
 		height auto
 		max-width 100%
 	
@@ -635,7 +645,6 @@
 	input[type="submit"],
 	a.replylink
 		font-size .875rem
-		font-weight 500
 		line-height 1
 		letter-spacing .09em
 		text-transform uppercase
@@ -706,7 +715,7 @@
 		background-repeat no-repeat
 		background-position center
 		background-size contain
-		border 2px solid var(--text-hint-on-background)
+		border 2px solid alpha(ss21OppColour, .33)
 		borderRadius()
 		-webkit-appearance none
 		-moz-appearance none
@@ -715,6 +724,8 @@
 		margin-right .25rem
 		cursor pointer // opinionated
 		transition all .25s
+		&:hover
+			border-color alpha(ss21OppColour, .8)
 		&:active
 			filter brightness(90%)
 		&:focus
@@ -808,8 +819,7 @@
 		opacity 1
 	
 	// correct cursor style of +/- buttons in safari for `input[type="number"]`
-	::-webkit-inner-spin-button,
-	::-webkit-outer-spin-button
+	::-webkit-inner-spin-button
 		height auto
 	
 	// removes the 'clear' button that chrome adds to `input[type=search]` elements
@@ -904,7 +914,7 @@
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.native-settings::after,
 	.post--dubs .postNum a:nth-child(2n)::after
-		font-family material icons
+		font-family 'Material Icons'
 		font-weight normal
 		font-style normal
 		font-size 1.5rem // 24px, ideally
@@ -1037,6 +1047,323 @@
 	.dead-thread .fa-times::after
 		content 'delete_forever' // dead thread and remove from thread watcher
 	
+	if ss21iconFont == 1
+		.fa::after,
+		.menu-button::after,
+		.n-pu::after,
+		.contact-links::after,
+		#navlinks a::after,
+		.postJumper a::after,
+		#index-rev::after,
+		.indicator::after,
+		.pagelist .prev a::after,
+		.pagelist .next a::after,
+		.watch-thread-link::after,
+		#index-search-clear::after,
+		#index-rev::after,
+		.has-submenu::after,
+		.show-announcement::after,
+		.report-link::after,
+		.download-link::after,
+		.copy-text-link::after,
+		.checkbox-letter::after,
+		.qr-preview-spoiler::after,
+		#add-post::after,
+		.gal-start::after,
+		.gal-stop::after,
+		.gal-close::after,
+		.close::after,
+		.jump::after,
+		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
+		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
+		.native-settings::after,
+		.post--dubs .postNum a:nth-child(2n)::after
+			display inline-flex
+			font-family bootstrap-icons
+			font-style normal
+			font-size 24px
+			font-weight normal
+			font-variant normal
+			text-transform none
+			line-height 1
+			-webkit-font-smoothing antialiased
+			-moz-osx-font-smoothing grayscale
+		
+		.menu-button::after
+			content '\f5d3' // menus
+		.catalog-post .menu-button::after
+			content '\f5d4' // menus in catalogue mode
+		.fa-eye::after
+			content '\f33e' // thread watcher
+		.fa-expand::after
+			content '\f3df' // expand all images
+		.fa-compress::after
+			content '\f3de' // compress all images
+		.fa-picture-o::after
+			content '\f42a' // gallery mode
+		.fa-comment-o::after
+			content '\f25b' // quick reply
+		.fa-refresh::after
+			content '\f116' // refresh index
+		.fa-wrench::after
+			content '\f3e2' // 4chan x settings
+		.fa-minus-square::after,
+		.fa-minus-square-o::after
+			content '\f2e5' // hide post
+		.fa-plus-square::after,
+		.fa-plus-square-o::after
+			content '\f4f9' // show post
+		.fa-times::after,
+		.close::after,
+		.gal-close::after
+			content '\f659' // close
+		.fa-bolt::after
+			content '\f46e' // prefetch
+		.watch-thread-link::after
+			content '\f417' // watch thread
+			color ss21red
+		.watch-thread-link.watched::after
+			content '\f415' // unwatch thread
+		#navlinks a:first-of-type::after
+			content '\f286' // navigate up
+		#navlinks a:last-of-type::after
+			content '\f282' // navigate down
+		.postJumper a:first-of-type::after
+			content '\f148' // jump to previous post by id
+		.postJumper a:last-of-type::after
+			content '\f128' // jump to next post by id
+		#index-rev::after
+			content '\f127' // reverse index order
+		.pagelist .prev a::after
+			content '\f12f' // pagelist, previous ($$$)
+		.pagelist .next a::after
+			content '\f138' // pagelist, next ($$$)
+		.fa-edit::after
+			content '\f4b0' // oeaki mode in qr
+		.copy-text-link::after,
+		.fa-link::after
+			content '\f471' // copy
+		#paste-area::after
+			content '\f290' // paste mode in qr
+		.fa-clock-o::after
+			content '\f597' // auto poster in qr
+		#qr .fa-plus-square::after,
+		#add-post::after
+			content '\f4fc' // dump list in qr
+		#index-search-clear::after,
+		.fa-times-circle::after
+			content '\f622' // remove
+		.qr-preview-spoiler::after,
+		.checkbox-letter::after
+			content '\f5f5' // spoilers in qr
+		.gal-start::after
+			content '\f4f4' // gallery mode
+		.gal-stop::after
+			content '\f592' // gallery mode
+		.left .has-submenu::after
+			content '\f284' // add icon to menu entry
+		.has-submenu::after
+			content '\f285' // add icon to menu entry
+		.jump::after
+			content '\f132' // jumper in embedder
+		.show-announcement::after
+			content '\f483' // add icon to menu entry
+		.report-link::after
+			content '\f33a' // add icon to menu entry
+		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
+			content '\f4f3' // play icon for webm thumbnails
+		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
+			content '\f366' // gif icon for gif thumbnails
+		.fa-download::after,
+		.download-link::after
+			content '\f30a' // file download and add icon to menu entry
+		.n-pu::after
+			content '\f4da' // 4chan pass user
+		#shortcut-werk .indicator::after
+			content '\f1cb' // werk tyme indicator
+		#shortcut-fappe .indicator::after
+			content '\f219' // fappe tyme indicator
+		.native-settings::after
+			content '\f5db' // native 4chan extension
+		.contact-links::after
+			content '\f4db' // for admins and mods
+		.post--dubs .postNum a:nth-child(2n)::after
+			content '\f26f' // dubs if filtered
+		.dead-thread .fa-times::after
+			content '\f5dd' // dead thread and remove from thread watcher
+		.shortcut .fa::after,
+		.shortcut .menu-button::after
+			font-size 24px
+		.watch-thread-link::after,
+		.post .menu-button::after,
+		.postContainer a[class$='reply-button'] .fa::after
+			font-size 18px
+
+	if ss21iconFont == 2
+		.fa::after,
+		.menu-button::after,
+		.n-pu::after,
+		.contact-links::after,
+		#navlinks a::after,
+		.postJumper a::after,
+		#index-rev::after,
+		.indicator::after,
+		.pagelist .prev a::after,
+		.pagelist .next a::after,
+		.watch-thread-link::after,
+		#index-search-clear::after,
+		#index-rev::after,
+		.has-submenu::after,
+		.show-announcement::after,
+		.report-link::after,
+		.download-link::after,
+		.copy-text-link::after,
+		.checkbox-letter::after,
+		.qr-preview-spoiler::after,
+		#add-post::after,
+		.gal-start::after,
+		.gal-stop::after,
+		.gal-close::after,
+		.close::after,
+		.jump::after,
+		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
+		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
+		.native-settings::after,
+		.post--dubs .postNum a:nth-child(2n)::after
+			font-family 'Material Symbols Outlined'
+			font-weight normal
+			font-style normal
+			font-size 24px
+			line-height: 1
+			letter-spacing normal
+			text-transform none
+			display inline-flex // better vertical alignment
+			justify-content center
+			align-items center
+			white-space nowrap
+			word-wrap normal
+			direction ltr
+			-webkit-font-feature-settings 'liga'
+			-webkit-font-smoothing antialiased
+			color inherit // generally not explicity set, but should be
+			visibility visible // added from 4chan x
+			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
+
+		.fa-spin::after
+			animation spin 2s infinite linear
+
+		// XXX: stylus makes this prefixed for some reason
+		@keyframes spin
+			0%
+				transform rotate(0)
+			100%
+				transform rotate(359deg)
+
+		.menu-button::after
+			content 'more_vert' // menus
+		.catalog-post .menu-button::after
+			content 'more_horiz' // menus in catalogue mode
+		.fa-eye::after
+			content 'remove_red_eye' // thread watcher
+		.fa-expand::after
+			content	'fullscreen' // expand all images
+		.fa-compress::after
+			content	'fullscreen_exit' // compress all images
+		.fa-picture-o::after
+			content	'photo' // gallery mode
+		.fa-comment-o::after
+			content	'comment' // quick reply
+		.fa-refresh::after
+			content	'refresh' // refresh index
+		.fa-wrench::after
+			content 'settings' // 4chan x settings
+		.fa-minus-square::after,
+		.fa-minus-square-o::after
+			content 'remove_circle' // hide post
+		.fa-plus-square::after,
+		.fa-plus-square-o::after
+			content 'add_circle' // show post
+		.fa-times::after,
+		.close::after,
+		.gal-close::after
+			content 'close' // close
+		.fa-bolt::after
+			content 'flash_on' // prefetch
+		.watch-thread-link::after
+			content 'favorite' // watch thread
+			color ss21red
+			font-variation-settings 'FILL' 0
+		.watch-thread-link.watched::after
+			content 'favorite' // unwatch thread
+			font-variation-settings 'FILL' 1
+		#navlinks a:first-of-type::after
+			content 'keyboard_arrow_up' // navigate up
+		#navlinks a:last-of-type::after
+			content 'keyboard_arrow_down' // navigate down
+		.postJumper a:first-of-type::after
+			content 'arrow_upward' // jump to previous post by id
+		.postJumper a:last-of-type::after
+			content 'arrow_downward' // jump to next post by id
+		#index-rev::after
+			content 'swap_vert' // reverse index order
+		.pagelist .prev a::after
+			content 'arrow_back' // pagelist, previous ($$$)
+		.pagelist .next a::after
+			content 'arrow_forward' // pagelist, next ($$$)
+		.fa-edit::after
+			content 'format_paint' // oeaki mode in qr
+		.copy-text-link::after,
+		.fa-link::after
+			content 'link' // copy
+		#paste-area::after
+			content 'content_paste' // paste mode in qr
+		.fa-clock-o::after
+			content 'timer' // auto poster in qr
+		#qr .fa-plus-square::after,
+		#add-post::after
+			content 'add_box' // dump list in qr
+		#index-search-clear::after,
+		.fa-times-circle::after
+			content 'cancel' // remove
+		.qr-preview-spoiler::after,
+		.checkbox-letter::after
+			content 'strikethrough_s' // spoilers in qr
+		.gal-start::after
+			content 'play_arrow' // gallery mode
+		.gal-stop::after
+			content 'stop' // gallery mode
+		.left .has-submenu::after
+			content 'keyboard_arrow_left' // add icon to menu entry
+		.has-submenu::after
+			content 'keyboard_arrow_right' // add icon to menu entry
+		.jump::after
+			content 'subdirectory_arrow_right' // jumper in embedder
+		.show-announcement::after
+			content 'announcement' // add icon to menu entry
+		.report-link::after
+			content 'warning' // add icon to menu entry
+		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
+			content 'play_circle_outline' // play icon for webm thumbnails
+		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
+			content 'gif' // gif icon for gif thumbnails
+		.fa-download::after,
+		.download-link::after
+			content 'file_download' // file download and add icon to menu entry
+		.n-pu::after
+			content 'person' // 4chan pass user
+		#shortcut-werk .indicator::after
+			content 'work' // werk tyme indicator
+		#shortcut-fappe .indicator::after
+			content 'burst_mode' // fappe tyme indicator
+		.native-settings::after
+			content 'settings_applications' // native 4chan extension
+		.contact-links::after
+			content 'contact_support' // for admins and mods
+		.post--dubs .postNum a:nth-child(2n)::after
+			content 'check' // dubs if filtered
+		.dead-thread .fa-times::after
+			content 'delete_forever' // dead thread and remove from thread watcher
+	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
 	.closedIcon
@@ -1108,10 +1435,11 @@
 	[color="red"],
 	[style*="color:red"],
 	[style*="color: red"],
-	[style*="color:#ff0000"]
+	[style*="color:#ff0000"],
+	[style*="color:#FF0000"]
 		color ss21red i
 	
-	.hand
+	:where(.hand)
 		cursor pointer
 	
 	.move
@@ -1828,7 +2156,7 @@
 		margin-bottom 0
 	
 	// XXX: if there are no search results from index
-	.board:empty::after
+	:root.ss21--index-searching .board:empty::after
 		content 'no results; try another search term'
 		grid-column span 2
 		line-height 10rem
@@ -1870,7 +2198,8 @@
 		.post.catalog-post,
 		.summary,
 		.stub,
-		#menu
+		#menu,
+		.submenu
 			if ss21readingMode == ss21light
 				border 1px solid rgba(33, 33, 33, .2)
 			else if ss21readingMode == ss21dark
@@ -2021,7 +2350,7 @@
 			&::before
 				content 'open_in_new'
 				tc(ss21primary, medium)
-				font-family material icons
+				font-family 'Material Icons'
 				font-weight normal
 				font-style normal
 				font-size 1rem
@@ -2181,7 +2510,55 @@
 
 
 <blockquote class="postMessage" id="m149986685"><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
-*/
+	*/
+	.fileText
+		font-size .75rem
+		line-height 1rem
+		position relative
+		padding 0 0 .25rem 1rem
+		top -1px
+		if ss21readingMode == ss21light
+			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
+		else if ss21readingMode == ss21dark
+			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		display flex
+		//align-items center
+		&::before
+			content ''
+			display block
+			pointer-events none
+			if ss21readingMode == ss21light
+				background-color rgba(33, 33, 33, .02)
+			else if ss21readingMode == ss21dark
+				background-color rgba(255, 255, 255, .05)
+			width 100%
+			height calc(100% - 1px)
+			position absolute
+			left 0
+			top 1px
+			z-index 0
+		.file-info
+			display flex
+			align-items center
+			& > a
+				margin-right .25rem
+		& > span,
+		& > a
+			z-index 1
+			margin-right .25rem
+		a
+			color ss21primary
+			unicode-bidi isolate
+			&:hover
+				color shade(ss21primary, 10%)
+		.download-button,
+		.quick-filter-md5
+			display contents
+			&::after
+				font-size .75rem
+		.download-button::after
+			margin 0 .25rem
+	/*
 	.fileText
 		font-size .875rem
 		padding 0 1rem .125rem
@@ -2213,7 +2590,7 @@
 			unicode-bidi isolate
 			&:hover
 				color shade(ss21primary, 10%)
-	
+	*/
 	.fileText-original, // the original file text
 	.fnswitch:hover > .fntrunc, // when hovering over a filename, hide the truncated version
 	.fnswitch:not(:hover) > .fnfull, // when not hovering over a truncated version, hide the full filename
@@ -2290,7 +2667,7 @@
 		justify-content center
 		&::before
 			content 'delete_forever'
-			font-family material icons
+			font-family 'Material Icons'
 			font-weight normal
 			font-style normal
 			font-size 3rem // 24px, ideally
@@ -2338,16 +2715,13 @@
 		&:not(:hover) > span,
 		&:hover > span + a
 			display none
-	
+	/*
 	// make the icons you can add to the file info a little smaller
 	// XXX: needs better vertical alignment
 	.download-button,
 	.quick-filter-md5
-		display contents
 		&::after
 			font-size 1rem
-			line-height 17px
-			vertical-align text-bottom
 	
 	// XXX: convert sauce links to icons for fun
 	// XXX: on mac + chrome, have to add `white-space: pre` otherwise it still renders
@@ -2368,7 +2742,7 @@
 	.file--huge > .post > .file .fileText .sauce[href*='google']
 		color transparent
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
-	
+	*/
 	if ss21thumbnailOpacity == 1
 		.fileThumb
 			opacity .05
@@ -2475,7 +2849,6 @@
 		.dead
 			position relative
 			font-size .75rem
-			line-height 0
 			vertical-align baseline
 			top -.5em
 			left -.25ch
@@ -2574,12 +2947,10 @@
 		border 2px solid rgba(255, 0, 0, .75)
 	
 	// XXX: needs to be coincided with normal .fileText
-	.file--huge > .post > .file .fileText
-		color rgba(ss21green, .87)
-		a
-			color ss21green
-			&:hover
-				color darken(ss21green, 10%)
+	.file--huge > .post > .file > .fileText > .file-info > a:first-child
+		color ss21green
+		&:hover
+			color darken(ss21green, 10%)
 	
 	.postContainer.post--hot > .post
 		background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(140, 35, 50, .33))
@@ -3631,7 +4002,7 @@
 			padding 0 .75rem i
 			margin 0 i
 			width auto i
-			height auto i
+			height 42px i
 			&:first-of-type
 				margin-right .5rem i
 	
@@ -3933,7 +4304,7 @@
 			will-change transform, opacity
 			transition transform .25s, opacity .25s
 		&:active::before
-			opacity .87
+			opacity .25
 			transform scale(1.5)
 	
 	// thread watcher
@@ -4068,19 +4439,38 @@
 		user-select none
 	
 	.entry
-		display block
+		display flex
+		//justify-content space-between
+		align-items center
 		position relative
-		min-width 10rem
+		min-width 10ch
 		cursor pointer
-		padding 0 2.5rem 0 1rem
-		line-height 2.5
+		//padding 0 2.5rem 0 1rem
+		padding 0 1rem
+		line-height 2
 		transition background-color .25s
 		&:hover
 			background-color var(--background-secondary)
+		&::after
+			// XXX: icons are added to some menu entries to look fancy
+			//position absolute
+			//right .75rem
+			order -1
+			font-size 18px
+			margin-right 1rem
+			//height 2.5rem
+			color var(--text-hint-on-background)
 		&.has-shortcut-text
 			display flex
 			justify-content space-between
 			align-items center
+		&[title*="volume"]
+			display inline-flex
+			align-items center
+			justify-content center
+			input
+				order 1
+				margin-left .5rem
 		.shortcut-text
 			color var(--text-hint-on-background)
 			font-size 75%
@@ -4090,8 +4480,19 @@
 		.field
 			width auto
 		input[type="number"]
-			width 5rem
-			padding 0 0 0 .375rem
+			width 3rem
+			padding 0 0 0 .5rem
+			margin-left 1rem
+		input[type="checkbox"]
+			margin-right 1rem
+			height 1em
+			width 1em
+	
+	.left .has-submenu
+		padding 0 1rem
+		&::after
+			right auto
+			left .75rem
 
 	.submenu
 		display none
@@ -4129,118 +4530,6 @@
 		opacity .6
 		&:hover
 			opacity .87
-	
-	// XXX: icons are added to some menu entries to look fancy
-	.entry::after
-		position absolute
-		right .75rem
-		font-size 20px
-		height 2.5rem
-		color var(--text-hint-on-background)
-	
-	.entry[title*="volume"]
-		display inline-flex
-		align-items center
-		justify-content center
-		input
-			order 1
-			margin-left .5rem
-	
-	//XXX: webkit doesn't support ::-ms-upper|lower-fill, so ranges don't appear
-	// "filled". so either leave it native or style the thumb as per material
-	// 4CHANX: volume control; located here because it's only found in the header menu
-	/*
-	input[type="range"] {
-		width: 100%
-		height 1.5rem
-		padding: 0;
-		background-color: transparent;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		margin-right .5rem
-	}
-	input[type="range"]:focus {
-		outline: 0;
-	}
-	input[type="range"]:focus::-webkit-slider-thumb {
-		box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-	}
-	input[type="range"]:focus::-moz-range-thumb {
-		box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-	}
-	input[type="range"]::-moz-focus-outer {
-		border: 0;
-	}
-	input[type="range"]::-webkit-slider-thumb {
-		width: 1rem;
-		height: 1rem;
-		margin-top: -0.25rem;
-		background-color: #0d6efd;
-		border: 0;
-		border-radius: 1rem;
-		-webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-		transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-		-webkit-appearance: none;
-		appearance: none;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		input[type="range"]::-webkit-slider-thumb {
-			-webkit-transition: none;
-			transition: none;
-		}
-	}
-	input[type="range"]::-webkit-slider-thumb:active {
-		background-color: #b6d4fe;
-	}
-	input[type="range"]::-webkit-slider-runnable-track {
-		width: 100%;
-		height: 0.5rem;
-		color: transparent;
-		cursor: pointer;
-		background-color: #dee2e6;
-		border-color: transparent;
-		border-radius: 1rem;
-	}
-	input[type="range"]::-moz-range-thumb {
-		width: 1rem;
-		height: 1rem;
-		background-color: #0d6efd;
-		border: 0;
-		border-radius: 1rem;
-		-moz-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-		transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-		-moz-appearance: none;
-		appearance: none;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		input[type="range"]::-moz-range-thumb {
-			-moz-transition: none;
-			transition: none;
-		}
-	}
-	input[type="range"]::-moz-range-thumb:active {
-		background-color: #b6d4fe;
-	}
-	input[type="range"]::-moz-range-track {
-		width: 100%;
-		height: 0.5rem;
-		color: transparent;
-		cursor: pointer;
-		background-color: #dee2e6;
-		border-color: transparent;
-		border-radius: 1rem;
-	}
-	input[type="range"]:disabled {
-		pointer-events: none;
-	}
-	input[type="range"]:disabled::-webkit-slider-thumb {
-		background-color: #adb5bd;
-	}
-	input[type="range"]:disabled::-moz-range-thumb {
-		background-color: #adb5bd;
-	}
-	*/
 	
 	.catalog-thread[class*="thread-chip"]::before
 		tc(ss21primary, high)
@@ -4606,7 +4895,7 @@
 		margin-left .5rem
 	
 	.rake-btn::after
-		font-family material icons
+		font-family 'Material Icons'
 		font-weight normal
 		font-style normal
 		font-size 1.5rem // 24px, ideally
