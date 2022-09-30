@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.1
+@version        2.2.3
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -19,7 +19,7 @@
 @var checkbox   ss21boardCenter      "Centered board" 1
 @var checkbox   ss21sidebar          "Sidebar" 0
 @var select     ss21QRPosition       "QR position" ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
-@var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text"]
+@var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text", "4:Material 3"]
 @var checkbox   ss21quoteColour      "Default olive" 0
 @var checkbox   ss21boardBanner      "Enable board title and banner" 1
 @var checkbox   ss21evenPosts        "Recolour even post backgrounds" 0
@@ -35,6 +35,7 @@
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
 @var select     ss21iconFont         "Icon font" ["0:Material", "1:Bootstrap", "2:Material Symbol"]
+@var checkbox   ss21navRail          "Display settings as navigation rail" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -687,6 +688,12 @@
 			&:active
 				background-color rgba(ss21primary, 0.25)
 				transform translateY(1px)
+		else if ss21buttonStyle == 4
+			background-color ss21primary
+			text-transform none
+			border-radius 32rem
+			height 40px
+			padding 0 24px
 	
 	a.replylink
 		min-height 1.5rem
@@ -1279,10 +1286,10 @@
 			content 'settings' // 4chan x settings
 		.fa-minus-square::after,
 		.fa-minus-square-o::after
-			content 'remove_circle' // hide post
+			content 'unfold_less' // hide post
 		.fa-plus-square::after,
 		.fa-plus-square-o::after
-			content 'add_circle' // show post
+			content 'unfold_more' // show post
 		.fa-times::after,
 		.close::after,
 		.gal-close::after
@@ -1343,12 +1350,14 @@
 		.report-link::after
 			content 'warning' // add icon to menu entry
 		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
-			content 'play_circle_outline' // play icon for webm thumbnails
+			content 'play_circle' // play icon for webm thumbnails
+			font-variation-settings 'fill' 0
 		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
-			content 'gif' // gif icon for gif thumbnails
+			content 'gif_box' // gif icon for gif thumbnails
+			font-variation-settings 'fill' 0
 		.fa-download::after,
 		.download-link::after
-			content 'file_download' // file download and add icon to menu entry
+			content 'download' // file download and add icon to menu entry
 		.n-pu::after
 			content 'person' // 4chan pass user
 		#shortcut-werk .indicator::after
@@ -2647,6 +2656,8 @@
 			opacity .8
 		& > .warning
 			clear both // if the file is deleted
+		img[alt]
+			borderRadius()
 	
 	/*
 	<a class="fileThumb" href="https://i.4cdn.org/pol/1628658711552.webm" target="_blank"><img src="//i.4cdn.org/pol/1628658711552s.jpg" alt="2.26 MB" data-md5="usgTmBCj/BQFUGOYBO2zpg==" style="height: 125px; width: 125px;" loading="lazy" class=""><div class="warning">Error: Corrupt or unplayable video</div><div data-tip="" data-tip-cb="mShowFull" class="mFileInfo mobile">2.26 MB WEBM</div></a>
@@ -2783,21 +2794,32 @@
 				width 100% i
 	
 	if ss21fileInfo == 2
+		.postInfo
+			if ss21readingMode == ss21light
+				box-shadow 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
+			else if ss21readingMode == ss21dark
+				box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		
 		.file .fileText
-			display none
+			pointer-events none
+			opacity 0
 			position absolute
 			z-index 1
 			borderRadius()
 			background-color ss21BackgroundColour
+			box-shadow none
 			padding .25rem .5rem
 			max-width fit-content
-			transition transform .25s
+			top 0
+			transition transform .25s, opacity .25s
 			transform-origin left bottom
-			transform scale(0) translateX(-5%)
+			transform scale(0) translateY(-5%)
 		
 		.file:hover .fileText
-			transform scale(1) translateX(-5%)
-			display block
+			pointer-events auto
+			transform scale(1) translateY(0)
+			opacity .9
+			display flex
 	
 	/**
 	 * fancy underline animation, courtesy of https://theoutline.com
@@ -2854,14 +2876,13 @@
 			left -.25ch
 	
 	// 4CHANX: backlinks
-	.container:empty
-		display none
-	
 	:where(.container)
 		display block
 		font-size .875em
 		font-family var(--font-monospace)
 		clear both
+		&:empty
+			display none
 	
 	// XXX: this could probably look better and may need to be customised,
 	// but i've always liked the 'quoted by' css
@@ -3134,7 +3155,7 @@
 	// and because most of the information is hidden when shown in this particular
 	// card style, a lot of that has to get reset when represented here
 	.catalog-container > .hide-thread-button, // if enabled, thread hiding button
-	:root .catalog-post .container, // backlink container (:root is used to avoid an !important)
+	.catalog-post .container, // backlink container (:root is used to avoid an !important)
 	.catalog-post .file, // all file-related information
 	.catalog-post .watch-thread-link, // love heart for watching threads
 	.catalog-post .postJumper, // post jumper
@@ -3150,6 +3171,223 @@
 		.catalog-replies
 			display none
 	
+	// https://css-tricks.com/piecing-together-approaches-for-a-css-masonry-layout/
+	// https://css-tricks.com/a-lightweight-masonry-solution/
+	// https://developer.chrome.com/blog/has-with-cq-m105/
+	:root.catalog-mode .board
+		--grid-gap 1rem
+		max-width 100% // reverts 75% from index
+		display grid
+		grid-template-columns repeat(24, 1fr)
+		//grid-template-columns repeat(auto-fit, 250px)
+		//grid-auto-rows 20rem
+		//grid-template-rows masonry
+		grid-gap var(--grid-gap)
+		//grid-auto-flow dense
+	
+	.catalog-thread
+		// resets usual padding and margin
+		padding 0
+		margin 0
+		// catalogue styles
+		grid-column span 3
+	
+	.catalog-thread.thread--long
+		grid-column span 3
+	
+	.catalog-thread.thread--extra-long
+		grid-column span 4
+	
+	.catalog-thread.thread--silly-long
+		grid-column span 5
+	
+	.catalog-post
+		font-size .75rem
+		display flex
+		flex-direction column
+		.catalog-link
+			order 1
+			.catalog-thumb,
+			.catalog-thumb-video
+				width 100% i
+				height auto i
+		.postInfo
+			all unset
+			order 2
+			*:not(.subject:not(:empty))
+				display none
+			.subject
+				&::after
+					display none
+		.postMessage
+			padding .25rem .5rem
+			order 3
+	
+	.catalog-stats
+		order 4
+		padding .25rem .5rem
+		display flex
+		align-items center
+		border-top 1px solid tint(ss21BackgroundElevated, 5%)
+		span[title]
+			color var(--text-hint-on-background)
+			cursor help
+			span
+				color var(--text-primary-on-background)
+		.catalog-icons
+			flex 1
+			text-align right
+		.menu-button
+			opacity 1
+			transition opacity .25s
+			will-change opacity
+	
+	.catalog-thread:not(:hover):not(:focus-within) .menu-button
+		opacity 0
+	/*
+	.catalog-post
+		// resets display flow root
+		display flex
+		// catalogue styles
+		flex-direction column
+		font-size .75rem
+		.postInfo
+			padding 0
+		.postMessage
+			padding 0
+	
+	.catalog-link
+		display block
+		overflow hidden
+		max-height 16rem
+	
+	.catalog-thumb
+		object-fit cover
+		width 100% i
+		height auto i
+	
+	.catalog-stats
+		line-height 1
+		order 4
+		padding .25rem
+		display flex
+		align-items center
+		border-top 1px solid tint(ss21BackgroundElevated, 5%)
+		user-select none
+		span[title]
+			color var(--text-hint-on-background)
+			cursor help
+			span
+				color var(--text-primary-on-background)
+		.catalog-icons
+			flex 1
+			text-align right
+		.menu-button
+			opacity 1
+			transition opacity .25s
+			will-change opacity
+	
+	//.catalog-thread.thread--silly-long .catalog-post
+		//display flow-root
+		.catalog-link
+			float left
+	
+	.catalog-post .postInfo
+		display none
+	
+	.catalog-post > .postMessage
+		order 3
+		flex-grow 2
+		min-height 0
+		//max-height 5rem
+		overflow hidden
+		padding .25rem
+		&:empty
+			display block
+			*/
+	/*
+	.catalog-post .subject:not(:empty)
+		display block
+		tc(black, high)
+		text-shadow 0 1px 2px rgba(0 0 0 .3)
+		background-image linear-gradient(to top, black, transparent)
+		padding .5rem
+		width 100%
+		position absolute
+		top calc(var(--tn-h) * 1px)
+		pointer-events none
+		&::after
+			display none
+*/
+	/*
+	:root.catalog-mode .board {
+		--grid-gap 1rem
+		max-width: 100%;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, min(10em, 100%));
+		grid-template-rows: masonry;
+		justify-content: center;
+		grid-gap: 0.5em;
+		padding: 0 1rem;
+	}
+	
+	
+	:root.catalog-mode .board > * {
+		//all unset
+		align-self: start;
+		width: 250px
+	}
+	
+	.catalog-link
+		display block
+	
+	.catalog-thumb
+		object-fit cover
+		width 100% i
+	
+	.thread[data-aspect-ratio="1"] .catalog-thumb
+		height 10em i
+	*/
+	// 2022 attempt:
+	/*
+	:root.catalog-mode .board
+		max-width 100%
+		display grid
+		grid-gap 1rem
+		grid-template-columns repeat(10, 1fr)
+		grid-auto-rows 10rem
+		grid-auto-flow dense
+	
+	.catalog-thread
+		padding 0
+		margin 0
+	
+	.catalog-thread.thread--long
+		grid-column span 2
+	.catalog-thread.thread--silly-long
+		grid-column span 2
+		grid-row span 2
+	
+	.catalog-post
+		display grid
+		grid-template-areas "thumb post"
+		grid-template-columns auto 1fr
+		gap .5rem
+		overflow hidden
+	
+	.catalog-link
+		grid-area thumb
+	
+	.catalog-post .postMessage
+		grid-area post
+		font-size .75rem
+		padding 0
+	
+	.catalog-stats,
+	.postInfo
+		display none
+	*/
+	/*
 	:root.catalog-mode .board
 		max-width 100% // set to `75rem` normally
 		padding 0 1.5rem // set to `0 1rem` normally
@@ -3271,7 +3509,7 @@
 	
 	.catalog-thread:not(:hover):not(:focus-within) .menu-button
 		opacity 0
-	
+	*/
 	.catalog-container > .catalog-post > .postInfo
 		all unset
 		order 2
@@ -3279,17 +3517,7 @@
 		.subject:not(:empty)
 			max-width none
 			box-sizing border-box
-			background-image: linear-gradient(to bottom,
-    hsla(0, 0%, 13%, 0) 0%,
-    hsla(0, 0%, 13%, 0.034375) 16.36%,
-    hsla(0, 0%, 13%, 0.125) 33.34%,
-    hsla(0, 0%, 13%, 0.253125) 50.1%,
-    hsla(0, 0%, 13%, 0.4) 65.75%,
-    hsla(0, 0%, 13%, 0.546875) 79.43%,
-    hsla(0, 0%, 13%, 0.675) 90.28%,
-    hsla(0, 0%, 13%, 0.765625) 97.43%,
-    hsla(0, 0%, 13%, .8) 100%
-  )
+			background-image linear-gradient(to bottom, transparent, black)
 			text-shadow 0 1px 2px rgba(0 0 0 .3)
 			display block
 			position absolute
@@ -3310,7 +3538,7 @@
 		.dateTime
 			font-size .75rem
 			margin 0
-	
+	/*
 	.catalog-post > .postMessage
 		order 3
 		font-size .75rem
@@ -3349,7 +3577,7 @@
 	// hide replies after hovering is done so they don't stay rendered
 	.catalog-thread:not(:hover) .catalog-replies
 		display none
-	
+	*/
 	// 2022 WOW CONTAINER QUERIES
 	/*
 	.catalog-thread
@@ -3359,6 +3587,60 @@
 		.catalog-post
 			background red
 	*/
+	
+	// extra rice
+	// adds chips depending on keywords
+	.catalog-thread[class*="thread-chip"]::before {
+		display: inline-flex;
+		align-items: center;
+		position: absolute;
+		z-index: 1;
+		border-radius: 1rem;
+		top: -.35rem;
+		right: -.35rem;
+		font-size: .64rem;
+		padding: 0 .25rem;
+		background-color: var(--primary);
+		pointer-events: none;
+		transition: top .25s, right .25s;
+	}
+	/*
+	.catalog-thread[class*="thread-chip"]:hover::before {
+		top: -1.65rem;
+		right: -1.65rem;
+	}
+	*/
+	.catalog-thread.thread-chip--edc::before {
+		content: 'EDC';
+	}
+	.catalog-thread.thread-chip--watch::before {
+		content: 'WATCH';
+	}
+	.catalog-thread.thread-chip--skin::before {
+		content: 'SKIN';
+	}
+	.catalog-thread.thread-chip--tattoo::before {
+		content: 'TATTOO';
+	}
+	.catalog-thread.thread-chip--fragrance::before {
+		content: 'SMELL';
+	}
+	.catalog-thread.thread-chip--hair::before {
+		content: 'HAIR';
+	}
+	.catalog-thread.thread-chip--w2c::before {
+		content: 'W2C';
+	}
+	.catalog-thread.thread-chip--cop::before {
+		content: 'COP';
+	}
+	.catalog-thread.thread-chip--girl::before {
+		content: 'GRILL';
+	}
+	.catalog-thread.thread-chip--waywt::before {
+		content: 'WAYWT';
+	}
+	
 	// pagelist styling
 	:root .pagelist:not(.json-index),
 	.pagelist
@@ -3382,9 +3664,12 @@
 				align-items center
 				border-radius 100%
 				aspect-ratio 1/1
+				transition color .25s, background-color .25s
 		[data-clickable="false"] a
 			opacity .42
 			cursor not-allowed
+		[data-clickable="true"]:hover a::after
+			background-color alpha(ss21primary, .54)
 		.pages:not(.cataloglink)
 			flex 1
 			font-size 0
@@ -3403,7 +3688,7 @@
 				aspect-ratio 1/1
 				transition color .25s, background-color .25s
 				&:hover
-					background-color ss21primary
+					background-color alpha(ss21primary, .54)
 			strong
 				background-color ss21primary
 	
@@ -4074,7 +4359,7 @@
 					pointer-events none
 					background-color var(--secondary)
 			a[href="https://www.4chan-x.net/"] // hides the link to 4chan x homepage, nobody actually goes there?
-				display none
+				display none i
 		fieldset
 			padding 0
 			//border 1px solid var(--text-hint-on-background)
@@ -4112,7 +4397,82 @@
 				background-color #f5f7ff
 			borderRadius()
 			padding .2rem .4rem
-		
+	
+	if ss21navRail == 1
+		#overlay
+			align-items initial
+			justify-content initial
+		#fourchanx-settings
+			flex-direction row
+			margin initial
+			height 100vh
+			border-radius 0
+			nav
+				flex-direction column
+				padding .5rem .125rem
+				.sections-list,
+				.credits
+					flex-direction inherit
+					a
+						display inline-flex
+						flex-direction column
+						align-items center
+						justify-content center
+						font-size .75rem
+						min-height 4rem
+						min-width 4rem
+						height auto
+				a::before
+					font-family: 'Material Symbols Outlined';
+					font-weight: normal;
+					font-style: normal;
+					font-size: 24px;
+					line-height: 1;
+					letter-spacing: normal;
+					text-transform: none;
+					display: inline-block;
+					white-space: nowrap;
+					word-wrap: normal;
+					direction: ltr;
+					-webkit-font-feature-settings: 'liga';
+					-webkit-font-smoothing: antialiased;
+					// added to make it m3
+					border-radius 32rem
+					padding .25rem 1rem
+					transition all .25s
+		#fourchanx-settings nav
+			a:hover::before,
+			.tab-selected::before
+				font-variation-settings "FILL" 1
+				padding .25rem 1.5rem
+				background-color shade(ss21primary, 15%)
+			.tab-selected::after
+				display none i
+			.tab-main::before
+				content 'home'
+			.tab-filter::before
+				content 'tune'
+			.tab-sauce::before
+				content 'image_search'
+			.tab-advanced::before
+				content 'settings'
+			.tab-keybinds::before
+				content 'keyboard_alt'
+			.export::before
+				content 'file_upload'
+			.import::before
+				content 'file_download'
+			.reset::before
+				content 'history'
+			a[href*="blob"]::before
+				content 'commit'
+			a[href*="report"]::before
+				content 'report'
+			.fa-times::before
+				content 'menu_open'
+			.fa-times::after
+				display none
+	
 	.section-main a,
 	.section-filter a,
 	.section-advanced a
@@ -5128,6 +5488,14 @@
 		*
 			display none
 	*/
+	
+	// scroll snapping?
+	:root.paged-mode
+		scroll-snap-type y proximity
+		.post
+			scroll-snap-align start
+			scroll-margin-top 2rem // doesn't work when scrolling up due to autohide header
+	
 	
 	// XXX: https://github.com/rcc11/4chan-sounds-player
 	// might be too complicated to support honestly
