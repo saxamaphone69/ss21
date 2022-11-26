@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.3
+@version        2.2.4
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -34,19 +34,23 @@
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
-@var select     ss21iconFont         "Icon font" ["0:Material", "1:Bootstrap", "2:Material Symbol"]
+@var select     ss21iconFont         "Icon font" ["0:Material Icons (old)", "1:Bootstrap", "2:Material Symbols (new)"]
 @var checkbox   ss21navRail          "Display settings as navigation rail" 0
+@var select     ss21watchButton      "Watch thread button" ["1:Always displayed", "2:On hover"]
+@var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart", "2:Star"]
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
+	// XXX: probably should allow custom ui font, and monospace font
 	@import url('https://rsms.me/inter/inter.css');
-	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=Material+Icons&display=swap');
-	if ss21iconFont == 1
-		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
-
-	if ss21iconFont == 2
-		@import url('https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
-
+	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+	if ss21iconFont == 0
+		@import url('https://fonts.googleapis.com/css2?family=Material+Icons&display=swap');
+	else if ss21iconFont == 1
+		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css");
+	else if ss21iconFont == 2
+		@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+	
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -237,7 +241,6 @@
 		--grey-900 #303033
 		--font-default 'Inter var', system-ui
 		--font-monospace 'Inconsolata', monospace, monospace
-		--font-icon 'Material Icons'
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
 	// it loads. also create a pseudo element loader/spinner in the mean time
@@ -275,6 +278,7 @@
 	// first, let's keep `!important` away as to not pollute scope
 	.center,
 	.arc-ads,
+	.adl,
 	[hidden]
 		display none i
 	
@@ -395,24 +399,14 @@
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scrollbars
 	// https://drafts.csswg.org/css-scrollbars-1/
 	::-webkit-scrollbar
-		width 1rem
-		height 1rem
+		width .5rem
+		height .5rem
 		background-color var(--grey-500)
-	
 	::-webkit-scrollbar-thumb
 		background-color var(--grey-700)
 	
 	// address `font-weight` set incorrectly in all browsers. while we're here we
 	// set other elements we want to `bold`, too
-	/*
-	b,
-	strong,
-	th,
-	legend,
-	.subject,
-	.name
-		font-weight 700
-	*/
 	:where(b, strong, th, legend, .subject, .name)
 		font-weight 700
 	
@@ -496,6 +490,7 @@
 		&:hover
 			color shade(ss21primary, 15%)
 	
+	// XXX: surely a better way to write this...
 	.linkify
 		&.twitter::before
 			content ''
@@ -644,7 +639,8 @@
 	button,
 	input[type="button"],
 	input[type="submit"],
-	a.replylink
+	a.replylink,
+	:root.oneechan .options-button
 		font-size .875rem
 		line-height 1
 		letter-spacing .09em
@@ -887,10 +883,8 @@
 			&::after
 				content '[/spoiler]'
 	
-	// instead of font awesome icons, we use the material icons web font.
-	// but, not everything that should be an icon is, so that's why this section
-	// looks very messy
-	// XXX: experiment with using SVG for this instead of an icon webfont
+	// XXX: ICONS! by no means a perfect implementation due to the limitations
+	// and the "workarounds" used in order to get icons to appear
 	.fa::after,
 	.menu-button::after,
 	.n-pu::after,
@@ -920,171 +914,32 @@
 	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.native-settings::after,
-	.post--dubs .postNum a:nth-child(2n)::after
-		font-family 'Material Icons'
-		font-weight normal
-		font-style normal
-		font-size 1.5rem // 24px, ideally
-		display inline-flex // better vertical alignment
-		justify-content center
-		align-items center
-		line-height 1 // might not be needed
-		text-transform none
-		letter-spacing normal
-		word-wrap normal
-		white-space nowrap
-		direction ltr
-		-webkit-font-smoothing antialiased
-		text-rendering optimizeLegibility
-		-moz-osx-font-smoothing grayscale
-		font-feature-settings 'liga'
-		color inherit // generally not explicity set, but should be
-		visibility visible // added from 4chan x
-	
-	.fa-spin::after
-		animation spin 2s infinite linear
-	
-	// XXX: stylus makes this prefixed for some reason
-	@keyframes spin
-		0%
-			transform rotate(0)
-		100%
-			transform rotate(359deg)
-	
-	.menu-button::after
-		content 'more_vert' // menus
-	.catalog-post .menu-button::after
-		content 'more_horiz' // menus in catalogue mode
-	.fa-eye::after
-		content 'remove_red_eye' // thread watcher
-	.fa-expand::after
-		content	'fullscreen' // expand all images
-	.fa-compress::after
-		content	'fullscreen_exit' // compress all images
-	.fa-picture-o::after
-		content	'photo' // gallery mode
-	.fa-comment-o::after
-		content	'comment' // quick reply
-	.fa-refresh::after
-		content	'refresh' // refresh index
-	.fa-wrench::after
-		content 'settings' // 4chan x settings
-	.fa-minus-square::after,
-	.fa-minus-square-o::after
-		content 'remove_circle' // hide post
-	.fa-plus-square::after,
-	.fa-plus-square-o::after
-		content 'add_circle' // show post
-	.fa-times::after,
-	.close::after,
-	.gal-close::after
-		content 'close' // close
-	.fa-bolt::after
-		content 'flash_on' // prefetch
-	.watch-thread-link::after
-		content 'favorite_border' // watch thread
-		color ss21red
-	.watch-thread-link.watched::after
-		content 'favorite' // unwatch thread
-	#navlinks a:first-of-type::after
-		content 'keyboard_arrow_up' // navigate up
-	#navlinks a:last-of-type::after
-		content 'keyboard_arrow_down' // navigate down
-	.postJumper a:first-of-type::after
-		content 'arrow_upward' // jump to previous post by id
-	.postJumper a:last-of-type::after
-		content 'arrow_downward' // jump to next post by id
-	#index-rev::after
-		content 'swap_vert' // reverse index order
-	.pagelist .prev a::after
-		content 'arrow_back' // pagelist, previous ($$$)
-	.pagelist .next a::after
-		content 'arrow_forward' // pagelist, next ($$$)
-	.fa-edit::after
-		content 'format_paint' // oeaki mode in qr
-	.copy-text-link::after,
-	.fa-link::after
-		content 'link' // copy
-	#paste-area::after
-		content 'content_paste' // paste mode in qr
-	.fa-clock-o::after
-		content 'timer' // auto poster in qr
-	#qr .fa-plus-square::after,
-	#add-post::after
-		content 'add_box' // dump list in qr
-	#index-search-clear::after,
-	.fa-times-circle::after
-		content 'cancel' // remove
-	.qr-preview-spoiler::after,
-	.checkbox-letter::after
-		content 'strikethrough_s' // spoilers in qr
-	.gal-start::after
-		content 'play_arrow' // gallery mode
-	.gal-stop::after
-		content 'stop' // gallery mode
-	.left .has-submenu::after
-		content 'keyboard_arrow_left' // add icon to menu entry
-	.has-submenu::after
-		content 'keyboard_arrow_right' // add icon to menu entry
-	.jump::after
-		content 'subdirectory_arrow_right' // jumper in embedder
-	.show-announcement::after
-		content 'announcement' // add icon to menu entry
-	.report-link::after
-		content 'warning' // add icon to menu entry
-	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
-		content 'play_circle_outline' // play icon for webm thumbnails
-	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
-		content 'gif' // gif icon for gif thumbnails
-	.fa-download::after,
-	.download-link::after
-		content 'file_download' // file download and add icon to menu entry
-	.n-pu::after
-		content 'person' // 4chan pass user
-	#shortcut-werk .indicator::after
-		content 'work' // werk tyme indicator
-	#shortcut-fappe .indicator::after
-		content 'burst_mode' // fappe tyme indicator
-	.native-settings::after
-		content 'settings_applications' // native 4chan extension
-	.contact-links::after
-		content 'contact_support' // for admins and mods
-	.post--dubs .postNum a:nth-child(2n)::after
-		content 'check' // dubs if filtered
-	.dead-thread .fa-times::after
-		content 'delete_forever' // dead thread and remove from thread watcher
-	
-	if ss21iconFont == 1
-		.fa::after,
-		.menu-button::after,
-		.n-pu::after,
-		.contact-links::after,
-		#navlinks a::after,
-		.postJumper a::after,
-		#index-rev::after,
-		.indicator::after,
-		.pagelist .prev a::after,
-		.pagelist .next a::after,
-		.watch-thread-link::after,
-		#index-search-clear::after,
-		#index-rev::after,
-		.has-submenu::after,
-		.show-announcement::after,
-		.report-link::after,
-		.download-link::after,
-		.copy-text-link::after,
-		.checkbox-letter::after,
-		.qr-preview-spoiler::after,
-		#add-post::after,
-		.gal-start::after,
-		.gal-stop::after,
-		.gal-close::after,
-		.close::after,
-		.jump::after,
-		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
-		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
-		.native-settings::after,
-		.post--dubs .postNum a:nth-child(2n)::after
+	.post--dubs .postNum a:nth-child(2n)::after,
+	span.fileThumb::before,
+	.summary::before,
+	.ss21--board-drawer-toggle,
+	.ss21--download-all
+		if ss21iconFont == 0
+			font-family 'Material Icons'
+			font-weight normal
+			font-style normal
+			font-size 1.5rem // 24px, ideally
+			display inline-flex // better vertical alignment
+			justify-content center
+			align-items center
+			line-height 1 // might not be needed
+			text-transform none
+			letter-spacing normal
+			word-wrap normal
+			white-space nowrap
+			direction ltr
+			-webkit-font-smoothing antialiased
+			text-rendering optimizeLegibility
+			-moz-osx-font-smoothing grayscale
+			font-feature-settings 'liga'
+			color inherit // generally not explicity set, but should be
+			visibility visible // added from 4chan x
+		else if ss21iconFont == 1
 			display inline-flex
 			font-family bootstrap-icons
 			font-style normal
@@ -1095,148 +950,8 @@
 			line-height 1
 			-webkit-font-smoothing antialiased
 			-moz-osx-font-smoothing grayscale
-		
-		.menu-button::after
-			content '\f5d3' // menus
-		.catalog-post .menu-button::after
-			content '\f5d4' // menus in catalogue mode
-		.fa-eye::after
-			content '\f33e' // thread watcher
-		.fa-expand::after
-			content '\f3df' // expand all images
-		.fa-compress::after
-			content '\f3de' // compress all images
-		.fa-picture-o::after
-			content '\f42a' // gallery mode
-		.fa-comment-o::after
-			content '\f25b' // quick reply
-		.fa-refresh::after
-			content '\f116' // refresh index
-		.fa-wrench::after
-			content '\f3e2' // 4chan x settings
-		.fa-minus-square::after,
-		.fa-minus-square-o::after
-			content '\f2e5' // hide post
-		.fa-plus-square::after,
-		.fa-plus-square-o::after
-			content '\f4f9' // show post
-		.fa-times::after,
-		.close::after,
-		.gal-close::after
-			content '\f659' // close
-		.fa-bolt::after
-			content '\f46e' // prefetch
-		.watch-thread-link::after
-			content '\f417' // watch thread
-			color ss21red
-		.watch-thread-link.watched::after
-			content '\f415' // unwatch thread
-		#navlinks a:first-of-type::after
-			content '\f286' // navigate up
-		#navlinks a:last-of-type::after
-			content '\f282' // navigate down
-		.postJumper a:first-of-type::after
-			content '\f148' // jump to previous post by id
-		.postJumper a:last-of-type::after
-			content '\f128' // jump to next post by id
-		#index-rev::after
-			content '\f127' // reverse index order
-		.pagelist .prev a::after
-			content '\f12f' // pagelist, previous ($$$)
-		.pagelist .next a::after
-			content '\f138' // pagelist, next ($$$)
-		.fa-edit::after
-			content '\f4b0' // oeaki mode in qr
-		.copy-text-link::after,
-		.fa-link::after
-			content '\f471' // copy
-		#paste-area::after
-			content '\f290' // paste mode in qr
-		.fa-clock-o::after
-			content '\f597' // auto poster in qr
-		#qr .fa-plus-square::after,
-		#add-post::after
-			content '\f4fc' // dump list in qr
-		#index-search-clear::after,
-		.fa-times-circle::after
-			content '\f622' // remove
-		.qr-preview-spoiler::after,
-		.checkbox-letter::after
-			content '\f5f5' // spoilers in qr
-		.gal-start::after
-			content '\f4f4' // gallery mode
-		.gal-stop::after
-			content '\f592' // gallery mode
-		.left .has-submenu::after
-			content '\f284' // add icon to menu entry
-		.has-submenu::after
-			content '\f285' // add icon to menu entry
-		.jump::after
-			content '\f132' // jumper in embedder
-		.show-announcement::after
-			content '\f483' // add icon to menu entry
-		.report-link::after
-			content '\f33a' // add icon to menu entry
-		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
-			content '\f4f3' // play icon for webm thumbnails
-		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
-			content '\f366' // gif icon for gif thumbnails
-		.fa-download::after,
-		.download-link::after
-			content '\f30a' // file download and add icon to menu entry
-		.n-pu::after
-			content '\f4da' // 4chan pass user
-		#shortcut-werk .indicator::after
-			content '\f1cb' // werk tyme indicator
-		#shortcut-fappe .indicator::after
-			content '\f219' // fappe tyme indicator
-		.native-settings::after
-			content '\f5db' // native 4chan extension
-		.contact-links::after
-			content '\f4db' // for admins and mods
-		.post--dubs .postNum a:nth-child(2n)::after
-			content '\f26f' // dubs if filtered
-		.dead-thread .fa-times::after
-			content '\f5dd' // dead thread and remove from thread watcher
-		.shortcut .fa::after,
-		.shortcut .menu-button::after
-			font-size 24px
-		.watch-thread-link::after,
-		.post .menu-button::after,
-		.postContainer a[class$='reply-button'] .fa::after
-			font-size 18px
-
-	if ss21iconFont == 2
-		.fa::after,
-		.menu-button::after,
-		.n-pu::after,
-		.contact-links::after,
-		#navlinks a::after,
-		.postJumper a::after,
-		#index-rev::after,
-		.indicator::after,
-		.pagelist .prev a::after,
-		.pagelist .next a::after,
-		.watch-thread-link::after,
-		#index-search-clear::after,
-		#index-rev::after,
-		.has-submenu::after,
-		.show-announcement::after,
-		.report-link::after,
-		.download-link::after,
-		.copy-text-link::after,
-		.checkbox-letter::after,
-		.qr-preview-spoiler::after,
-		#add-post::after,
-		.gal-start::after,
-		.gal-stop::after,
-		.gal-close::after,
-		.close::after,
-		.jump::after,
-		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
-		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
-		.native-settings::after,
-		.post--dubs .postNum a:nth-child(2n)::after
+			visibility visible // added from 4chan x
+		else if ss21iconFont == 2
 			font-family 'Material Symbols Outlined'
 			font-weight normal
 			font-style normal
@@ -1255,126 +970,413 @@
 			color inherit // generally not explicity set, but should be
 			visibility visible // added from 4chan x
 			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
-
-		.fa-spin::after
-			animation spin 2s infinite linear
-
-		// XXX: stylus makes this prefixed for some reason
-		@keyframes spin
-			0%
-				transform rotate(0)
-			100%
-				transform rotate(359deg)
-
-		.menu-button::after
-			content 'more_vert' // menus
-		.catalog-post .menu-button::after
-			content 'more_horiz' // menus in catalogue mode
-		.fa-eye::after
-			content 'remove_red_eye' // thread watcher
-		.fa-expand::after
-			content	'fullscreen' // expand all images
-		.fa-compress::after
-			content	'fullscreen_exit' // compress all images
-		.fa-picture-o::after
-			content	'photo' // gallery mode
-		.fa-comment-o::after
-			content	'comment' // quick reply
-		.fa-refresh::after
-			content	'refresh' // refresh index
-		.fa-wrench::after
-			content 'settings' // 4chan x settings
-		.fa-minus-square::after,
-		.fa-minus-square-o::after
-			content 'unfold_less' // hide post
-		.fa-plus-square::after,
-		.fa-plus-square-o::after
-			content 'unfold_more' // show post
-		.fa-times::after,
-		.close::after,
-		.gal-close::after
-			content 'close' // close
-		.fa-bolt::after
-			content 'flash_on' // prefetch
-		.watch-thread-link::after
-			content 'favorite' // watch thread
+	
+	.fa-spin::after
+		animation spin 2s infinite linear
+	
+	@css {
+		@keyframes spin {
+			0% {
+				transform: rotate(0);
+			}
+			100% {
+				transform: rotate(359deg);
+			}
+		}
+	}
+	
+	.menu-button::after // menus
+		if ss21iconFont == 0
+			content 'more_vert'
+		else if ss21iconFont == 1
+			content '\F5D3'
+		else if ss21iconFont == 2
+			content 'more_vert'
+	.catalog-post .menu-button::after // menus in catalogue mode
+		if ss21iconFont == 0
+			content 'more_horiz'
+		else if ss21iconFont == 1
+			content '\F5D4'
+		else if ss21iconFont == 2
+			content 'more_horiz'
+	.fa-eye::after // thread watcher
+		if ss21iconFont == 0
+			content 'remove_red_eye'
+		else if ss21iconFont == 1
+			content '\F33E'
+		else if ss21iconFont == 2
+			content 'remove_red_eye'
+	.fa-expand::after // expand all images
+		if ss21iconFont == 0
+			content 'fullscreen'
+		else if ss21iconFont == 1
+			content '\F3DF'
+		else if ss21iconFont == 2
+			content 'fullscreen'
+	.fa-compress::after // compress all images
+		if ss21iconFont == 0
+			content 'fullscreen_exit'
+		else if ss21iconFont == 1
+			content '\F3DE'
+		else if ss21iconFont == 2
+			content 'fullscreen_exit'
+	.fa-picture-o::after // gallery mode
+		if ss21iconFont == 0
+			content 'photo'
+		else if ss21iconFont == 1
+			content '\F42A'
+		else if ss21iconFont == 2
+			content 'photo'
+	.fa-comment-o::after // menus in catalogue mode
+		if ss21iconFont == 0
+			content 'comment'
+		else if ss21iconFont == 1
+			content '\F25B'
+		else if ss21iconFont == 2
+			content 'comment'
+	.fa-refresh::after // refresh index
+		if ss21iconFont == 0
+			content 'refresh'
+		else if ss21iconFont == 1
+			content '\F116'
+		else if ss21iconFont == 2
+			content 'refresh'
+	.fa-wrench::after // 4chan x settings
+		if ss21iconFont == 0
+			content 'settings'
+		else if ss21iconFont == 1
+			content '\F3E2'
+		else if ss21iconFont == 2
+			content 'settings'
+	.fa-minus-square::after,
+	.fa-minus-square-o::after // hide post
+		if ss21iconFont == 0
+			content 'remove_circle'
+		else if ss21iconFont == 1
+			content '\F2E5'
+		else if ss21iconFont == 2
+			content 'unfold_less'
+	.fa-plus-square::after,
+	.fa-plus-square-o::after // show post
+		if ss21iconFont == 0
+			content 'add_circle'
+		else if ss21iconFont == 1
+			content '\F4F9'
+		else if ss21iconFont == 2
+			content 'unfold_more'
+	.fa-times::after,
+	.close::after,
+	.gal-close::after // close
+		if ss21iconFont == 0
+			content 'close'
+		else if ss21iconFont == 1
+			content '\F659'
+		else if ss21iconFont == 2
+			content 'close'
+	.fa-bolt::after // prefetch
+		if ss21iconFont == 0
+			content 'flash_on'
+		else if ss21iconFont == 1
+			content '\F46E'
+		else if ss21iconFont == 2
+			content 'flash_on'
+	.watch-thread-link::after // watch thread
+		if ss21iconFont == 0
+			content 'favourite_border'
 			color ss21red
+		else if ss21iconFont == 1
+			content '\F417'
+			color ss21red
+		else if ss21iconFont == 2
 			font-variation-settings 'FILL' 0
-		.watch-thread-link.watched::after
-			content 'favorite' // unwatch thread
+			if ss21watchButtonIcon == 1
+				content 'favourite'
+				color ss21red
+			else if ss21watchButtonIcon == 2
+				content 'star'
+				color ss21orange
+	.watch-thread-link.watched::after // watched/unwatch thread
+		if ss21iconFont == 0
+			content 'favourite'
+		else if ss21iconFont == 1
+			content '\F415'
+		else if ss21iconFont == 2
 			font-variation-settings 'FILL' 1
-		#navlinks a:first-of-type::after
-			content 'keyboard_arrow_up' // navigate up
-		#navlinks a:last-of-type::after
-			content 'keyboard_arrow_down' // navigate down
-		.postJumper a:first-of-type::after
-			content 'arrow_upward' // jump to previous post by id
-		.postJumper a:last-of-type::after
-			content 'arrow_downward' // jump to next post by id
-		#index-rev::after
-			content 'swap_vert' // reverse index order
-		.pagelist .prev a::after
-			content 'arrow_back' // pagelist, previous ($$$)
-		.pagelist .next a::after
-			content 'arrow_forward' // pagelist, next ($$$)
-		.fa-edit::after
-			content 'format_paint' // oeaki mode in qr
-		.copy-text-link::after,
-		.fa-link::after
-			content 'link' // copy
-		#paste-area::after
-			content 'content_paste' // paste mode in qr
-		.fa-clock-o::after
-			content 'timer' // auto poster in qr
-		#qr .fa-plus-square::after,
-		#add-post::after
-			content 'add_box' // dump list in qr
-		#index-search-clear::after,
-		.fa-times-circle::after
-			content 'cancel' // remove
-		.qr-preview-spoiler::after,
-		.checkbox-letter::after
-			content 'strikethrough_s' // spoilers in qr
-		.gal-start::after
-			content 'play_arrow' // gallery mode
-		.gal-stop::after
-			content 'stop' // gallery mode
-		.left .has-submenu::after
-			content 'keyboard_arrow_left' // add icon to menu entry
-		.has-submenu::after
-			content 'keyboard_arrow_right' // add icon to menu entry
-		.jump::after
-			content 'subdirectory_arrow_right' // jumper in embedder
-		.show-announcement::after
-			content 'announcement' // add icon to menu entry
-		.report-link::after
-			content 'warning' // add icon to menu entry
-		.file--video:not(.expanded-image) > .post > .file > .fileThumb::after
-			content 'play_circle' // play icon for webm thumbnails
-			font-variation-settings 'fill' 0
-		.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after
-			content 'gif_box' // gif icon for gif thumbnails
-			font-variation-settings 'fill' 0
-		.fa-download::after,
-		.download-link::after
-			content 'download' // file download and add icon to menu entry
-		.n-pu::after
-			content 'person' // 4chan pass user
-		#shortcut-werk .indicator::after
-			content 'work' // werk tyme indicator
-		#shortcut-fappe .indicator::after
-			content 'burst_mode' // fappe tyme indicator
-		.native-settings::after
-			content 'settings_applications' // native 4chan extension
-		.contact-links::after
-			content 'contact_support' // for admins and mods
-		.post--dubs .postNum a:nth-child(2n)::after
-			content 'check' // dubs if filtered
-		.dead-thread .fa-times::after
-			content 'delete_forever' // dead thread and remove from thread watcher
+	#navlinks
+		a:first-of-type::after // navigate up
+			if ss21iconFont == 0
+				content 'keyboard_arrow_up'
+			else if ss21iconFont == 1
+				content '\F286'
+			else if ss21iconFont == 2
+				content 'keyboard_arrow_up'
+		a:last-of-type::after // navigate down
+			if ss21iconFont == 0
+				content 'keyboard_arrow_down'
+			else if ss21iconFont == 1
+				content '\F282'
+			else if ss21iconFont == 2
+				content 'keyboard_arrow_down'
+	.postJumper
+		a:first-of-type::after // jump to previous post by id
+			if ss21iconFont == 0
+				content 'arrow_upward'
+			else if ss21iconFont == 1
+				content '\F148'
+			else if ss21iconFont == 2
+				content 'arrow_upward'
+		a:last-of-type::after // jump to next post by id
+			if ss21iconFont == 0
+				content 'arrow_downward'
+			else if ss21iconFont == 1
+				content '\F128'
+			else if ss21iconFont == 2
+				content 'arrow_downward'
+	#index-rev::after // reverse index order
+		if ss21iconFont == 0
+			content 'swap_vert'
+		else if ss21iconFont == 1
+			content '\F127'
+		else if ss21iconFont == 2
+			content 'swap_vert'
+	.pagelist
+		.prev a::after // pagelist, previous page ($$$?)
+			if ss21iconFont == 0
+				content 'arrow_back'
+			else if ss21iconFont == 1
+				content '\F12F'
+			else if ss21iconFont == 2
+				content 'arrow_back'
+		.next a::after // pagelist, next page ($$$?)
+			if ss21iconFont == 0
+				content 'arrow_forward'
+			else if ss21iconFont == 1
+				content '\F138'
+			else if ss21iconFont == 2
+				content 'arrow_forward'
+	.fa-edit::after // oeaki mode in qr
+		if ss21iconFont == 0
+			content 'format_paint'
+		else if ss21iconFont == 1
+			content '\F4B0'
+		else if ss21iconFont == 2
+			content 'format_paint'
+	.copy-text-link::after,
+	.fa-link::after // copy
+		if ss21iconFont == 0
+			content 'link'
+		else if ss21iconFont == 1
+			content '\F471'
+		else if ss21iconFont == 2
+			content 'link'
+	#paste-area::after // paste mode in qr
+		if ss21iconFont == 0
+			content 'content_paste'
+		else if ss21iconFont == 1
+			content '\F290'
+		else if ss21iconFont == 2
+			content 'content_paste'
+	.fa-clock-o::after // auto poster in qr
+		if ss21iconFont == 0
+			content 'timer'
+		else if ss21iconFont == 1
+			content '\F597'
+		else if ss21iconFont == 2
+			content 'timer'
+	#qr .fa-plus-square::after,
+	#add-post::after // dump list in qr
+		if ss21iconFont == 0
+			content 'add_box'
+		else if ss21iconFont == 1
+			content '\F4FC'
+		else if ss21iconFont == 2
+			content 'add_box'
+	#index-search-clear::after,
+	.fa-times-circle::after // remove/clear
+		if ss21iconFont == 0
+			content 'remove'
+		else if ss21iconFont == 1
+			content '\F622'
+		else if ss21iconFont == 2
+			content 'remove'
+	.qr-preview-spoiler::after,
+	.checkbox-letter::after // spoilers in qr
+		if ss21iconFont == 0
+			content 'strikethrough_s'
+		else if ss21iconFont == 1
+			content '\F5F5'
+		else if ss21iconFont == 2
+			content 'strikethrough_s'
+	.gal-start::after // play slideshow in gallery mode
+		if ss21iconFont == 0
+			content 'play_arrow'
+		else if ss21iconFont == 1
+			content '\F4F4'
+		else if ss21iconFont == 2
+			content 'play_arrow'
+	.gal-stop::after // stop slideshow in gallery mode
+		if ss21iconFont == 0
+			content 'stop'
+		else if ss21iconFont == 1
+			content '\F592'
+		else if ss21iconFont == 2
+			content 'stop'
+	.has-submenu::after // add icon to menu entry
+		if ss21iconFont == 0
+			content 'keyboard_arrow_right'
+		else if ss21iconFont == 1
+			content '\F285'
+		else if ss21iconFont == 2
+			content 'keyboard_arrow_right'
+	.left .has-submenu::after // add icon to menu entry
+		if ss21iconFont == 0
+			content 'keyboard_arrow_left'
+		else if ss21iconFont == 1
+			content '\F284'
+		else if ss21iconFont == 2
+			content 'keyboard_arrow_left'
+	.jump::after // jumper in embedder
+		if ss21iconFont == 0
+			content 'subdirectory_arrow_right'
+		else if ss21iconFont == 1
+			content '\F132'
+		else if ss21iconFont == 2
+			content 'subdirectory_arrow_right'
+	.show-announcement::after // add icon to menu entry
+		if ss21iconFont == 0
+			content 'announcement'
+		else if ss21iconFont == 1
+			content '\F483'
+		else if ss21iconFont == 2
+			content 'announcement'
+	.report-link::after // add icon to menu entry
+		if ss21iconFont == 0
+			content 'warning'
+		else if ss21iconFont == 1
+			content '\F33A'
+		else if ss21iconFont == 2
+			content 'warning'
+	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after // play icon for webm thumbnails
+		if ss21iconFont == 0
+			content 'play_circle_outline'
+		else if ss21iconFont == 1
+			content '\F4F3'
+		else if ss21iconFont == 2
+			content 'play_circle'
+			font-variation-settings 'FILL' 0
+	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after // gif icon for gif thumbnails
+		if ss21iconFont == 0
+			content 'GIF'
+		else if ss21iconFont == 1
+			content '\F366'
+		else if ss21iconFont == 2
+			content 'gif_box'
+			font-variation-settings 'FILL' 0
+	.fa-download::after,
+	.download-link::after // file download and add icon to menu entry
+		if ss21iconFont == 0
+			content 'file_download'
+		else if ss21iconFont == 1
+			content '\F30A'
+		else if ss21iconFont == 2
+			content 'download'
+	.n-pu::after // 4chan pass user
+		if ss21iconFont == 0
+			content 'person'
+		else if ss21iconFont == 1
+			content '\F4DA'
+		else if ss21iconFont == 2
+			content 'person'
+	#shortcut-werk .indicator::after // werk tyme indicator
+		if ss21iconFont == 0
+			content 'work'
+		else if ss21iconFont == 1
+			content '\F1CB'
+		else if ss21iconFont == 2
+			content 'work'
+	#shortcut-fappe .indicator::after // fappe tyme indicator
+		if ss21iconFont == 0
+			content 'burst_mode'
+		else if ss21iconFont == 1
+			content '\F219'
+		else if ss21iconFont == 2
+			content 'burst_mode'
+	.native-settings::after // native 4chan extension
+		if ss21iconFont == 0
+			content 'settings_applications'
+		else if ss21iconFont == 1
+			content '\F5DB'
+		else if ss21iconFont == 2
+			content 'settings_applications'
+	.contact-links::after // for admins and mods
+		if ss21iconFont == 0
+			content 'contact_support'
+		else if ss21iconFont == 1
+			content '\F4DB'
+		else if ss21iconFont == 2
+			content 'contact_support'
+	.post--dubs .postNum a:nth-child(2n)::after // dubs if filtered
+		if ss21iconFont == 0
+			content 'check'
+		else if ss21iconFont == 1
+			content '\F26F'
+		else if ss21iconFont == 2
+			content 'check'
+	span.fileThumb::before,
+	.dead-thread .fa-times::after // dead thread and remove from thread watcher
+		if ss21iconFont == 0
+			content 'delete_forever'
+		else if ss21iconFont == 1
+			content '\F5DD'
+		else if ss21iconFont == 2
+			content 'delete_forever'
+	.fa-play-circle::after // https://github.com/rcc11/4chan-sounds-player support
+		if ss21iconFont == 0
+			content 'music_note'
+		else if ss21iconFont == 1
+			content '\F4A0'
+		else if ss21iconFont == 2
+			content 'music_note'
+	
+	if ss21iconFont == 1
+		.shortcut .fa::after,
+		.shortcut .menu-button::after
+			font-size 24px
+		.watch-thread-link::after,
+		.post .menu-button::after,
+		.postContainer a[class$='reply-button'] .fa::after
+			font-size 18px
+		.ss21--board-drawer-toggle
+			font-size 0
+			&::after
+				content '\F479'
+				font-size 24px
+		.ss21--download-all
+			font-size 0
+			&::after
+				content '\F1B9'
+				font-size 24px
+	
+	if ss21openThread == 1
+		.summary::before
+			tc(ss21primary, medium)
+			font-size .875rem
+			margin-right .25rem
+			justify-content center
+			align-items center
+			transition color .25s
+			if ss21iconFont == 0
+				content 'open_in_new'
+			else if ss21iconFont == 1
+				content '\F1C5'
+			else if ss21iconFont == 2
+				content 'open_in_new'
+		.summary:hover::before
+			tc(ss21primary, high)
 	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
+	// XXX: need to make it so this changes along with which icon font you pick
 	.closedIcon
 		height 0
 		width 1rem
@@ -1833,10 +1835,7 @@
 			height 33vh
 			width 100%
 			//z-index -1
-			if ss21readingMode == ss21light
-				background-image linear-gradient(45deg, pink, cornflowerBlue)
-			else if ss21readingMode == ss21dark
-				background-image linear-gradient(45deg, #8c696f, #014c82)
+			background-image linear-gradient(45deg, #8c696f, #014c82)
 			background-size 400% 400%
 			overflow hidden
 			user-select none
@@ -1863,14 +1862,19 @@
 				filter blur(2px) saturate(.75)
 				z-index -1
 				pointer-events none
-		
-		@keyframes gradientShift
-			0%
-				background-position 84% 0%
-			50%
-				background-position 17% 100%
-			100%
-				background-position 84% 0%
+		@css {
+			@keyframes gradientShift {
+				0% {
+					background-position: 84% 0%;
+					}
+				50% {
+					background-position: 17% 100%;
+					}
+				100% {
+					background-position: 84% 0%;
+				}
+			}
+		}
 		
 		.ss21--op-banner
 			position absolute
@@ -1894,7 +1898,6 @@
 			transition text-shadow .1s
 			z-index 1
 		
-	
 		// support for custom board titles in 4chan x, making it visually obvious they can be edited
 		.boardTitle,
 		.boardSubtitle
@@ -2283,16 +2286,16 @@
 	// coverts the "No.6900" into "#6900", where the '#' functions the same
 	// as the 'No.'
 	.postNum
-		& > a:first-child
+		> a:first-child
 			font-size 0
 			&::after
 				content '#'
 				font-size 1rem
-		& > span:last-child
+		> span:last-child
 			font-size 0
 	
 	.postMessage
-		padding .75rem 1.5rem
+		padding .5rem .75rem // XXX: was `.75rem 1.5rem`
 		&:empty
 			display none
 	
@@ -2356,29 +2359,6 @@
 			z-depth(2)
 			&:hover
 				background-color lighten(ss21primary, 5%)
-			&::before
-				content 'open_in_new'
-				tc(ss21primary, medium)
-				font-family 'Material Icons'
-				font-weight normal
-				font-style normal
-				font-size 1rem
-				display inline-flex
-				justify-content center
-				align-items center
-				text-transform none
-				letter-spacing normal
-				word-wrap normal
-				white-space nowrap
-				direction ltr
-				-webkit-font-smoothing antialiased
-				text-rendering optimizeLegibility
-				-moz-osx-font-smoothing grayscale
-				font-feature-settings 'liga'
-				margin-right .25rem
-				transition color .25s
-			&:hover::before
-				tc(ss21primary, high)
 			b
 				font-size .875rem
 				font-weight 400
@@ -2677,26 +2657,8 @@
 		align-items center
 		justify-content center
 		&::before
-			content 'delete_forever'
-			font-family 'Material Icons'
-			font-weight normal
-			font-style normal
-			font-size 3rem // 24px, ideally
-			display inline-block // better vertical alignment
-			justify-content center
-			align-items center
-			line-height 1 // might not be needed
-			text-transform none
-			letter-spacing normal
-			word-wrap normal
-			white-space nowrap
-			direction ltr
-			-webkit-font-smoothing antialiased
-			text-rendering optimizeLegibility
-			-moz-osx-font-smoothing grayscale
-			font-feature-settings 'liga'
-			color rgba(ss21red, .84) // generally not explicity set, but should be
-			visibility visible // added from 4chan x
+			font-size 3rem
+			color rgba(ss21red, .84)
 			text-align center
 		&::after
 			content 'File deleted.'
@@ -3588,6 +3550,10 @@
 			background red
 	*/
 	
+	/*
+<div class="thread catalog-thread thread--subject filter-highlight thread--long thread--new-lines noFile" id="t89845944" style="" data-aspect-ratio="non-standard-ratioNaN1"><div class="postContainer thread--subject filter-highlight thread--long thread--new-lines noFile catalog-container" id="pc89845944" data-full-i-d="g.89845944"><a class="hide-thread-button" href="javascript:;" data-full-i-d="g.89845944"><span class="fa fa-minus-square"></span></a><div id="p89845944" class="post catalog-post"><div class="file" id="f89845944"><span class="fileThumb"><img src="//s.4cdn.org/image/filedeleted-res.gif" alt="File deleted." class="fileDeletedRes retina"></span></div><a class="catalog-link" href="/g/thread/89845944" target="_blank"><img src="//s.4cdn.org/image/filedeleted-res.gif" class="catalog-thumb deleted-file"></a><div class="catalog-stats"><span title="Posts / Files / Page"><span class="post-count">24</span> / <span class="file-count">0</span> / <span class="page-count">4</span></span><span class="catalog-icons"></span><a class="menu-button" href="javascript:;"><i class="fa fa-angle-down"></i></a></div><div class="postInfo desktop" id="pi89845944"><a href="javascript:;" class="watch-thread-link" title="Watch Thread"></a><input type="checkbox" name="89845944" value="delete"> <span class="subject">\dqt\ - Dumb Questions Thread</span> <span class="nameBlock"><span class="name">Anonymous</span> </span> <span class="dateTime" data-utc="1668839381" title="11/19/22(Sat)17:29:41">3 hours ago</span> <span class="postNum desktop"><a href="/g/thread/89845944#p89845944" title="Link to this post">No.</a><a href="/g/thread/89845944#q89845944" title="Reply to this post">89845944</a> <span class="page-num" title="This thread is on page 4 in the original index.">[4]</span> <span>[<a href="/g/thread/89845944" class="replylink" target="_blank">Reply</a>]</span></span><a class="menu-button" href="javascript:;"><i class="fa fa-angle-down"></i></a></div><blockquote class="postMessage" id="m89845944">Read!<br><span class="quote">&gt;Sticky <a href="/g/thread/76759434#p76759434" class="quotelink">&gt;&gt;76759434<span class="qmark-ct">&nbsp;(Cross-thread)</span></a></span><br><span class="quote">&gt;Wiki: <a class="linkify" rel="noreferrer noopener" target="_blank" href="https://wiki.installgentoo.com/">https://wiki.installgentoo.com/</a></span><br><br class="extra-linebreak">Questions?<br><span class="quote">&gt;Linux </span><a href="//boards.4channel.org/g/#s=fglt" class="quotelink">&gt;&gt;&gt;/g/fglt</a><br><span class="quote">&gt;Windows </span><a href="//boards.4channel.org/g/#s=fwt" class="quotelink">&gt;&gt;&gt;/g/fwt</a><br><span class="quote">&gt;Privacy </span><a href="//boards.4channel.org/g/#s=psg" class="quotelink">&gt;&gt;&gt;/g/psg</a><br><span class="quote">&gt;PC building </span><a href="//boards.4channel.org/g/#s=pcbg" class="quotelink">&gt;&gt;&gt;/g/pcbg</a><br><span class="quote">&gt;Programming </span><a href="//boards.4channel.org/g/#s=dpt" class="quotelink">&gt;&gt;&gt;/g/dpt</a><br><span class="quote">&gt;Workplace </span><a href="//boards.4channel.org/g/#s=twg" class="quotelink">&gt;&gt;&gt;/g/twg</a><br><span class="quote">&gt;Web dev </span><br><a href="//boards.4channel.org/g/#s=wdg" class="quotelink">&gt;&gt;&gt;/g/wdg</a><br><span class="quote">&gt;Server </span><a href="//boards.4channel.org/g/#s=hsg" class="quotelink">&gt;&gt;&gt;/g/hsg</a><br><br class="extra-linebreak">Buying?<br><span class="quote">&gt;Good cheap laptops </span><a href="//boards.4channel.org/g/#s=tpg" class="quotelink">&gt;&gt;&gt;/g/tpg</a><br><span class="quote">&gt;Cheap electronics </span><a href="//boards.4channel.org/g/#s=csg" class="quotelink">&gt;&gt;&gt;/g/csg</a><br><span class="quote">&gt;Smartphones </span><a href="//boards.4channel.org/g/#s=spg" class="quotelink">&gt;&gt;&gt;/g/spg</a><br><span class="quote">&gt;Headphones </span><a href="//boards.4channel.org/g/#s=hpg" class="quotelink">&gt;&gt;&gt;/g/hpg</a><br><span class="quote">&gt;Previous thread &gt;&gt;000000000</span></blockquote><span class="container"></span></div></div></div>
+*/
+	
 	// extra rice
 	// adds chips depending on keywords
 	.catalog-thread[class*="thread-chip"]::before {
@@ -4399,6 +4365,24 @@
 			padding .2rem .4rem
 	
 	if ss21navRail == 1
+		@css {
+			@keyframes slideIn {
+				from {
+					transform: translateX(-100%);
+				}
+				to {
+					transform: translateX(0);
+				}
+			}
+			@keyframes slideOut {
+				from {
+					transform: translateX(0);
+				}
+				to {
+					transform: translateX(-100%);
+				}
+			}
+		}
 		#overlay
 			align-items initial
 			justify-content initial
@@ -4407,6 +4391,10 @@
 			margin initial
 			height 100vh
 			border-radius 0
+			transition all .25s
+			animation slideIn .25s;
+			&.active
+				animation slideOut .25s;
 			nav
 				flex-direction column
 				padding .5rem .125rem
@@ -4840,6 +4828,7 @@
 		.field
 			width auto
 		input[type="number"]
+			min-width 3.5rem
 			width 3rem
 			padding 0 0 0 .5rem
 			margin-left 1rem
@@ -5255,26 +5244,7 @@
 		margin-left .5rem
 	
 	.rake-btn::after
-		font-family 'Material Icons'
-		font-weight normal
-		font-style normal
-		font-size 1.5rem // 24px, ideally
-		display inline-flex // better vertical alignment
-		justify-content center
-		align-items center
-		line-height 1 // might not be needed
-		text-transform none
-		letter-spacing normal
-		word-wrap normal
-		white-space nowrap
-		direction ltr
-		-webkit-font-smoothing antialiased
-		text-rendering optimizeLegibility
-		-moz-osx-font-smoothing grayscale
-		font-feature-settings 'liga'
-		tc(ss21BackgroundElevated, medium) // generally not explicity set, but should be
-		visibility visible // added from 4chan x
-		content 'brush'
+		content 'brush' // XXX: reduced to just the icon name to save lines
 	
 	// XXX: archive and /f/ `table` support
 	// fun fact, the archive has about 10,000 entries displayed at any one time
@@ -5383,7 +5353,9 @@
 		display flex
 		flex-direction column
 		contain paint
+		borderRadius()
 		z-depth(24)
+		position relative
 	#options-tabs
 		padding 0
 		margin 0
@@ -5417,10 +5389,54 @@
 				display block
 	#options-container
 		padding 1rem
-		position relative
 		flex 1
 		overflow-y scroll
 		overscroll-behavior contain
+	.buttons-container
+		position absolute
+		left 0
+		bottom 0
+	.import-input
+		position absolute i
+		width 1px i
+		height 1px i
+		padding 0 i
+		margin -1px i
+		overflow hidden i
+		clip rect(0,0,0,0) i
+		white-space nowrap i
+		border 0 i
+	.options-close
+		display inline-flex
+		justify-content flex-end
+		padding .75rem 1rem
+		if ss21readingMode == ss21light
+			box-shadow 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
+		else if ss21readingMode == ss21dark
+			box-shadow 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		&::before
+			content "This won't work... ->"
+			line-height 36px
+		.options-button
+			margin-left .5rem
+	
+	#main-section
+		.option
+			display flex
+			align-content center
+			line-height 2.5rem
+			height 2.5rem
+			if ss21readingMode == ss21light
+				border-top 1px solid darken(ss21BackgroundElevated, 10%)
+			else if ss21readingMode == ss21dark
+				border-top 1px solid lighten(ss21BackgroundElevated, 15%)
+			&.header
+				font-weight 700
+		input[type="checkbox"]
+			display inline-block i
+			margin-top .65rem
+			margin-right 1rem
+			order -1
 	
 	// oneechan mascot selection
 	#mascot-section
@@ -5495,36 +5511,14 @@
 		.post
 			scroll-snap-align start
 			scroll-margin-top 2rem // doesn't work when scrolling up due to autohide header
-	
-	
+		
 	// XXX: https://github.com/rcc11/4chan-sounds-player
-	// might be too complicated to support honestly
 	// users really should disable thread > limit post widths
-	.fa-play-circle::after
-		content 'music_note'
-	
-	#fcsp-container
-		z-depth(8)
-		border 0
-		borderRadius()
-	.fcsp-header
-		height 3rem
-		line-height 3rem
-		background-color ss21primary
-		border 0
-		border-top-right-radius 4px
-		border-top-left-radius 4px
-		a[title]
-			--icon-color red
-			width 1rem
-			height 1rem
-			svg
-				display none
-		a[title="Repeat All"]
-			background-color var(--icon-color)
-			-webkit-mask-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='18px' viewBox='0 0 24 24' width='18px' fill='%23FFFFFF'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z'/%3E%3C/svg%3E")
-	.fcsp-title-marquee
-		text-transform lowercase
+	:root.fcsp-enabled
+		#fcsp-container
+			z-index 100
+		svg
+			display inline-block
 	
 	.ss21--download-all
 		tc(ss21primary, medium)
