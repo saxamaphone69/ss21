@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.2.0
+// @version     2.2.4
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -14,9 +14,7 @@
 // @connect     a.4cdn.org
 // @connect     4cdn.org
 // @grant       GM.xmlHttpRequest
-// @grant       GM_xmlhttpRequest
 // @run-at      document-start
-// @inject-into content
 // @updateURL   https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js
 // @downloadURL https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js
 // ==/UserScript==
@@ -195,10 +193,9 @@
 
     let ticking = false;
 
-    function rAF(cb, args) {
+    function rAF(args) {
       if (!ticking) {
         window.requestAnimationFrame(function () {
-          cb(args);
           ticking = false;
         });
       }
@@ -213,6 +210,29 @@
 
       fitText(hero);
     */
+		// https://codepen.io/shshaw/pen/LYVBVve
+		/*
+		[...document.querySelectorAll("[data-fit-text]")].forEach(el => {
+  // We just need the length of the string as a CSS variable...
+  el.style.setProperty("--length", el.innerText.length);
+});
+*/
+		/*
+		[data-fit-text] {
+  // Sized via the viewport, but the --width variable could be set by JS based on the element or parent's width.
+  --width: 100vw;
+
+  // Adjust scale depending on your exact font.
+  --scale: 0.9;
+
+  font-size: calc(var(--width) / (var(--length, 1) * 0.5) * var(--scale, 1));
+
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  line-height: 1;
+  margin: 1rem 0;
+}
+	*/
     function fancyShadow(el) {
       let oVal = window.scrollY,
         nVal = (oVal / 2.5) * 0.1;
@@ -299,6 +319,72 @@
       }
     }
 
+		function checkAspect() {
+			// https://stackoverflow.com/a/61544600
+			let ERROR_ALLOWED = 0.05
+			let STANDARD_ASPECT_RATIOS = [
+				[1, '1'],
+				[4/3, '43'],
+				[5/4, '54'],
+				[3/2, '32'],
+				[16/10, '1610'],
+				[16/9, '169'],
+				[21/9, '219'],
+				[32/9, '329'],
+			]
+			let RATIOS = STANDARD_ASPECT_RATIOS.map(function(tpl){return tpl[0]}).sort()
+			let LOOKUP = Object()
+			for (let i=0; i < STANDARD_ASPECT_RATIOS.length; i++){
+				LOOKUP[STANDARD_ASPECT_RATIOS[i][0]] = STANDARD_ASPECT_RATIOS[i][1]
+			}
+
+			/*
+			Find the closest value in a sorted array
+			*/
+			function findClosest(arrSorted, value){
+				var closest = arrSorted[0]
+				var closestDiff = Math.abs(arrSorted[0] - value)
+				for (let i=1; i<arrSorted.length; i++){
+					let diff = Math.abs(arrSorted[i] - value)
+					if (diff < closestDiff){
+						closestDiff = diff
+						closest = arrSorted[i]
+					} else {
+						return closest
+					}
+				}
+				return arrSorted[arrSorted.length-1]
+			}
+
+			/*
+			Estimate the aspect ratio based on width x height (order doesn't matter)
+			*/
+			function estimateAspectRatio(dim1, dim2){
+				let ratio = Math.max(dim1, dim2) / Math.min(dim1, dim2)
+				if (ratio in LOOKUP){
+					return LOOKUP[ratio]
+				}
+
+				// Look by approximation
+				var closest = findClosest(RATIOS, ratio)
+				if (Math.abs(closest - ratio) <= ERROR_ALLOWED){
+					// was: return '~' + LOOKUP[closest]
+					return LOOKUP[closest]
+				}
+
+				return 'non-standard-ratio' + Math.round(ratio * 100) / 100 + '1'
+			}
+			let thumbs = $$(".fileThumb");
+      for (let thumb of thumbs) {
+        let thumbSize = $("img", thumb);
+        let thumbHeight = thumbSize.style.height;
+        let thumbWidth = thumbSize.style.width;
+				let NthumbHeight = thumbHeight.slice(0, -2);
+				let NthumbWidth = thumbWidth.slice(0, -2);
+        thumb.parentNode.parentNode.parentNode.parentNode.setAttribute("data-aspect-ratio", estimateAspectRatio(NthumbWidth, NthumbHeight));
+      }
+		}
+
 		function disabledPrevAndNext() {
 			let prevBut = document.querySelector('.pagelist .prev button');
 			if (prevBut.disabled) {
@@ -324,7 +410,6 @@
         convertSummaries();
         swapInfo();
 				disabledPrevAndNext();
-				//mason();
       }
       const observer = new MutationObserver(subscriber);
       observer.observe(target, config);
@@ -334,6 +419,7 @@
       on(d, "IndexRefresh", convertSummaries);
       on(d, "IndexRefresh", swapInfo);
       on(d, "IndexRefresh", checkHeights);
+			on(d, "IndexRefresh", checkAspect);
     }
 
     if (config === "thread") {
@@ -403,6 +489,39 @@
     }
 
     downloadMedia();
+
+		function addTransition() {
+			ready('#fourchanx-settings', (element) => {
+				console.log('hey im here');
+				let _this = element;
+				//function $(sel, root) {
+				//function on(sel, events, cb) {
+				/*
+				el.classList.add("lol");
+        el.addEventListener("transitionend", function () {
+        return el.remove();
+        },true)
+				*/
+				let close = $('.close', _this);
+				close.addEventListener('click', function(e) {
+					console.log('closing it');
+					e.preventDefault();
+					d.addEventListener("animationend", function () {
+						_this.classList.add('active');
+						_this.parentNode.remove();
+					}, true);
+				}, { passive: false });
+				/*on(close, 'click', (e) => {
+					e.preventDefault();
+					_this.addEventListener("transitionend", function () {
+						_this.parentNode.remove();
+					}, true);*/
+				});
+			//});
+		}
+		on(d, "OpenSettings", function () {
+			addTransition();
+		});
 
     function boardDrawer() {
       let boardDrawer = make({
@@ -481,17 +600,135 @@
     resizeQuotePreviews();
 
 		function fetch4chanBoardList() {
+			// Okay, so this used to work fine. Then Cloudflare has added some CDN protection thingy to 4chan.org, which makes any attempts to read the HTML not work.
+			// I had this as a request so that if any boards were added, it would auto update. I'll stick to hard coding it instead.
+			let footer = $("#boardNavDesktopFoot");
+			let currentBoard = location.pathname.split("/")[1];
+			let boardList = `<div class="column">
+<h3 style="text-decoration: underline; display: inline;">Japanese Culture</h3>
+<ul>
+<li><a href="//boards.4channel.org/a/" class="boardlink">Anime &amp; Manga</a></li>
+<li><a href="//boards.4channel.org/c/" class="boardlink">Anime/Cute</a></li>
+<li><a href="//boards.4channel.org/w/" class="boardlink">Anime/Wallpapers</a></li>
+<li><a href="//boards.4channel.org/m/" class="boardlink">Mecha</a></li>
+<li><a href="//boards.4channel.org/cgl/" class="boardlink">Cosplay &amp; EGL</a></li>
+<li><a href="//boards.4channel.org/cm/" class="boardlink">Cute/Male</a></li>
+<li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
+<li><a href="//boards.4channel.org/n/" class="boardlink">Transportation</a></li>
+<li><a href="//boards.4channel.org/jp/" class="boardlink">Otaku Culture</a></li>
+<li><a href="//boards.4channel.org/vt/" class="boardlink">Virtual YouTubers</a></li>
+</ul>
+<h3 style="text-decoration: underline; display: inline;">Video Games</h3>
+<ul>
+<li><a href="//boards.4channel.org/v/" class="boardlink">Video Games</a></li>
+<li><a href="//boards.4channel.org/vg/" class="boardlink">Video Game Generals</a></li>
+<li><a href="//boards.4channel.org/vm/" class="boardlink">Video Games/Multiplayer</a></li>
+<li><a href="//boards.4channel.org/vmg/" class="boardlink">Video Games/Mobile</a></li>
+<li><a href="//boards.4channel.org/vp/" class="boardlink">Pokémon</a></li>
+<li><a href="//boards.4channel.org/vr/" class="boardlink">Retro Games</a></li>
+<li><a href="//boards.4channel.org/vrpg/" class="boardlink">Video Games/RPG</a></li>
+<li><a href="//boards.4channel.org/vst/" class="boardlink">Video Games/Strategy</a></li>
+</ul>
+</div>
+<div class="column">
+<h3 style="text-decoration: underline; display: inline;">Interests</h3>
+<ul>
+<li><a href="//boards.4channel.org/co/" class="boardlink">Comics &amp; Cartoons</a></li>
+<li><a href="//boards.4channel.org/g/" class="boardlink">Technology</a></li>
+<li><a href="//boards.4channel.org/tv/" class="boardlink">Television &amp; Film</a></li>
+<li><a href="//boards.4channel.org/k/" class="boardlink">Weapons</a></li>
+<li><a href="//boards.4channel.org/o/" class="boardlink">Auto</a></li>
+<li><a href="//boards.4channel.org/an/" class="boardlink">Animals &amp; Nature</a></li>
+<li><a href="//boards.4channel.org/tg/" class="boardlink">Traditional Games</a></li>
+<li><a href="//boards.4channel.org/sp/" class="boardlink">Sports</a></li>
+<li><a href="//boards.4channel.org/xs/" class="boardlink">Extreme Sports</a></li>
+<li><a href="//boards.4channel.org/pw/" class="boardlink">Professional Wrestling</a></li>
+<li><a href="//boards.4channel.org/sci/" class="boardlink">Science &amp; Math</a></li>
+<li><a href="//boards.4channel.org/his/" class="boardlink">History &amp; Humanities</a></li>
+<li><a href="//boards.4channel.org/int/" class="boardlink">International</a></li>
+<li><a href="//boards.4channel.org/out/" class="boardlink">Outdoors</a></li>
+<li><a href="//boards.4channel.org/toy/" class="boardlink">Toys</a></li>
+</ul>
+</div>
+<div class="column">
+<h3 style="text-decoration: underline; display: inline;">Creative</h3>
+<ul>
+<li><a href="//boards.4chan.org/i/" class="boardlink">Oekaki</a></li>
+<li><a href="//boards.4channel.org/po/" class="boardlink">Papercraft &amp; Origami</a></li>
+<li><a href="//boards.4channel.org/p/" class="boardlink">Photography</a></li>
+<li><a href="//boards.4channel.org/ck/" class="boardlink">Food &amp; Cooking</a></li>
+<li><a href="//boards.4chan.org/ic/" class="boardlink">Artwork/Critique</a></li>
+<li><a href="//boards.4chan.org/wg/" class="boardlink">Wallpapers/General</a></li>
+<li><a href="//boards.4channel.org/lit/" class="boardlink">Literature</a></li>
+<li><a href="//boards.4channel.org/mu/" class="boardlink">Music</a></li>
+<li><a href="//boards.4channel.org/fa/" class="boardlink">Fashion</a></li>
+<li><a href="//boards.4channel.org/3/" class="boardlink">3DCG</a></li>
+<li><a href="//boards.4channel.org/gd/" class="boardlink">Graphic Design</a></li>
+<li><a href="//boards.4channel.org/diy/" class="boardlink">Do-It-Yourself</a></li>
+<li><a href="//boards.4channel.org/wsg/" class="boardlink">Worksafe GIF</a></li>
+<li><a href="//boards.4channel.org/qst/" class="boardlink">Quests</a></li>
+</ul>
+</div>
+<div class="column">
+<h3 style="text-decoration: underline; display: inline;">Other</h3>
+<ul>
+<li><a href="//boards.4channel.org/biz/" class="boardlink">Business &amp; Finance</a></li>
+<li><a href="//boards.4channel.org/trv/" class="boardlink">Travel</a></li>
+<li><a href="//boards.4channel.org/fit/" class="boardlink">Fitness</a></li>
+<li><a href="//boards.4channel.org/x/" class="boardlink">Paranormal</a></li>
+<li><a href="//boards.4channel.org/adv/" class="boardlink">Advice</a></li>
+<li><a href="//boards.4channel.org/lgbt/" class="boardlink">LGBT</a></li>
+<li><a href="//boards.4channel.org/mlp/" class="boardlink">Pony</a></li>
+<li><a href="//boards.4channel.org/news/" class="boardlink">Current News</a></li>
+<li><a href="//boards.4channel.org/wsr/" class="boardlink">Worksafe Requests</a></li>
+<li><a href="//boards.4channel.org/vip/" class="boardlink">Very Important Posts</a></li>
+</ul>
+<h3 style="text-decoration: underline; display: inline;">Misc.</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
+<ul>
+<li><a href="//boards.4chan.org/b/" class="boardlink">Random</a></li>
+<li><a href="//boards.4chan.org/r9k/" class="boardlink">ROBOT9001</a></li>
+<li><a href="//boards.4chan.org/pol/" class="boardlink">Politically Incorrect</a></li>
+<li><a href="//boards.4chan.org/bant/" class="boardlink">International/Random</a></li>
+<li><a href="//boards.4chan.org/soc/" class="boardlink">Cams &amp; Meetups</a></li>
+<li><a href="//boards.4chan.org/s4s/" class="boardlink">Shit 4chan Says</a></li>
+</ul>
+</div>
+<div class="column">
+<h3 style="text-decoration: underline; display: inline;">Adult</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
+<ul>
+<li><a href="//boards.4chan.org/s/" class="boardlink">Sexy Beautiful Women</a></li>
+<li><a href="//boards.4chan.org/hc/" class="boardlink">Hardcore</a></li>
+<li><a href="//boards.4chan.org/hm/" class="boardlink">Handsome Men</a></li>
+<li><a href="//boards.4chan.org/h/" class="boardlink">Hentai</a></li>
+<li><a href="//boards.4chan.org/e/" class="boardlink">Ecchi</a></li>
+<li><a href="//boards.4chan.org/u/" class="boardlink">Yuri</a></li>
+<li><a href="//boards.4chan.org/d/" class="boardlink">Hentai/Alternative</a></li>
+<li><a href="//boards.4chan.org/y/" class="boardlink">Yaoi</a></li>
+<li><a href="//boards.4chan.org/t/" class="boardlink">Torrents</a></li>
+<li><a href="//boards.4chan.org/hr/" class="boardlink">High Resolution</a></li>
+<li><a href="//boards.4chan.org/gif/" class="boardlink">Adult GIF</a></li>
+<li><a href="//boards.4chan.org/aco/" class="boardlink">Adult Cartoons</a></li>
+<li><a href="//boards.4chan.org/r/" class="boardlink">Adult Requests</a></li>
+</ul>
+</div>`;
+			console.log('%cSwitching board list to the one from 4chan.org', 'color:black;background-color:cornflowerBlue');
+			footer.innerHTML = `<div class="boardList">` + boardList + `</div>`;
+			if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
+				$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add(
+					"current"
+				);
+			}
+			/*
+			console.log('%cGrabbing current 4chan board list from 4chan.org', 'color:black;background-color:cornflowerBlue');
 			GM.xmlHttpRequest({
 				method: "GET",
 				url: "https://4chan.org",
 				responseType: 'text',
 				onload: response => {
-					console.log('%cGrabbing current 4chan board list from 4chan.org', 'color:black;background-color:cornflowerBlue');
 					let parser = new DOMParser();
 					let doc = parser.parseFromString(response.responseText, 'text/html');
+					console.log(doc);
 					let img = doc.querySelector('#boards .boxcontent');
-					let footer = $("#boardNavDesktopFoot"),
-					currentBoard = location.pathname.split("/")[1];
 					footer.innerHTML = `<div class="boardList">` + img.innerHTML + `</div>`;
 					if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
 						$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add(
@@ -499,16 +736,50 @@
 						);
 					}
 				},
-				onerror: response => console.log('Oops.', response)
+				onerror: response => console.warn('Failed grabbing 4chan board list:', response)
 			});
+			*/
+			/*
+			fetch('/about').then(function (response) {
+	// The API call was successful!
+	return response.text();
+}).then(function (html) {
+
+	// Convert the HTML string into a document object
+	var parser = new DOMParser();
+	var doc = parser.parseFromString(html, 'text/html');
+
+	// Get the image file
+	var img = doc.querySelector('img');
+	console.log(img);
+
+}).catch(function (err) {
+	// There was an error
+	console.warn('Something went wrong.', err);
+});
+//, { mode: 'no-cors'}
+*/
+			/*
+			const url = 'https://4chan.org';
+			fetch(url, {mode: 'no-cors'}).then(function(response) {
+				console.log('hey', response.ok);
+			}).catch(function(error) {
+				console.warn('Something went wrong.', error);
+			});
+			*/
 		}
 
 		fetch4chanBoardList();
-
+/*
 		function checkBanner() {
+			ready("#bannerCnt > img", (element) => {
+        let _this = element;
+        console.log(_this);
+      });
 			let bannerContainer, bannerImg;
 			bannerContainer = $('#bannerCnt');
 			bannerImg = $('#bannerCnt > img');
+			//console.log(bannerImg);
 			if (bannerImg === null) {
 				bannerContainer.classList.add('blocked');
 				bannerContainer.removeAttribute('title');
@@ -517,8 +788,8 @@
 			}
 		}
 
-		window.onload = checkBanner;
-
+		checkBanner();
+*/
 		function getSortMode() {
 			//console.log('sorting mode');
 			let sorter, boardCon, oldVal;
@@ -549,7 +820,177 @@
     }
 
     passLinker();
+/*
+		function masonry() {
+			let grids = [...document.querySelectorAll('.board')];
+			if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry') {
+				console.log('masonry not supported, running masonry function');
+				grids = grids.map(grid => ({
+					_el: grid,
+					gap: parseFloat(getComputedStyle(grid).rowGap),
+					items: [...grid.childNodes].filter(c => c.nodeType === 1),
+					ncol: 0 })); // was 0
+console.log(grids);
+				function layout() {
+					console.log('running layout');
+					grids.forEach(grid => {
+						// get the post relayout number of columns
+						let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
+						console.log(getComputedStyle(grid._el).gridTemplateColumns.split(' ').length);
 
+						// if the number of columns has changed
+						if (grid.ncol !== ncol) {
+							// update number of columns
+							grid.ncol = ncol;
+							console.log('rearrange grid items');
+
+							// revert to initial positioning, no margin
+							grid.items.forEach(c => c.style.removeProperty('margin-top'));
+
+							// if we have more than one column
+							if (grid.ncol > 1) {
+								grid.items.slice(ncol).forEach((c, i) => {
+									let prev_fin = grid.items[i].getBoundingClientRect().bottom, // bottom edge of item above
+											curr_ini = c.getBoundingClientRect().top; // top edge of current item
+									c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
+								});
+							}
+						}
+					});
+				}
+
+				//addEventListener('load', e => {
+				//	layout(); // initial load
+				//	addEventListener('resize', layout, false); // on resize
+				//}, false);
+			}
+		}
+*/
+		//const isInViewport = (e, {top:t, height:h} = e.getBoundingClientRect()) => t <= innerHeight && t + h >= 0;
+		function switchOPimg() {
+			let files = $$('.catalog-post');
+			for (let file of files) {
+				let fullLink = $("a.fileThumb", file);
+				let thumbLink = $("a.fileThumb img", file);
+				let catLink = $(".catalog-thumb", file);
+				if (!fullLink) {
+					console.log('no file');
+				} else if (fullLink.href.endsWith("m")) {
+					let OpVideo = d.createElement("video");
+          OpVideo.classList.add("catalog-thumb-video");
+					OpVideo.poster = thumbLink.src;
+          OpVideo.loop = true;
+					OpVideo.playsinline = true;
+					OpVideo.autoplay = true;
+          OpVideo.src = fullLink;
+					//OpVideo.play();
+          OpVideo.muted = true;
+          catLink.before(OpVideo);
+					catLink.remove();/*
+					let playPromise = OpVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.then((_) => {
+							// all good, video started
+						}).catch((error) => {
+						// hey the video didn't play
+							//if (isInViewport(OpVideo) === true) {
+							OpVideo.play();
+							//}
+						});
+          }*/
+				} else {
+					catLink.src = fullLink.href;
+				}
+			}
+		}
+		function playVids() {
+			const OPvids = [...document.querySelectorAll('.file--video')];
+			OPvids.forEach(el => {
+				el.addEventListener("mouseover", (e) => {
+					$('.catalog-thumb-video', el).play();
+				}, false);
+				el.addEventListener('mouseleave', (e) => {
+					$('.catalog-thumb-video', el).pause();
+				}, false);
+			})
+		}
+if (doc.classList.contains('catalog-mode')) {
+	on(d, "IndexRefresh", switchOPimg);
+	on(d, "IndexRefresh", playVids);
+	//on(d, "IndexBuild", switchOPimg);
+		//on(d, "IndexRefresh", masonry);
+               // window.addEventListener('resize', masonry);
+               // masonry();
+}
+
+
+
+		// https://www.smashingmagazine.com/2021/07/dynamic-header-intersection-observer/
+		// https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+		/*
+		function intObs() {
+const boxes = [...document.querySelectorAll('.catalog-thumb-video')]
+
+const getOptions = () => {
+	return {
+		root: null,
+		rootMargin: '0px',
+		threshold: 1
+	}
+}
+
+const setInViewStyles = (target) => {
+	target.classList.add('is-inview')
+	target.play()
+	//$('.catalog-thumb-video', target).play();
+	//dElementToInfoBox(target)
+	// console.log('in view')
+}
+
+const setOutOfViewStyles = (target) => {
+	target.classList.remove('is-inview')
+	target.pause()
+	//$('.catalog-thumb-video', target).pause();
+	//moveElementFromInfoBox(target)
+	// console.log('out of view')
+}
+
+const onIntersect = (entries) => {
+	entries.forEach(entry => {
+		const { target, isIntersecting, intersectionRatio } = entry
+		//console.log(entry)
+
+		if (intersectionRatio >= 1 && isIntersecting) {
+			return setInViewStyles(target)
+		}
+
+		return setOutOfViewStyles(target)
+	})
+}
+
+const reinitObserver = (options) => {
+	if (observer) {
+		observer.disconnect()
+	}
+
+	setTimeout(() => {
+		observer = new IntersectionObserver(onIntersect, options)
+
+		boxes.forEach(el => {
+			observer.observe(el)
+		})
+	}, 100)
+}
+
+let observer = new IntersectionObserver(onIntersect, getOptions())
+
+boxes.forEach(el => {
+	observer.observe(el)
+})
+		}
+
+		on(d, "IndexRefresh", intObs);
+*/
 		function spinnerText() {
 			let footer = $("#absbot");
 			let svgSpin = make({
@@ -664,70 +1105,19 @@
     if (config === "index") {
       searchCurtain();
     }
-		// https://css-tricks.com/a-lightweight-masonry-solution/
-		// XXX: may not work with multi-spanned columns and rows
-		/*
-		function mason() {
-			let grids = [...document.querySelectorAll(':root.catalog-mode .board')];
 
-			if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry') {
-				console.log('CSS Grid masonry is not support :(');
-				grids = grids.map(grid => ({
-					_el: grid,
-					gap: parseFloat(getComputedStyle(grid).gridRowGap),
-					items: [...grid.childNodes].filter(c => c.nodeType === 1 && +getComputedStyle(c).gridColumnEnd !== -1),
-    ncol: 0,
-    mod: 0
-				}));
-
-				grids.forEach(grid => console.log(`grid items: ${grid.items.length}; grid gap: ${grid.gap}px`))
-
-    grids.forEach(grid => {
-      // get the post relayout number of columns
-      let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
-
-      grid.items.forEach(c => {
-        let new_h = c.getBoundingClientRect().height;
-
-        if (new_h !== +c.dataset.h) {
-          c.dataset.h = new_h;
-          grid.mod++;
-        }
-      });
-
-      // if the number of columns has changed
-      if (grid.ncol !== ncol || grid.mod) {
-        // update number of columns
-        grid.ncol = ncol;
-
-        // revert to initial positioning, no margin
-        grid.items.forEach(c => c.style.removeProperty('margin-top'));
-
-        // if we have more than one column
-        if (grid.ncol > 1) {
-          grid.items.slice(ncol).forEach((c, i) => {
-            let prev_fin = grid.items[i].getBoundingClientRect().bottom, //bottom edge of item above
-            curr_ini = c.getBoundingClientRect().top; // top edge of current item
-
-            c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
-          });
-        }
-
-        grid.mod = 0;
-      }
-    });
-
-/*
-				addEventListener('load', e => {
-					layout(); // initial load
-					addEventListener('resize', layout, false); // on resize
-				}, false);
-			// comment end
-			}
+		function checkBlockedBanner() {
+			ready('#bannerCnt > img', (element) => {
+				let _this = element;
+				if (_this.attributes.length === 3) {
+					doc.classList.add("ss21--banner-blocked");
+					$('#bannerCnt').removeAttribute('title');
+				}
+			});
 		}
 
-		on(d, "IndexRefresh", mason);
-*/
+		on(d, "IndexRefresh", checkBlockedBanner);
+
     function OPAsBanner() {
       ready(".op .fileThumb", (element) => {
         let _this = element,
@@ -786,6 +1176,8 @@ function useEffect() {
     );
 
       ready("#mascot", (element) => {
+				// in theory, this means the user has oneechan enabled
+				removeStyle($("#ch4SS", d.head));
         let _this = element;
         if (_this) {
           make({
