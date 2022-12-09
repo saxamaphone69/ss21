@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.2.4
+// @version     2.2.5
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -714,9 +714,7 @@
 			console.log('%cSwitching board list to the one from 4chan.org', 'color:black;background-color:cornflowerBlue');
 			footer.innerHTML = `<div class="boardList">` + boardList + `</div>`;
 			if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
-				$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add(
-					"current"
-				);
+				$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add("current");
 			}
 			/*
 			console.log('%cGrabbing current 4chan board list from 4chan.org', 'color:black;background-color:cornflowerBlue');
@@ -770,26 +768,7 @@
 		}
 
 		fetch4chanBoardList();
-/*
-		function checkBanner() {
-			ready("#bannerCnt > img", (element) => {
-        let _this = element;
-        console.log(_this);
-      });
-			let bannerContainer, bannerImg;
-			bannerContainer = $('#bannerCnt');
-			bannerImg = $('#bannerCnt > img');
-			//console.log(bannerImg);
-			if (bannerImg === null) {
-				bannerContainer.classList.add('blocked');
-				bannerContainer.removeAttribute('title');
-			} else {
-				bannerContainer.classList.add('unblocked');
-			}
-		}
 
-		checkBanner();
-*/
 		function getSortMode() {
 			//console.log('sorting mode');
 			let sorter, boardCon, oldVal;
@@ -859,13 +838,83 @@ console.log(grids);
 					});
 				}
 
-				//addEventListener('load', e => {
-				//	layout(); // initial load
-				//	addEventListener('resize', layout, false); // on resize
-				//}, false);
+				addEventListener('load', e => {
+					layout(); // initial load
+					addEventListener('resize', layout, false); // on resize
+				}, false);
 			}
 		}
+
+		masonry();
 */
+		function masonry() {
+		let grids = [...document.querySelectorAll(':root.catalog-mode .board')];
+
+if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry' && getComputedStyle(grids[0]).gridAutoRows !== '240px') {
+	console.log('got a grid, going to masonry it', grids);
+  grids = grids.map(grid => ({
+    _el: grid,
+    gap: parseFloat(getComputedStyle(grid).gridRowGap),
+    items: [...grid.childNodes].filter(c => c.nodeType === 1 && +getComputedStyle(c).gridColumnEnd !== -1),
+    ncol: 0,
+    mod: 0 }));
+
+  function layout() {
+		//console.log('running layout');
+    grids.forEach(grid => {
+      /* get the post relayout number of columns */
+      let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
+
+      grid.items.forEach(c => {
+        let new_h = c.getBoundingClientRect().height;
+
+        if (new_h !== +c.dataset.h) {
+          c.dataset.h = new_h;
+          grid.mod++;
+        }
+      });
+
+      /* if the number of columns has changed */
+      if (grid.ncol !== ncol || grid.mod) {
+        /* update number of columns */
+        grid.ncol = ncol;
+
+        /* revert to initial positioning, no margin */
+        grid.items.forEach(c => c.style.removeProperty('margin-top'));
+
+        /* if we have more than one column */
+        if (grid.ncol > 1) {
+          grid.items.slice(ncol).forEach((c, i) => {
+            let prev_fin = grid.items[i].getBoundingClientRect().bottom /* bottom edge of item above */,
+            curr_ini = c.getBoundingClientRect().top /* top edge of current item */;
+            c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
+          });
+        }
+
+        grid.mod = 0;
+      }
+    });
+  }
+layout();
+  //addEventListener('load', e => {
+  //  layout(); /* initial load */
+    addEventListener('resize', layout, false); /* on resize */
+  //}, false);
+}
+		}
+		if (config === "index") {
+      const target = $(".board");
+      const config = {
+        childList: true,
+      };
+
+      function subscriber(mutations) {
+        masonry();
+      }
+      const observer = new MutationObserver(subscriber);
+      observer.observe(target, config);
+    }
+		//on(d, "IndexBuild", masonry);
 		//const isInViewport = (e, {top:t, height:h} = e.getBoundingClientRect()) => t <= innerHeight && t + h >= 0;
 		function switchOPimg() {
 			let files = $$('.catalog-post');
