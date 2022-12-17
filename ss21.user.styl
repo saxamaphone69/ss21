@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.5
+@version        2.2.6
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -628,11 +628,7 @@
 		vertical-align baseline
 	
 	// reset generic form elements to look consistent across browsers
-	button,
-	input,
-	option,
-	select,
-	textarea
+	:where(button, input, option, select, textarea)
 		font inherit
 		color inherit
 		margin 0
@@ -701,7 +697,7 @@
 	
 	// okay, so there are only a handful of input fields used in 4chan x anyway:
 	// index search field (with 3 select dropdowns), qr, and the settings
-	.field
+	.field,
 	:root.is-search .commentForm input[name='q']
 		display inline-block
 		background inherit
@@ -750,12 +746,12 @@
 	
 	// XXX: dropdown arrow sometimes covers writing, may need more padding on right
 	// XXX: the border needs to remain transparent OR opaque, cannot go between each
-	select
+	:where(select)
 		display inline-block
 		tc(ss21BackgroundColour, high)
 		background-color var(--background-primary)
 		background-repeat no-repeat
-		background-position 95% 45%
+		background-position bottom 1rem right .5rem
 		background-size 16px 12px
 		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='" + alpha(ss21OppColour, .54) + "' d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z'%3E%3C/path%3E%3C/svg%3E")
 		padding .5rem 1.75rem .5rem .75rem
@@ -771,9 +767,6 @@
 		&:focus
 			border 1px solid alpha(tint(ss21primary, 33%), .9)
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
-	
-	option
-		background var(--background-primary)
 	
 	// `textarea` should only resize vertically as to not break their containers
 	textarea
@@ -3189,7 +3182,8 @@
 				grid-column span 2
 				grid-row span 2
 				height 31rem
-				.catalog-thumb
+				.catalog-thumb,
+				.catalog-thumb-video
 					height 15rem i
 				.postMessage
 					max-height calc(31rem - 15rem - 1rem - .8rem)
@@ -3239,7 +3233,8 @@
 	.catalog-link
 		order 2
 		display block // required to it being an `a` element
-		.catalog-thumb
+		.catalog-thumb,
+		.catalog-thumb-video
 			border-radius 4px 4px 0 0
 			width 100% i
 			// so the trade off here, is that you lose the "fluidity" of cards, that is
@@ -5036,7 +5031,7 @@
 	// in the archive table, `.teaser-col` can contain the subject (`b`), `.quote`,
 	// or a `wbr` which breaks links
 	.is_archive,
-	.board_f
+	.board_f.is_index
 		.board
 			max-width none
 	
@@ -5289,14 +5284,15 @@
 		*
 			display none
 	*/
-	
+	/*
 	// scroll snapping?
 	:root.paged-mode
 		scroll-snap-type y proximity
-		.post
+		.navLinks.json-index,
+		.thread
 			scroll-snap-align start
 			scroll-margin-top 2rem // doesn't work when scrolling up due to autohide header
-		
+	*/
 	// XXX: https://github.com/rcc11/4chan-sounds-player
 	// users really should disable thread > limit post widths
 	:root.fcsp-enabled
@@ -5317,7 +5313,13 @@
 		display none
 	
 	:root.is-search
-		script + .container
+		.boardTitle
+			font-size calc(100vw / (var(--length, 1) * 0.5) * .8) i
+			white-space nowrap i
+		script + .container,
+		.threadHideButton,
+		.postMenuBtn
 			display none
 		.commentForm
-			margin 0
+			width fit-content
+			margin 1rem auto 0
