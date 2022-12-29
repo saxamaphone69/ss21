@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.6
+@version        2.2.7
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -12,7 +12,7 @@
 @var range      ss21fontSize         "Default font size" [16, 10, 18, 2, "px"]
 @var checkbox   ss21roundedCorners   "Rounded corners" 1
 @var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba", "ss21tomorrow:Tomorrow", "ss21photon:Photon"]
-@var color      ss21primary          "Primary colour" #7c20ed
+@var color      ss21primary          "Primary colour" #bb2649
 @var select     ss21spacingLevel     "Spacing amount" ["0:Comfortable", "1:Compact"]
 @var checkbox   ss21underlineLink    "Underline external links" 0
 @var checkbox   ss21postWidth        "Full-width posts" 1
@@ -27,18 +27,18 @@
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
 @var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
 @var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
-@var select     ss21fileInfo         "File information displayed" ["1:Always displayed", "2:On hover"]
+@var select     ss21fileInfo         "File information displayed" ["1:Always displayed", "2:On hover*"]
 @var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
 @var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
-@var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered"]
+@var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
-@var select     ss21iconFont         "Icon font" ["0:Material Icons (old)", "1:Bootstrap", "2:Material Symbols (new)"]
+@var select     ss21iconFont         "Icon font" ["0:Material Icons (old)", "1:Bootstrap", "2:Material Symbols (new)*"]
 @var checkbox   ss21navRail          "Display settings as navigation rail" 0
 @var select     ss21watchButton      "Watch thread button" ["1:Always displayed", "2:On hover"]
-@var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart", "2:Star"]
-@var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque", "2:Masonry (buggy)"]
+@var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart*", "2:Star"]
+@var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque*", "2:Masonry (buggy)"]
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -240,6 +240,7 @@
 		--grey-500 #b3b3b6
 		--grey-700 #737376
 		--grey-900 #303033
+		--grey-12 #121212
 		--font-default 'Inter var', system-ui
 		--font-monospace 'Inconsolata', monospace, monospace
 	
@@ -848,8 +849,8 @@
 	s,
 	s > .quote
 		text-decoration none
-		color var(--grey-900) i
-		background-color var(--grey-900) i
+		color var(--grey-12) i
+		background-color var(--grey-12) i
 		transition color .25s
 	
 	s:hover,
@@ -1377,18 +1378,24 @@
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
 	// XXX: need to make it so this changes along with which icon font you pick
 	.closedIcon
+		if ss21iconFont == 0
+			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z' /%3E%3C/svg%3E")
+		else if ss21iconFont == 1
+			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z'/%3E%3C/svg%3E")
+		else if ss21iconFont == 2
+			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 20 20'%3E%3Cpath d='M5.417 18.917q-.875 0-1.459-.584-.583-.583-.583-1.458V8.708q0-.875.583-1.458.584-.583 1.459-.583v-2q0-1.938 1.343-3.282Q8.104.042 10 .042q1.917 0 3.25 1.343 1.333 1.344 1.333 3.282v2q.875 0 1.459.583.583.583.583 1.458v8.167q0 .875-.583 1.458-.584.584-1.459.584ZM10 14.625q.75 0 1.271-.531.521-.532.521-1.261 0-.75-.532-1.271-.531-.52-1.26-.52-.75 0-1.271.531-.521.531-.521 1.26 0 .75.532 1.271.531.521 1.26.521ZM7.458 6.667h5.084v-2q0-1.063-.74-1.823-.74-.761-1.802-.761t-1.802.761q-.74.76-.74 1.823Z'/%3E%3C/svg%3E");
 		height 0
-		width 1rem
-		padding-top 1rem
+		width 1.25rem
+		padding-top 1.25rem
 		background-repeat no-repeat
 		opacity .87
 		margin-left .25rem
-		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z' /%3E%3C/svg%3E")
+		background-image var(--closed-icon)
 	
 	.stickyIcon
 		height 0
-		width 1rem
-		padding-top 1rem
+		width 1.25rem
+		padding-top 1.25rem
 		background-repeat no-repeat
 		opacity .87
 		margin-left .25rem
@@ -1396,19 +1403,28 @@
 	
 	.archivedIcon
 		height 0
-		width 1rem
-		padding-top 1rem
+		width 1.25rem
+		padding-top 1.25rem
 		background-repeat no-repeat
 		opacity .87
 		margin-left .25rem
 		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M19,8V5H5V8H9A3,3 0 0,0 12,11A3,3 0 0,0 15,8H19M19,3A2,2 0 0,1 21,5V12A2,2 0 0,1 19,14H5A2,2 0 0,1 3,12V5A2,2 0 0,1 5,3H19M3,15H9A3,3 0 0,0 12,18A3,3 0 0,0 15,15H21V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V15Z' /%3E%3C/svg%3E")
 	
+	.identityIcon
+		height 0
+		width 1.25rem
+		padding-top 1.25rem
+		margin-right .25rem
+		background-repeat no-repeat
+		opacity .87
+		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
+	
 	// XXX: on "retina" (`window.devicePixelRatio >= 2`) displays, 4chan x switches
 	// to the @2x version of certain icons. until we switch the identityIcon to an
 	// svg, force the icon to still render at the correct size
 	.retina
-		height 1rem
-		width 1rem
+		height 1.25rem
+		width 1.25rem
 	
 	// 4CHANX: while shortcut icons are encouraged, if for some odd reason you
 	// choose not to use them, still provide support
@@ -1503,6 +1519,7 @@
 			visibility visible i
 			min-width 640px
 			min-height 360px
+			margin auto // centers the media (usually an iframe) when shown
 	
 	// 4chan x header
 	// offset the header and body when it's fixed
@@ -1604,6 +1621,7 @@
 			position relative
 			min-width 3rem
 			padding 0 .5rem
+			transition opacity .25s
 			if ss21headerHeight == 1
 				height 3rem
 			else if ss21headerHeight == 2
@@ -1929,6 +1947,10 @@
 		.navLinks.json-index
 			margin 1rem auto i
 	
+	// SIDEDISH: check if the board banner was actually blocked
+	:root.ss21--banner-blocked #bannerCnt
+		display none
+	
 	// announcement hiding
 	:root.hide-announcement .globalMessage
 		display none
@@ -1985,23 +2007,40 @@
 	// content changes
 	if ss21blotter == 1
 		#blotter
-			display block i
-			margin 4rem 0 // need to account for boardBanner being present or not, plus header-bar/autohide
+			display table i
+			min-width 40rem
+			max-width 100%
+			margin 1rem auto 2.5rem // need to account for boardBanner being present or not, plus header-bar/autohide
+			borderRadius()
 			background-color ss21BackgroundElevated
+			overflow hidden
+			position relative
+			tr:not(:only-child)
+				if ss21readingMode == ss21light
+					border-bottom 1px solid darken(ss21BackgroundElevated, 10%)
+				else if ss21readingMode == ss21dark
+					border-bottom 1px solid lighten(ss21BackgroundElevated, 15%)
+			td
+				padding .5rem 1rem
 			thead
-				display none
+				background-color ss21primary
+				color tc(ss21primary, high)
+				td::before
+					content '4chan blotter (barely updated, best kept hidden within ss21)'
 			#blotter-msgs
 				.blotter-date
 					color var(--text-hint-on-background)
-					padding .5rem 1.5rem
 				.blotter-content a
 					color ss21primary
 			tfoot
-				padding 0
-				font-size 0
-				span a
-					font-size ss21fontSize
+				text-align right
+				a
 					color ss21primary
+					transition color .25s
+					&:hover
+						color shade(ss21primary, 10%)
+		.is_thread #blotter
+			margin-bottom 1rem
 	
 	// XXX: if you unblock and want to see contest banners, you need to enable
 	// this setting within ss21
@@ -2039,12 +2078,12 @@
 		tc(@background-color, high)
 		//width 100%
 		max-width 75rem
-		height 3rem
-		padding 0 1.5rem
+		padding .25rem 1.5rem
 		margin -1.5rem auto 1.5rem
 		position relative
 		z-index 1
 		display flex
+		flex-wrap wrap
 		align-items center
 		justify-content center
 		borderRadius()
@@ -2500,85 +2539,39 @@
 <blockquote class="postMessage" id="m149986685"><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
 	*/
 	.fileText
+		--file-gap .25rem
 		font-size .75rem
-		line-height 1rem
 		position relative
-		padding 0 0 .25rem 1rem
-		top -1px
+		display flex
+		align-items center
+		gap var(--file-gap)
+		white-space normal // copied from 4chan x
+		padding-inline-start 1rem
+		padding-block-end .25rem
+		if ss21readingMode == ss21light
+			background-color rgba(33, 33, 33, .02)
+		else if ss21readingMode == ss21dark
+			background-color rgba(255, 255, 255, .05)
 		if ss21readingMode == ss21light
 			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
 			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
-		display flex
-		//align-items center
-		&::before
-			content ''
-			display block
-			pointer-events none
-			if ss21readingMode == ss21light
-				background-color rgba(33, 33, 33, .02)
-			else if ss21readingMode == ss21dark
-				background-color rgba(255, 255, 255, .05)
-			width 100%
-			height calc(100% - 1px)
-			position absolute
-			left 0
-			top 1px
-			z-index 0
+		a
+			color ss21primary
+			unicode-bidi isolate // used to counter "malicious" filenames
+			&:hover
+				color shade(ss21primary, 10%)
 		.file-info
 			display flex
 			align-items center
-			& > a
-				margin-right .25rem
-		& > span,
-		& > a
-			z-index 1
-			margin-right .25rem
-		a
-			color ss21primary
-			unicode-bidi isolate
-			&:hover
-				color shade(ss21primary, 10%)
-		.download-button,
-		.quick-filter-md5
-			display contents
-			&::after
-				font-size .75rem
-		.download-button::after
-			margin 0 .25rem
-	/*
-	.fileText
-		font-size .875rem
-		padding 0 1rem .125rem
-		//min-height 1.5rem
-		margin-top -4px
-		if ss21readingMode == ss21light
-			//background-color rgba(33, 33, 33, .02)
-			box-shadow inset 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
-		else if ss21readingMode == ss21dark
-			//background-color rgba(255, 255, 255, .05)
-			box-shadow inset 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
-		// these are from 4CHANX
-		white-space normal
-		&::before
-			content ''
-			display block
-			pointer-events none
-			if ss21readingMode == ss21light
-				background-color rgba(33, 33, 33, .02)
-			else if ss21readingMode == ss21dark
-				background-color rgba(255, 255, 255, .05)
-			height calc(100% - 4px)
-			width 100%
-			position absolute
-			top 4px
-			left 0
-		a
-			color ss21primary
-			unicode-bidi isolate
-			&:hover
-				color shade(ss21primary, 10%)
-	*/
+			gap var(--file-gap)
+			.download-button,
+			.quick-filter-md5
+				display contents // treat the icons as if they were just there
+				&::after
+					font-size 1rem // make the icon slightly bigger than the font
+					inline-size .75rem
+	
 	.fileText-original, // the original file text
 	.fnswitch:hover > .fntrunc, // when hovering over a filename, hide the truncated version
 	.fnswitch:not(:hover) > .fnfull, // when not hovering over a truncated version, hide the full filename
@@ -2936,7 +2929,9 @@
 	
 	.postContainer.post--hot > .post
 		background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(140, 35, 50, .33))
-	
+	/*
+url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21poster(admin)) + "' viewBox='0 0 16 16'%3E%3Cpath d='M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z'/%3E%3C/svg%3E")
+*/
 	.postContainer.poster--admin
 		> .post
 			background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
@@ -2944,6 +2939,9 @@
 				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(admin)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 			> .postInfo > .nameBlock
 				color ss21posterAdmin
+	
+	.stub:has(+ .poster--mod)
+		background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 	
 	.postContainer.poster--mod
 		> .post
@@ -2953,6 +2951,9 @@
 			> .postInfo > .nameBlock
 				color ss21poster(mod)
 	
+	.stub:has(+ .poster--mod)
+		background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
+	
 	.postContainer.poster--verified
 		> .post
 			background-color mix(ss21posterVerified, ss21BackgroundColour, 10%)
@@ -2960,14 +2961,6 @@
 				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(verified)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 			> .postInfo > .nameBlock
 				color ss21posterVerified
-	
-	.identityIcon
-		height 0
-		width 1rem
-		padding-top 1rem
-		margin-right .125rem
-		background-repeat no-repeat
-		opacity .87
 	
 	:where(:root:not(.anonymize)) :where(.postContainer.poster--pass)
 		> .post
@@ -3047,7 +3040,7 @@
 		margin 0 .25rem
 		a
 			margin-right .25rem
-		&:after
+		&::after
 			font-size 20px
 			cursor help
 	.contact-links:not(:hover) a
@@ -3242,6 +3235,8 @@
 			// varies in height, so we force it at `7rem` which shrinks big images and
 			// enlarges small ones
 			height 7rem i
+			if ss21catalogueStyle == 2
+				height auto i
 			// object-fit is here to try and make it look better, but since we can't determine
 			// what image a user will upload, it may cut off in the grid
 			object-fit cover
@@ -4235,7 +4230,7 @@
 	.section-advanced a
 		color ss21primary
 		&:hover
-			color shade(@color, 10%)
+			color shade(ss21primary, 10%)
 	
 	@media (max-width: 60rem)
 		#fourchanx-settings nav a:not([download])
@@ -4342,7 +4337,17 @@
 			min-width 10rem
 		.note
 			color var(--text-secondary-on-background)
-
+		.file-info-preview
+			font-size .75rem
+			display flex
+			align-items center
+			gap .25rem
+			.fa
+				display contents
+				&::after
+					font-size 1rem
+					inline-size .75rem
+	
 	// XXX: quick fix for oneechan (which should not be used anyway)
 	#sauce-doc-expand + .riceCheck
 		display none
