@@ -227,7 +227,7 @@
 		--text-primary-on-background ss21TextPrimary
 		--text-secondary-on-background ss21TextSecondary
 		--text-hint-on-background ss21TextHint
-		--text-primary-on-primary ss21-on-primary
+		//--text-primary-on-primary ss21-on-primary
 		/*
 		--text-primary-on-primary textContraster(ss21primary, .87)
 		--text-secondary-on-primary textContraster(ss21primary, .6)
@@ -1439,14 +1439,14 @@
 	
 	// generic classes used throughout 4chan and 4chan x
 	// quoted text, a.k.a. >implying implications in current year, ishygddt
-	.quote
+	:where(.quote)
 		if ss21quoteColour
 			color #789922
 		else
 			color ss21green
 	
 	// on /gd/'s pinned thread, quotes are hardcoded colour
-	[style*="color:#789922"]
+	:where([style*="color:#789922"])
 		if ss21quoteColour
 			color #789922 i
 		else
@@ -1478,7 +1478,7 @@
 	.posteruid
 		font-size 0
 		display inline-block
-		margin 0 .25rem
+		//margin 0 .25rem
 		.hand
 			font-size .75rem
 	
@@ -1543,7 +1543,7 @@
 			backdrop-filter blur(1rem)
 		z-depth(4)
 		position relative
-		padding 0 1.5rem
+		padding 0 1rem
 		display flex
 		align-items center
 		justify-content space-between
@@ -1619,7 +1619,7 @@
 			align-items center
 			justify-content center
 			position relative
-			min-width 3rem
+			min-width 2rem
 			padding 0 .5rem
 			transition opacity .25s
 			if ss21headerHeight == 1
@@ -1681,7 +1681,7 @@
 			right 100%
 	*/
 	.shortcut
-		min-width 3rem
+		min-width 2rem
 		if ss21headerHeight == 1
 			height 3rem
 		else if ss21headerHeight == 2
@@ -1689,7 +1689,7 @@
 		display inline-flex
 		align-items center
 		justify-content center
-		padding 0 .5rem
+		padding 0 .25rem
 		.fa::after,
 		.menu-button::after,
 		.native-settings::after
@@ -2245,16 +2245,18 @@
 	
 	if ss21flatness == 2
 		.post,
-		.post.catalog-post,
+		.catalog-post,
 		.summary,
 		.stub,
 		#menu,
 		.submenu
 			if ss21readingMode == ss21light
-				border 1px solid rgba(33, 33, 33, .2)
+				border 1px solid darken(ss21BackgroundElevated, 10%)
 			else if ss21readingMode == ss21dark
-				border 1px solid rgba(255, 255, 255, .2)
+				border 1px solid lighten(ss21BackgroundElevated, 15%)
 	
+	// XXX: when fappe tyme enabled, this won't work due to the elements retaining
+	// their odd or even-ness in the dom tree
 	if ss21evenPosts
 		.postContainer:nth-of-type(even) > .post
 			if ss21readingMode == ss21light
@@ -2262,6 +2264,7 @@
 			else if ss21readingMode == ss21dark
 				background-color lighten(ss21BackgroundElevated, 5%)
 	
+	// XXX: USE GAP FOR ALL THE POST INFO ELEMENTS
 	:where(.postContainer) > :where(.post) > .postInfo
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
@@ -2272,9 +2275,10 @@
 		align-items center
 		//flex-wrap nowrap // XXX: not ideal, especially on boards like /pol/
 		//padding .125rem 4rem .25rem 1rem
-		padding .125rem 4rem .125rem 1rem
+		padding .125rem 4rem .125rem .5rem
 		// XXX: provides space for menu/hide button on long post infos
 		//height 1.75rem XXX: 2021-12 the cut off subjects always bothered me
+		gap 0 .25rem
 		borderRadius()
 		border-bottom-left-radius 0
 		border-bottom-right-radius 0
@@ -2290,9 +2294,10 @@
 			display none
 	
 	.nameBlock
-		margin-right .25rem
+		//margin-right .25rem
 		display inline-flex
 		align-items center
+		gap 0 .25rem
 	
 	if ss21forcedAnon == 1
 		.nameBlock
@@ -2300,22 +2305,22 @@
 		.subject:not(:empty)::after
 			display none i
 		.subject
-			margin-right .25rem
+			//margin-right .25rem
 	
 	// if a post from a new ip is added to a thread, 4chan x makes a guess that
 	// the recent posts are of that new ip and adds an indicator
 	// XXX: make this consistent
 	.ip-counter
 		color var(--text-hint-on-background)
-		margin-left .25rem
+		//margin-left .25rem
 	
 	.dateTime
 		color var(--text-hint-on-background)
-		margin-right .25rem
+		//margin-right .25rem
 	
 	.page-num
 		color var(--text-hint-on-background)
-		margin 0 .25rem
+		margin-left .125rem
 	
 	.postNum
 		display inline-flex
@@ -2339,10 +2344,10 @@
 	
 	// make subjects look nice by adding 'by'
 	.subject:not(:empty)::after
-		content 'by'
+		content ' by'
 		color var(--text-hint-on-background)
 		font-weight 400
-		margin 0 .25rem
+		//margin 0 .25rem
 	
 	// XXX: thread summaries are targeted in sidedish to make the numbers
 	// wrapped in bold
@@ -2546,7 +2551,7 @@
 		align-items center
 		gap var(--file-gap)
 		white-space normal // copied from 4chan x
-		padding-inline-start 1rem
+		padding-inline .5rem
 		padding-block-end .25rem
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
@@ -2561,13 +2566,32 @@
 			unicode-bidi isolate // used to counter "malicious" filenames
 			&:hover
 				color shade(ss21primary, 10%)
+		> a
+			flex 0 0 auto
 		.file-info
 			display flex
+			flex-wrap nowrap
 			align-items center
+			min-width 0
+			white-space nowrap
+			&:has(.fnswitch)
+				white-space nowrap
 			gap var(--file-gap)
+			a:has(> .fnswitch)
+				display contents
+				white-space initial
+			a[target]:not(:has(> .fnswitch))
+				white-space nowrap
+				overflow hidden
+				text-overflow ellipsis
+				&:hover
+					white-space initial
+					overflow initial
+					text-overflow initial
 			.download-button,
 			.quick-filter-md5
 				display contents // treat the icons as if they were just there
+				align-self flex-end
 				&::after
 					font-size 1rem // make the icon slightly bigger than the font
 					inline-size .75rem
@@ -2579,11 +2603,6 @@
 	.expanded-image > .post > .file > .fileThumb > img[data-md5] // when expanded, hide the thumbnail
 		display none
 	
-	// XXX: is this even needed? `.full-image` actually gets removed now, where before it didn't
-	.full-image[data-file-i-d]
-		display none
-		cursor pointer
-	
 	// XXX: these are very specific as to not effect inlined posts
 	.expanded-image > .post > .file > .fileThumb > .full-image
 		display block
@@ -2593,6 +2612,7 @@
 		clear left
 		overflow-wrap normal // XXX: this should force text to go under an expanded image if it would be wrapped otherwise
 	
+	// `.fileThumb > img:first-child`
 	.expanding
 		opacity .5
 	
@@ -3019,11 +3039,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			margin-left .25rem
 			pointer-events none
 	
-	@keyframes buzz
-		50%
-			transform translateX(2px) rotate(.5deg)
-		100%
-			transform translateX(-2px) rotate(-.5deg)
+	@css {
+		@keyframes buzz {
+			50% {
+				transform: translateX(2px) rotate(.5deg);
+			}
+			100% {
+				transform: translateX(-2px) rotate(-.5deg);
+			}
+		}
+	}
 	
 	// posts that get deleted have `.deleted-post` added to `.postContainer`,
 	// along with a `<strong class="warning">[Deleted]</strong>` added between
@@ -3059,7 +3084,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// `<strong>[Deleted]</strong>` appears before `.nameBlock`
 	.postInfo .warning
-		margin-right .25rem
+		//margin-right .25rem
 	
 	// 4CHANX: if enabled, allow you to jump to posts by the same id
 	.is_index .postJumper
@@ -3071,7 +3096,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display inline-flex
 		flex-direction column
 		justify-content center
-		margin 0 .25rem
+		//margin 0 .25rem
 		a
 			width .75rem
 			&::after
@@ -3082,7 +3107,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				opacity .89
 	
 	.flag
-		margin 0 .25rem
+		//margin 0 .25rem
 	
 	// 4CHANX: copy text link hidden textarea
 	// wonder if a visiblity: hidden would suffice here
@@ -3092,6 +3117,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position absolute
 		top -100rem
 	
+	// 4CHANX: permanent announcement on /qa/
 	.fcx-announcement
 		position fixed
 		z-index 5
@@ -3103,6 +3129,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		z-depth(8)
 		a
 			color ss21primary
+			&:hover
+				color shade(ss21primary, 10%)
 	
 	/**
 	* catalogue support 😂👌
@@ -3477,8 +3505,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// XXX: on fresh 4chan x install, this is disabled
 	:root.hide-bottom-board-list #boardNavDesktopFoot
 		display none
-	:root.catalog-mode #boardNavDesktopFoot
-		margin-top 1000px
+	
 	// SIDEDISH: this grabs the current board list and categories from 4chan.org
 	// !important is used because it grabs the literal HTML, inline styles and all
 	#boardNavDesktopFoot
@@ -3579,12 +3606,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.ss21--spinner-text
 			top 69px
 	
-	@keyframes spinningText
-		0%
-			transform rotate(0deg)
-			animation-timing-function linear
-		100%
-			transform rotate(360deg)
+	@css {
+		@keyframes spinningText {
+			0% {
+				transform: rotate(0deg);
+				animation-timing-function: linear;
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	}
 	
 	// the quick reply
 	// XXX: https://developer.mozilla.org/en-US/docs/Web/CSS/::file-selector-button
@@ -4406,7 +4438,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display inline-flex
 		align-items center
 		position relative
-		margin-right .25rem
+		//margin-right .25rem
 		opacity .54
 		will-change opacity
 		transition opacity .25s
@@ -4918,7 +4950,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		transition transform .25s
 		overflow-y scroll
 	.board-list-entry
-		color tc(ss21BackgroundElevated, high)
+		tc(ss21BackgroundElevated, high)
 		display block
 		height 3rem
 		line-height 3
