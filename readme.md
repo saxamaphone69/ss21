@@ -3,7 +3,7 @@ a self-centered, fresh attempt at (user)styling 4chan
 
 ![screenshot of ss21 applied](img/ss21-preview.png)
 
-following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020, 2021~~, 2022!
+following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020, 2021, 2022~~, 2023!
 
 created by **saxamaphone** "sax" `!3.saxN0DHY`, who has been making userstyles for 4chan since 2009 with styles such as 3 Shades of 4chan (which only exists as Midnight Caek in App/OneeChan now), curabitr, and xl
 
