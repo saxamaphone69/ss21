@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.7
+@version        2.2.8
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -17,7 +17,7 @@
 @var checkbox   ss21underlineLink    "Underline external links" 0
 @var checkbox   ss21postWidth        "Full-width posts" 1
 @var checkbox   ss21boardCenter      "Centered board" 1
-@var checkbox   ss21sidebar          "Sidebar" 0
+@var select     ss21sidebar          "Sidebar" ["0:None*", "1:Right-hand side", "2:Left-hand side"]
 @var select     ss21QRPosition       "QR position" ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
 @var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text", "4:Material 3"]
 @var checkbox   ss21quoteColour      "Default olive" 0
@@ -27,10 +27,9 @@
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
 @var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
 @var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
-@var select     ss21fileInfo         "File information displayed" ["1:Always displayed", "2:On hover*"]
+@var select     ss21fileInfo         "File information" ["1:Always displayed", "2:On hover*", "3:As a card"]
 @var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
-@var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
@@ -39,6 +38,7 @@
 @var select     ss21watchButton      "Watch thread button" ["1:Always displayed", "2:On hover"]
 @var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart*", "2:Star"]
 @var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque*", "2:Masonry (buggy)"]
+@var select     ss21backlinkStyle    "Backlink styling" ["1:Text*", "2:Icon"]
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -324,7 +324,7 @@
 		background-color var(--background-secondary)
 		-webkit-font-smoothing antialiased
 		-moz-osx-font-smoothing grayscale
-		scroll-behavior smooth
+		//scroll-behavior smooth
 		text-rendering optimizeLegibility // XXX: despite https://marco.org/2012/11/15/text-rendering-optimize-legibility - inter ui needs it for ligatures
 		overflow-y scroll
 		overflow-wrap anywhere
@@ -344,6 +344,10 @@
 			--is-nws: initial;
 		}
 	}
+	
+	// XXX: https://css-tricks.com/fixing-smooth-scrolling-with-find-on-page/
+	:root:focus-within
+		scroll-behavior smooth
 	
 	// https://github.com/csstools/sanitize.css/blob/main/sanitize.css#L54
 	// this doesn't actually work but?
@@ -400,16 +404,17 @@
 	// and hopefully one day, a standard is agreed upon
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scrollbars
 	// https://drafts.csswg.org/css-scrollbars-1/
+	/*
 	::-webkit-scrollbar
 		width .5rem
 		height .5rem
 		background-color var(--grey-500)
 	::-webkit-scrollbar-thumb
 		background-color var(--grey-700)
-	
+	*/
 	// address `font-weight` set incorrectly in all browsers. while we're here we
 	// set other elements we want to `bold`, too
-	:where(b, strong, th, legend, .subject, .name)
+	b, strong, th, .subject, .name
 		font-weight 700
 	
 	// XXX: potentially expensive override to inline-styled elements to ensure
@@ -610,7 +615,7 @@
 		max-width 100%
 	
 	// `audio` separate, because it doesn't need to be responsive
-	audio
+	:where(audio)
 		vertical-align middle
 		width 100%
 	
@@ -629,11 +634,13 @@
 		vertical-align baseline
 	
 	// reset generic form elements to look consistent across browsers
-	:where(button, input, option, select, textarea)
+	// XXX: https://bugzil.la/1536148 - except `option` in Firefox, which due to
+	// how they "render the process" cannot accept web fonts
+	button, input, option, select, textarea
 		font inherit
 		color inherit
 		margin 0
-
+	
 	button,
 	input[type="button"],
 	input[type="submit"],
@@ -694,7 +701,9 @@
 				background-color mix(#fff, @background-color, 12%)
 	
 	a.replylink
-		min-height 1.5rem
+		min-height initial
+		height 1.5rem
+		margin-left .25rem
 	
 	// okay, so there are only a handful of input fields used in 4chan x anyway:
 	// index search field (with 3 select dropdowns), qr, and the settings
@@ -807,13 +816,6 @@
 		border 0
 		margin 0
 	
-	legend
-		line-height inherit
-		display block
-		width 100%
-		padding 0
-		margin-bottom .5rem
-	
 	// give `placeholder` text a specific colour, and ensure it renders
 	// consistently across browsers
 	::placeholder
@@ -902,8 +904,8 @@
 	.report-link::after,
 	.download-link::after,
 	.copy-text-link::after,
-	.checkbox-letter::after,
 	.qr-preview-spoiler::after,
+	.checkbox-letter::after,
 	#add-post::after,
 	.gal-start::after,
 	.gal-stop::after,
@@ -1365,6 +1367,8 @@
 			justify-content center
 			align-items center
 			transition color .25s
+			/:root.ua-gecko ^[0]
+				margin-top 1px
 			if ss21iconFont == 0
 				content 'open_in_new'
 			else if ss21iconFont == 1
@@ -1373,6 +1377,8 @@
 				content 'open_in_new'
 		.summary:hover::before
 			tc(ss21primary, high)
+		.summary-bottom
+			display none i
 	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
@@ -1414,7 +1420,6 @@
 		height 0
 		width 1.25rem
 		padding-top 1.25rem
-		margin-right .25rem
 		background-repeat no-repeat
 		opacity .87
 		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
@@ -1539,7 +1544,7 @@
 		background-color ss21primary
 		tc(@background-color, high)
 		if ss21opacityHeader
-			background-color transparentify(@background-color, .8)
+			background-color alpha(@background-color, .5)
 			backdrop-filter blur(1rem)
 		z-depth(4)
 		position relative
@@ -1580,14 +1585,29 @@
 	#full-board-list .boardList span
 		display none
 	
+	// XXX: most of these styles are applied to #board-list because we want
+	// shortcuts to always stay to the right
+	/*
+	#board-list
+		display flex
+		flex 1
+		width 100%
+		overflow auto hidden
+		white-space nowrap // forces a scrollbar for long board lists
+		a
+			padding .25rem
+	#board-list
+		padding .5rem
+	*/
 	// XXX: i am sure this can go...
+	/*
 	#board-list,
 	#custom-board-list,
 	#full-board-list,
 	#full-board-list .boardList
 		display flex
 		align-items center
-	
+	*/
 	// SIDEDISH: button to toggle the off canvas menu
 	.ss21--board-drawer-toggle
 		display inline-flex
@@ -1603,35 +1623,47 @@
 			opacity .87
 	
 	// 4CHANX: container for the board list, custom or not
+	
 	#board-list
 		display flex
 		flex 1
+		width 100%
 		user-select none
+		margin-right .5rem
+		//margin-bottom -1rem
 		//padding -.5rem 0
-		margin -.75rem 0
-		overflow-x auto
+		//margin -.75rem 0
+		overflow auto hidden
 		white-space nowrap
-		&::-webkit-scrollbar
-			height .5rem
 		a
-			text-transform lowercase
+			//text-transform lowercase
 			display inline-flex
 			align-items center
 			justify-content center
-			position relative
+			//position relative
+			height 2.5rem
 			min-width 2rem
 			padding 0 .5rem
 			transition opacity .25s
+			/*
 			if ss21headerHeight == 1
 				height 3rem
 			else if ss21headerHeight == 2
 				height 2rem
+				*/
 			&:not(.current)
 				opacity .7
 				&:hover
 					opacity .85
-			.current
-				opacity 1
+		.current
+			box-shadow inset 0 -2px 0 invert(ss21primary)
+			opacity 1
+	
+	#custom-board-list
+		display flex
+		align-items center
+	
+	/*
 			&::after
 				display none
 				position absolute
@@ -1644,8 +1676,8 @@
 				background-color invert(ss21primary)
 			&:hover::after,
 			&.current::after
-				display block
-	
+				display block*/
+	/*
 	if ss21headerHeight == 2
 		#board-list a
 			font-size .75rem
@@ -1655,7 +1687,7 @@
 		.shortcut .fa::after,
 		.shortcut .menu-button::after
 			font-size 18px // XXX: it's insane how bad this looks lmao
-	
+	*/
 	// 4CHANX: in the event there are no shortcuts (not sure when this is),
 	// hide the whole element
 	#shortcuts:empty
@@ -1681,15 +1713,31 @@
 			right 100%
 	*/
 	.shortcut
-		min-width 2rem
+		//min-width 2rem
+		/*
 		if ss21headerHeight == 1
 			height 3rem
 		else if ss21headerHeight == 2
 			height 2rem
+		*/
 		display inline-flex
 		align-items center
 		justify-content center
-		padding 0 .25rem
+		//padding 0 .25rem
+		padding .25rem
+		a,
+		.menu-button
+			tc(ss21primary, medium)
+			transition color .25s
+		a:hover,
+		.menu-button:hover,
+		.menu-button.active,
+		.fa-bolt:not(.disabled),
+		#watcher-link:not(.disabled),
+		.fa-comment-o:not(.disabled)
+			tc(ss21primary, high)
+	
+		/*
 		.fa::after,
 		.menu-button::after,
 		.native-settings::after
@@ -1704,6 +1752,7 @@
 			tc(ss21primary, high)
 		& > .menu-button
 			display inline-flex
+	*/
 	
 	// 4CHANX: only show fappe/werk indicators when they're active
 	:root:not(.fappeTyme) #shortcut-fappe,
@@ -2140,7 +2189,7 @@
 		flex-direction column
 		margin-right .25rem
 		& > input
-			font-family var(--font-family-monospace)
+			font-family var(--font-monospace)
 			text-align center
 			background none
 			height 50%
@@ -2176,9 +2225,13 @@
 			color shade(ss21primary, 15%)
 	
 	// a very crude and simple sidebar, for those that can't let go of oneechan
-	if ss21sidebar == 1
+	if ss21sidebar != 0
 		body
-			padding-right 25rem
+			if ss21sidebar == 1
+				padding-right 25rem
+			if ss21sidebar == 2
+				padding-left 25rem
+		/*
 		.boardBanner
 			position fixed
 			width 25rem
@@ -2187,6 +2240,21 @@
 			transform none i
 			.boardTitle
 				font-size 2rem
+		.navLinks.json-index
+			margin 4.5rem auto 1.5rem
+		*/
+		#id_css
+			position fixed
+			pointer-events none
+			z-index -1
+			bottom 0
+			right 0
+			display block
+			opacity .45
+			width 25rem
+			height 25rem
+			background-repeat no-repeat
+			background-position 100% 100%
 	
 	.board
 		padding 0 1rem
@@ -2208,11 +2276,13 @@
 	// XXX: if there are no search results from index
 	:root.ss21--index-searching .board:empty::after
 		content 'no results; try another search term'
-		grid-column span 2
-		line-height 10rem
-		min-height 10rem
-		text-align center
 		color var(--text-secondary-on-background)
+		display flex
+		justify-content center
+		align-items center
+		min-height 10rem
+		if ss21twoWide
+			grid-column span 2
 	
 	if ss21twoWide
 		@media (min-width: 75rem)
@@ -2320,7 +2390,7 @@
 	
 	.page-num
 		color var(--text-hint-on-background)
-		margin-left .125rem
+		margin-left .25rem
 	
 	.postNum
 		display inline-flex
@@ -2385,15 +2455,17 @@
 			margin-bottom 1.5rem
 		// turn it into a FAB
 		.summary
-			all unset
+			//all unset
+			margin-top 0
+			border 0
 			tc(ss21primary, high)
-			display inline-flex
+			display flex
+			align-items center
 			background-color ss21primary
 			font-size 0
 			border-radius 1.5rem
-			padding 0 .75rem
 			height 1.5rem
-			line-height 1.5rem
+			padding 0 .75rem
 			position absolute
 			top -.75rem
 			right 6rem
@@ -2735,45 +2807,12 @@
 			&:hover
 				opacity .15
 	
-	if ss21fileCard == 1
-		.file,
-		.fileText,
-		.fileText a,
-		.fileThumb
-			all unset
-		.file
-			display flex
-			flex-direction column
-			float left
-			margin .5rem
-			background-color ss21BackgroundElevated
-			borderRadius()
-			overflow hidden
-			z-depth(4)
-		.fileText
-			order 2
-			font-size .75rem
-			padding .25rem .5rem
-			.file-info > a:first-child
-				display block
-				text-align center
-			.fa
-				display inline-flex
-		.fileThumb
-			display block
-			order 1
-			width 100%
-			img
-				object-fit cover
-				width 100% i
-	
 	if ss21fileInfo == 2
 		.postInfo
 			if ss21readingMode == ss21light
 				box-shadow 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 			else if ss21readingMode == ss21dark
 				box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
-		
 		.file .fileText
 			pointer-events none
 			opacity 0
@@ -2787,13 +2826,56 @@
 			top 0
 			transition transform .25s, opacity .25s
 			transform-origin left bottom
-			transform scale(0) translateY(-5%)
-		
-		.file:hover .fileText
-			pointer-events auto
-			transform scale(1) translateY(0)
-			opacity .9
+			transform scale(0) translateY(-15%)
+		.file:hover,
+		:root.keyboard-focus .file:focus-within
+			.fileText
+				pointer-events auto
+				transform scale(1) translateY(-70%)
+				opacity .9
+				display flex
+	
+	//@var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
+	if ss21fileInfo == 3
+		.file,
+		.file a,
+		.file span,
+		.fileText
+			all unset
+		.fileText-original
+			display none i
+		.file
 			display flex
+			flex-direction column
+			float inline-start
+			margin .5rem
+			background-color lighten(ss21BackgroundElevated, 3%)
+			borderRadius()
+			overflow hidden
+			z-depth(4)
+			width 150px
+		.expanded-image .file
+			width auto
+		.fileThumb
+			order 1
+			display block
+			cursor pointer
+			width 100%
+			img
+				object-fit cover
+				width 100% i
+		.fileText
+			order 2
+			font-size .75rem
+			padding .25rem .5rem
+			.file-info
+				display block
+				white-space initial
+			a
+				color ss21primary
+				cursor pointer
+				&:hover
+					color shade(ss21primary, 10%)
 	
 	/**
 	 * fancy underline animation, courtesy of https://theoutline.com
@@ -2803,7 +2885,6 @@
 	 * variable'd colour. otherwise, we would not be able to access css variables
 	 * from within an escaped svg within css added to the page
 	 */
-	
 	.forwardlink
 		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath fill='none' stroke='" + hsl(ss21primary) + "' class='s' d='M0 3.5c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3'/%3E%3Cstyle%3E.s %7B animation: shift 0.3s linear infinite; %7D @keyframes shift %7B from %7B transform: translateX(0); %7D to %7B transform: translateX(-20px); %7D %7D%3C/style%3E%3C/svg%3E")
 		background-position 0 100%
@@ -2852,7 +2933,7 @@
 	// 4CHANX: backlinks
 	:where(.container)
 		display block
-		font-size .875em
+		font-size .75rem
 		font-family var(--font-monospace)
 		clear both
 		&:empty
@@ -2861,12 +2942,12 @@
 	// XXX: this could probably look better and may need to be customised,
 	// but i've always liked the 'quoted by' css
 	:root:not(.bottom-backlinks)
-		.container
+		:where(.container)
 			width 100%
 			color var(--text-hint-on-background)
-			line-height 1.25
+			//line-height 1.25
 			padding-left .75rem
-			margin-top -.25rem
+			margin-top -.125rem
 			&:not(:empty)
 				&::before
 					content 'quoted by: '
@@ -2888,6 +2969,52 @@
 		else if ss21readingMode == ss21dark
 			background-color rgba(255, 255, 255, .05)
 			box-shadow inset 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
+	
+	if ss21backlinkStyle == 2
+		.container
+			display inline-flex
+			width auto i
+			padding 0 i
+			margin 0 i
+		:root.bottom-backlinks
+			.container
+				display flex
+				flex-wrap wrap
+				width 100% i
+				padding .125rem .5rem i
+		.container
+		.backlink
+			font-size 0
+		.container::before,
+		.container::after,
+		.backlink::before,
+		.container:empty
+			display none i
+		.container .backlink::after
+			content 'reply' i
+			font-family 'Material Symbols Outlined'
+			font-weight normal
+			font-style normal
+			font-size 20px i
+			line-height: 1
+			letter-spacing normal
+			text-transform none
+			display inline-flex // better vertical alignment
+			justify-content center
+			align-items center
+			white-space nowrap
+			word-wrap normal
+			direction ltr
+			-webkit-font-feature-settings 'liga'
+			-webkit-font-smoothing antialiased
+			color ss21primary i // generally not explicity set, but should be
+			visibility visible // added from 4chan x
+			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
+			opacity .54
+			will-change opacity
+			transition opacity .25s
+		.container .backlink:hover::after
+			opacity .87
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
@@ -2996,9 +3123,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.n-pu
 		display inline-flex
-		margin-left .25rem
 		&::after
-			font-size 20px
+			font-size 20px //XXX: what is with this inconsistent icon sizing???
 			opacity .54
 	
 	// give webms and gifs a little visual icon overlay
@@ -3062,7 +3188,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// 4CHANX: applies contact links to admins and mods
 	.contact-links
 		display inline-flex
-		margin 0 .25rem
 		a
 			margin-right .25rem
 		&::after
@@ -3362,7 +3487,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	* https://ishadeed.com/article/css-short-long-content/
 	*/
 	.catalog-replies
-		display none i
+		//display none i
 		order 6
 		font-size .75rem
 		.catalog-reply
@@ -3397,114 +3522,81 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		opacity 0
 	
 	// pagelist styling
-	:root .pagelist:not(.json-index),
 	.pagelist
 		display flex
-		text-align center
-	
-	.pagelist
 		margin 1rem
-		button,
-		.cataloglink
-			display none
+		button
+			display none // we utilise icons as opposed to buttons
+		.pages:not(.cataloglink)
+			font-size 0 // get rid of surrounding brackets
+			flex-grow 1 // make all the pages fill the center
+			display flex
+			justify-content space-between // auto space, as pages can differ
+			align-items center
+			strong
+				display contents
+				a
+					background-color ss21primary
+		a
+			font-size 2rem
+			font-weight 700
+			flex-shrink 0
+			display inline-flex
+			justify-content center
+			align-items center
+			background-color transparent
+			border-radius 100%
+			aspect-ratio 1/1
+			width 4rem
+			transition background-color .25s
+			&:hover
+				background-color alpha(ss21primary, .54)
 		.prev,
 		.next
-			display flex
-			align-items stretch
-			a::after
-				font-size 3rem
-				width 6rem
-				display inline-flex
-				justify-content center
-				align-items center
-				border-radius 100%
-				aspect-ratio 1/1
-				transition color .25s, background-color .25s
-		[data-clickable="false"] a
-			opacity .42
-			cursor not-allowed
-		[data-clickable="true"]:hover a::after
-			background-color alpha(ss21primary, .54)
-		.pages:not(.cataloglink)
-			flex 1
-			font-size 0
-			font-weight 700
-			display flex
-			justify-content space-between
-			align-items stretch
-			*
-				font-size 3rem
-				flex-grow 1
-				max-width 6rem
-				display inline-flex
-				justify-content center
-				align-items center
-				border-radius 100%
-				aspect-ratio 1/1
-				transition color .25s, background-color .25s
-				&:hover
-					background-color alpha(ss21primary, .54)
-			strong
-				background-color ss21primary
-	
-	// make the page button circles a little smaller when the window is smaller
+			display contents
+			&:has(button[disabled]) a
+				pointer-events none
+				opacity .42
 	@media (max-width: 75rem)
 		.pagelist
-			.prev,
-			.next
-				a::after
-					font-size 2rem
-					width 4rem
-			.pages:not(.cataloglink)
-				*
-					font-size 2rem
-					max-width 4rem
-	/*
-	.pagelist
-		a
-			tc(ss21BackgroundElevated, medium)
-			display block
-			transition color .25s, background-color .25s
-			&:hover
-				background-color ss21primary
-				tc(@background-color, high) i
-		button
-			display none
-		strong
-			flex 1
-			background-color ss21primary
+			overflow-x auto
 			a
-				tc(ss21primary, high) i
+				font-size 1rem
+				width 2rem
+	
+	// non json index support
+	.pagelist.desktop
+		display flex i // XXX: might be able to drop the important with better selectors
 		.prev,
 		.next
-			width 10%
-			a::after
-				font-size 4.25rem
-				flex 1
-				height 3rem
-				//overflow hidden
-				display block
-				padding-top .25rem
-		.pages:not(.cataloglink)
-			font-size 0
-			flex 1
-			display flex
-		.pages a
-			font-size 3.5rem
-			font-weight 700
-			line-height 1
-			padding-top .25rem
-			height 3rem
-			flex 1
-			//overflow hidden
-	*/
-	
-	// XXX: non-json index pagelist looks bad, pls fix
+			.pageSwitcherForm
+				display contents
+			span
+				// treat it as a button, though this won't honour the button style
+				font-size 0.875rem
+				line-height 1
+				letter-spacing 0.09em
+				display inline-flex
+				align-items center
+				padding 0 0.75rem
+				min-height 2.25rem
+				min-width 4rem
+				color var(--grey-900)
+				background-color var(--grey-500)
+				pointer-events none
+				opacity .42
+				border-radius 32rem
+				padding 0 24px
+			input[type="submit"]
+				height auto
 	
 	// bottom board navigation
 	// XXX: on fresh 4chan x install, this is disabled
-	:root.hide-bottom-board-list #boardNavDesktopFoot
-		display none
+	:root.hide-bottom-board-list
+		#boardNavDesktopFoot
+			display none
+		.absBotText
+			border-radius 64px 64px 0 0
 	
 	// SIDEDISH: this grabs the current board list and categories from 4chan.org
 	// !important is used because it grabs the literal HTML, inline styles and all
@@ -4012,7 +4104,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// XXX: july 2021: new captcha system
 	#t-resp
 		font inherit i
-		text-transform initial i
+		font-family var(--font-monospace) i
 		width auto i
 		height auto i
 		margin-right .5rem i
@@ -4132,16 +4224,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				border 0
 				margin 0
 		legend
-			float left
-			width 100%
 			padding 0
-			margin-bottom .5rem
 			font-size 1.25rem
 			font-weight 700
-			line-height inherit
 			text-transform uppercase
-			& + *
-				clear both
 		table // keybinds table
 			margin auto
 		textarea
@@ -4242,6 +4328,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				content 'settings'
 			.tab-keybinds::before
 				content 'keyboard_alt'
+			.tab-ss21::before
+				content 'waves'
 			.export::before
 				content 'file_upload'
 			.import::before
@@ -4285,7 +4373,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.section-main
 		div[data-name]
 			display block
-			min-height 56px
+			//min-height 56px
 			padding-left 1rem
 			margin-bottom .125rem
 		input
@@ -4297,10 +4385,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.description
 			color var(--text-hint-on-background)
 			font-size .875rem
-			padding-left 1rem // same width as the checkbox
+			padding-left 2rem
 			display block
 		.suboption-list
-			margin-top .875rem
+			//margin-top .875rem
 		div[data-name="Stubs"] + div
 			min-height 56px
 			padding-left 1rem
@@ -4343,9 +4431,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#sauce-doc
 		margin-bottom 1rem
 	
-	// space out the favicon previews (in groups of 3)
-	.favicon-preview > img:nth-of-type(3n+1)
-			margin-left .5rem
+	.favicon-preview
+		display inline-flex
+		flex-direction row
+		gap .25rem
+		margin-left .25rem
 	
 	// keybinds section
 	.section-keybinds
@@ -4359,10 +4449,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			min-height 7.5rem
 		fieldset:first-child
 			position relative
-		#archive-board-select
-			position absolute
-			left 10rem
-			width 7.5rem
 		#archive-table + br
 			display none
 		.archive-cell
@@ -4379,10 +4465,19 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				&::after
 					font-size 1rem
 					inline-size .75rem
+	#archive-board-select
+		position absolute
+		top -2.5rem
+		left 7rem
+		width 7.5rem
 	
 	// XXX: quick fix for oneechan (which should not be used anyway)
 	#sauce-doc-expand + .riceCheck
 		display none
+	
+	// disabled features
+	fieldset:has(.warning:not([hidden]))
+		opacity .5
 	
 	// thread updater and stats. ideally, leave these in the header. but if
 	// you prefer it to be floating and fixed, support that too
@@ -4434,9 +4529,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// we go a little overboard with the micro-interaction here, but whatever;
 	// adds a "ripple" effect when watching a thread
+	// XXX: both the heart and star icon don't actually fill up the entire 24px
+	// we allocate for icons, which throws off visual consistency by adding a "gap"
 	.watch-thread-link
 		display inline-flex
-		align-items center
 		position relative
 		//margin-right .25rem
 		opacity .54
@@ -4460,6 +4556,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&:active::before
 			opacity .25
 			transform scale(1.5)
+		&::after
+			font-size 24px
 	
 	if ss21watchButton == 2
 		.watch-thread-link
@@ -4470,7 +4568,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			border-radius 100%
 			padding .25rem
 			margin 0
+			opacity 0
+			z-depth(2)
+			pointer-events none
+		.opContainer:hover .watch-thread-link
 			opacity 1
+			pointer-events auto
 	
 	// thread watcher
 	:root.fixed-watcher
@@ -4698,7 +4801,35 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			opacity .87
 	
 	.catalog-thread[class*="thread-chip"]::before
+		content ''
+		font-size .75rem
 		tc(ss21primary, high)
+		background-color ss21primary
+		borderRadius()
+		padding 0 .25rem
+		position absolute
+		z-index 1
+		top 0
+		right 0
+		transform translate(.25rem, -.25rem)
+		pointer-events none
+	
+	.catalog-thread.thread-chip--waywt::before
+		content 'WAYWT'
+	.catalog-thread.thread-chip--girl::before
+		content 'GRILL'
+	.catalog-thread.thread-chip--edc::before
+		content 'EDC'
+	.catalog-thread.thread-chip--watch::before
+		content 'WATCH'
+	.catalog-thread.thread-chip--skin::before
+		content 'SKIN'
+	.catalog-thread.thread-chip--hair::before
+		content 'HAIR'
+	.catalog-thread.thread-chip--tattoo::before
+		content 'TATTOO'
+	.catalog-thread.thread-chip--fragrance::before
+		content 'SMELL'
 	
 	/**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
@@ -4732,8 +4863,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.embedder:not(.embedded) > span
 		display none
 	
+	// https://stackoverflow.com/a/60803488/490291
+	// XXX: potentially fix resize embedded content
 	.media-embed
 		clear both
+		display flex
+		padding 0
+		margin 0
+		resize both
+		overflow hidden
+		iframe
+			flex-grow 1
+			padding 0
+			border 0
+			margin 0
 	
 	#embedding
 		background-color var(--background-primary)
@@ -5348,6 +5491,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.is_index .ss21--download-all
 		display none
+	
+	.section-ss21 legend
+		text-transform lowercase i
+	
+	.ss21-option
+		min-height 56px
+		padding-left 1rem
+		margin-bottom -.125rem
+	
+	.ss21-description
+		font-size .875rem
+		color var(--text-hint-on-background)
+		padding-left 1rem
+		display block
 	
 	:root.is-search
 		.boardTitle
