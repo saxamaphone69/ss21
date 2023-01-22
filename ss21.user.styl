@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.8
+@version        2.2.9
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -490,7 +490,7 @@
 	.globalMessage a:not(.fa),
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
 		text-decoration solid underline
-		text-underline-offset 1px
+		text-underline-offset 2px // XXX: 1px suddenly stopped looking good?
 		unless ss21underlineLink
 			text-decoration none
 		color ss21primary
@@ -628,10 +628,6 @@
 	table
 		border-collapse collapse
 		border-spacing 0
-	
-	// normalise the vertical alignment of `progress` across browsers
-	progress
-		vertical-align baseline
 	
 	// reset generic form elements to look consistent across browsers
 	// XXX: https://bugzil.la/1536148 - except `option` in Firefox, which due to
@@ -1641,7 +1637,7 @@
 			align-items center
 			justify-content center
 			//position relative
-			height 2.5rem
+			height 3rem
 			min-width 2rem
 			padding 0 .5rem
 			transition opacity .25s
@@ -1783,20 +1779,22 @@
 	// SIDEDISH: we add a scrolling progress indicator
 	// XXX: this only works if `#header-bar` is set to fixed
 	#scroll-progress
+		appearance none
+		border 0
 		position absolute
 		top 100%
 		left 0
 		width 100%
 		height .25rem
 		opacity 0
-		background-color var(--grey-300)
+		background-color var(--grey-500)
 		will-change opacity
 		transition opacity .25s
 		pointer-events none
 		&::-webkit-progress-bar
-			background-color var(--grey-300)
+			background-color var(--grey-500)
 		&::-webkit-progress-value
-			background-color s21green
+			background-color ss21green
 		&::-moz-progress-bar
 			background-color ss21green
 	
@@ -2016,7 +2014,7 @@
 		padding 1rem 1.5rem
 		display grid
 		grid-template-columns 1fr 75rem 1fr
-		z-index 2
+		z-index 3
 		z-depth(6)
 		transition top .25s
 		&::before,
@@ -2044,6 +2042,10 @@
 	:root.top-header
 		#header-bar.autohide ~ .globalMessage
 			top 0
+		#header-bar.scrolled ~ .globalMessage
+			top .25rem
+		#header-bar.scrolled:not(.autohide) ~ .globalMessage
+			top 3.25rem
 		//#header-bar.autohide.scrolled ~ .globalMessage
 		//	top .5rem
 	:root.bottom-header,
@@ -2935,33 +2937,28 @@
 		display block
 		font-size .75rem
 		font-family var(--font-monospace)
-		clear both
-		&:empty
-			display none
+		width 100%
+		clear both // clears bottom container under file thumbnails
+	.backlink.deadlink
+		text-decoration none i // XXX: why !important (earlier)
 	
-	// XXX: this could probably look better and may need to be customised,
-	// but i've always liked the 'quoted by' css
-	:root:not(.bottom-backlinks)
-		:where(.container)
-			width 100%
+	// top backlinks, enforcing the 'quoted by' style
+	:where(:root:not(.bottom-backlinks)) :where(.container:not(:empty))
+		color var(--text-hint-on-background)
+		padding-inline-start .5rem
+		&::before
+			content 'quoted by: '
+		&::after
+			content '.'
+		:where(.backlink:not(:only-of-type):not(:last-of-type))::after
+			content ', '
 			color var(--text-hint-on-background)
-			//line-height 1.25
-			padding-left .75rem
-			margin-top -.125rem
-			&:not(:empty)
-				&::before
-					content 'quoted by: '
-				&::after
-					content '.'
-				.backlink:not(:only-of-type):not(:last-of-type)::after
-					content ', '
-					color var(--text-hint-on-background)
-				.backlink:not(:only-of-type):last-of-type::before
-					content ' and '
-					color var(--text-hint-on-background)
-					pointer-events none
+		:where(.backlink:not(:only-of-type):last-of-type)::before
+			content ' and '
+			color var(--text-hint-on-background)
 	
-	:root.bottom-backlinks .container
+	// bottom backlinks
+	:where(:root.bottom-backlinks) :where(.container)
 		padding .125rem .5rem
 		if ss21readingMode == ss21light
 			background-color rgba(33, 33, 33, .02)
@@ -2971,31 +2968,17 @@
 			box-shadow inset 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
 	if ss21backlinkStyle == 2
-		.container
-			display inline-flex
-			width auto i
-			padding 0 i
-			margin 0 i
-		:root.bottom-backlinks
-			.container
-				display flex
-				flex-wrap wrap
-				width 100% i
-				padding .125rem .5rem i
-		.container
-		.backlink
+		:where(.container)
+			display flex
+			flex-wrap wrap
+		:where(.container) :where(.backlink)
 			font-size 0
-		.container::before,
-		.container::after,
-		.backlink::before,
-		.container:empty
-			display none i
-		.container .backlink::after
-			content 'reply' i
+		:where(.container) :where(.backlink)::after
+			content 'reply'
 			font-family 'Material Symbols Outlined'
 			font-weight normal
 			font-style normal
-			font-size 20px i
+			font-size 18px
 			line-height: 1
 			letter-spacing normal
 			text-transform none
@@ -3007,14 +2990,22 @@
 			direction ltr
 			-webkit-font-feature-settings 'liga'
 			-webkit-font-smoothing antialiased
-			color ss21primary i // generally not explicity set, but should be
-			visibility visible // added from 4chan x
+			color ss21primary
 			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
 			opacity .54
 			will-change opacity
 			transition opacity .25s
-		.container .backlink:hover::after
+		:where(.container) :where(.backlink):hover::after
 			opacity .87
+		:where(.backlink.deadlink) span
+			display none // removes the qmarks from dead backlinks
+	
+	/*
+	<a href="#p91030252" class="backlink deadlink">#91030252<span class="qmark-dead">&nbsp;(Dead)</span></a>
+	*/
+	
+	:where(.container:empty)
+		display none
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
@@ -3288,6 +3279,25 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.catalog-post [class^='qmark'] // XXX: due to the way ss21 does qmarks, this looks weird
 		display none
 	
+	// hides small/large thumbnail options when viewing as masonry
+	if ss21catalogueStyle == 2
+		#index-size
+			display none
+		.navLinks::after
+			content '"Masonry" mode has a few bugs still, and might require an F5 to look good.'
+			display block
+			text-align center
+			padding .5rem 1rem
+			borderRadius()
+			background-color rgba(33, 33, 33, .69)
+			tc(@background-color, high)
+			position absolute
+			bottom 0
+			left 50%
+			max-width 20rem
+			transform translateX(-50%) translateY(125%)
+			pointer-events none
+	
 	// removes the direct link to thread thumbnail and thread stats when
 	// switching between 4chan x index and catalog (it keeps the old html for some reason)
 	:root:not(.catalog-mode)
@@ -3342,7 +3352,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		// the article says you need `align-self: start;`, but this doesn't apply to `block` elements...
 		align-self start
 		&:hover
-			z-index 7
+			z-index 2
 	
 	// in order to achieve the "whole card exapnded on hover"
 	// but, this only applies in default-esque mode because in masonry mode, you will always
@@ -3403,6 +3413,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		order 5
 		font-size .75rem
 		padding .25rem .5rem
+		margin-top auto
 		display flex
 		align-items center
 		border-top 1px solid tint(ss21BackgroundElevated, 5%)
@@ -3476,6 +3487,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&::after
 			// get rid of 'by' that normally is applied
 			display none
+	
+	:root.werkTyme .catalog-post .werkTyme-filename
+		height 7rem
+		display block
+		width 100%
+		text-align center
+		overflow hidden
 	
 	// 4CHANX: if 'show replies' is enabled, on catalogue they are added to
 	// `.catalog-post` upon hovering over `.thread`
