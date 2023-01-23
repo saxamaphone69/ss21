@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.9
+@version        2.2.10
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -11,18 +11,18 @@
 @preprocessor   stylus
 @var range      ss21fontSize         "Default font size" [16, 10, 18, 2, "px"]
 @var checkbox   ss21roundedCorners   "Rounded corners" 1
-@var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme", "ss21light:Light theme", "ss21yotsuba:Yotsuba", "ss21tomorrow:Tomorrow", "ss21photon:Photon"]
+@var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme*", "ss21light:Light theme", "ss21yotsuba:Yotsuba", "ss21tomorrow:Tomorrow", "ss21photon:Photon"]
 @var color      ss21primary          "Primary colour" #bb2649
 @var select     ss21spacingLevel     "Spacing amount" ["0:Comfortable", "1:Compact"]
-@var checkbox   ss21underlineLink    "Underline external links" 0
+@var checkbox   ss21underlineLink    "Underline external links" 1
 @var checkbox   ss21postWidth        "Full-width posts" 1
 @var checkbox   ss21boardCenter      "Centered board" 1
 @var select     ss21sidebar          "Sidebar" ["0:None*", "1:Right-hand side", "2:Left-hand side"]
-@var select     ss21QRPosition       "QR position" ["1:Floating", "2:Locked right", "3:Fixed pop-out"]
-@var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text", "4:Material 3"]
+@var select     ss21QRPosition       "QR position" ["1:Floating*", "2:Locked right", "3:Fixed pop-out"]
+@var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text", "4:Material 3*"]
 @var checkbox   ss21quoteColour      "Default olive" 0
 @var checkbox   ss21boardBanner      "Enable board title and banner" 1
-@var checkbox   ss21evenPosts        "Recolour even post backgrounds" 0
+@var checkbox   ss21evenPosts        "Recolour even post backgrounds" 1
 @var checkbox   ss21blotter          "Show blotter" 0
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
 @var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
@@ -31,11 +31,11 @@
 @var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
-@var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB"]
+@var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB*"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
 @var select     ss21iconFont         "Icon font" ["0:Material Icons (old)", "1:Bootstrap", "2:Material Symbols (new)*"]
-@var checkbox   ss21navRail          "Display settings as navigation rail" 0
-@var select     ss21watchButton      "Watch thread button" ["1:Always displayed", "2:On hover"]
+@var checkbox   ss21navRail          "Display settings as navigation rail" 1
+@var select     ss21watchButton      "Watch thread button" ["1:Always displayed*", "2:On hover"]
 @var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart*", "2:Star"]
 @var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque*", "2:Masonry (buggy)"]
 @var select     ss21backlinkStyle    "Backlink styling" ["1:Text*", "2:Icon"]
@@ -414,7 +414,10 @@
 	*/
 	// address `font-weight` set incorrectly in all browsers. while we're here we
 	// set other elements we want to `bold`, too
-	b, strong, th, .subject, .name
+	b, strong, th
+		font-weight 700
+	
+	.subject, .name
 		font-weight 700
 	
 	// XXX: potentially expensive override to inline-styled elements to ensure
@@ -437,16 +440,16 @@
 		margin-bottom .5rem
 	
 	h1
-		font-size 2.5rem
+		font-size calc(1.375rem + 1.5vw)
 	
 	h2
-		font-size 2rem
+		font-size calc(1.325rem + .9vw)
 	
 	h3
-		font-size 1.75rem
+		font-size calc(1.3rem + .6vw)
 	
 	h4
-		font-size 1.5rem
+		font-size calc(1.275rem + .3vw)
 	
 	h5
 		font-size 1.25rem
@@ -2013,7 +2016,7 @@
 		width 100%
 		padding 1rem 1.5rem
 		display grid
-		grid-template-columns 1fr 75rem 1fr
+		grid-template-columns 1fr auto 1fr
 		z-index 3
 		z-depth(6)
 		transition top .25s
@@ -2292,7 +2295,7 @@
 				max-width none
 				display grid
 				grid-gap 0
-				grid-template-columns repeat(2, 1fr)
+				grid-template-columns repeat(2, 50%)
 				.thread:last-of-type:nth-of-type(odd)
 					grid-column span 2
 	
@@ -2830,7 +2833,8 @@
 			transform-origin left bottom
 			transform scale(0) translateY(-15%)
 		.file:hover,
-		:root.keyboard-focus .file:focus-within
+		:root.keyboard-focus .file:focus-within,
+		:root.werkTyme .post:hover
 			.fileText
 				pointer-events auto
 				transform scale(1) translateY(-70%)
@@ -3284,18 +3288,18 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		#index-size
 			display none
 		.navLinks::after
-			content '"Masonry" mode has a few bugs still, and might require an F5 to look good.'
+			content '"Masonry" mode might require an F5 to look good. Ignore the bottom of the page...'
 			display block
 			text-align center
 			padding .5rem 1rem
 			borderRadius()
-			background-color rgba(33, 33, 33, .69)
+			background-color rgba(0, 0, 0, .69)
 			tc(@background-color, high)
 			position absolute
 			bottom 0
 			left 50%
 			max-width 20rem
-			transform translateX(-50%) translateY(125%)
+			transform translateX(-50%) translateY(-75%)
 			pointer-events none
 	
 	// removes the direct link to thread thumbnail and thread stats when
@@ -3319,6 +3323,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			grid-template-columns repeat(auto-fit, minmax(min(15em, 100%), 1fr))
 			grid-template-rows masonry // lifted from https://css-tricks.com/a-lightweight-masonry-solution/
 			justify-content center
+	
+	if ss21catalogueStyle == 2
+		:root.catalog-mode .board:is([data-thread-count="1"], [data-thread-count="2"], [data-thread-count="3"], [data-thread-count="4"], [data-thread-count="5"], [data-thread-count="6"])
+			grid-template-columns repeat(6, 1fr)
 	
 	if ss21catalogueStyle == 1
 		:root.catalog-mode
@@ -3366,6 +3374,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				.catalog-post
 					transform scale(1.05) translateY(-1%)
 					//margin -1rem -3rem
+					// because menu is a child of the catalog post, the pixels used to calculate where to position it
+					// next to the button you just clicked also get scaled up, so we try to counter the scale here
+					.menu-button.active + #menu
+						transform scale(1) translateX(70%) translateY(5%)
+						position absolute
+						top 16px i
+						left auto i
+						right 0 i
+						&.left
+							transform scale(1) translateX(0) translateY(5%)
 				.postMessage
 					max-height none
 					overflow auto
@@ -3378,6 +3396,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		min-height 100% // XXX: better way to fill up container?
 		transition all .25s
 		width 100%
+		position relative
 	
 	/**
 	* html order is: file, link/thumb, stats, postinfo, postmessage
@@ -3712,7 +3731,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			font-weight 900
 			fill var(--grey-500)
 	
-	@media (max-width: 75rem)
+	@media (max-width: 1600px)
 		.ss21--spinner-text
 			top 69px
 	
@@ -4390,32 +4409,32 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.section-main
 		div[data-name]
-			display block
-			//min-height 56px
-			padding-left 1rem
-			margin-bottom .125rem
-		input
-			margin 12px 12px 0 0
+			padding .25rem
+			borderRadius()
+			transition background-color .25s
+			&:hover
+				background-color alpha(shade(ss21BackgroundElevated, 50%), .33)
+		input[type="checkbox"]
 			float left
-			vertical-align middle
-		label
-			position relative
+			margin-top 12px
+			margin-right 12px
 		.description
-			color var(--text-hint-on-background)
 			font-size .875rem
-			padding-left 2rem
+			color var(--text-hint-on-background)
+			padding-left 32px
 			display block
 		.suboption-list
-			//margin-top .875rem
+			margin-top .25rem
+			margin-left .5rem
 		div[data-name="Stubs"] + div
-			min-height 56px
-			padding-left 1rem
-			margin-bottom .75em
+			margin-top .5rem
+		div[data-name="Pass Link"] + p
+			margin .5rem 0
 		button + .description
-			padding 0
-			margin-top .125em
-		div[data-checked="false"] > .suboption-list
-			display none
+			padding-left 0
+			margin-top .5rem
+			margin-left .5rem
+			display inline-block
 	
 	// filter section
 	.section-filter
@@ -4818,7 +4837,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&:hover
 			opacity .87
 	
-	.catalog-thread[class*="thread-chip"]::before
+	.catalog-thread[class*="thread-chip"] .catalog-post::before
 		content ''
 		font-size .75rem
 		tc(ss21primary, high)
@@ -4828,25 +4847,25 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position absolute
 		z-index 1
 		top 0
-		right 0
-		transform translate(.25rem, -.25rem)
+		left 0
+		transform translate(-.25rem, -.25rem)
 		pointer-events none
 	
-	.catalog-thread.thread-chip--waywt::before
+	.catalog-thread.thread-chip--waywt .catalog-post::before
 		content 'WAYWT'
-	.catalog-thread.thread-chip--girl::before
+	.catalog-thread.thread-chip--girl .catalog-post::before
 		content 'GRILL'
-	.catalog-thread.thread-chip--edc::before
+	.catalog-thread.thread-chip--edc .catalog-post::before
 		content 'EDC'
-	.catalog-thread.thread-chip--watch::before
+	.catalog-thread.thread-chip--watch .catalog-post::before
 		content 'WATCH'
-	.catalog-thread.thread-chip--skin::before
+	.catalog-thread.thread-chip--skin .catalog-post::before
 		content 'SKIN'
-	.catalog-thread.thread-chip--hair::before
+	.catalog-thread.thread-chip--hair .catalog-post::before
 		content 'HAIR'
-	.catalog-thread.thread-chip--tattoo::before
+	.catalog-thread.thread-chip--tattoo .catalog-post::before
 		content 'TATTOO'
-	.catalog-thread.thread-chip--fragrance::before
+	.catalog-thread.thread-chip--fragrance .catalog-post::before
 		content 'SMELL'
 	
 	/**
@@ -5523,6 +5542,35 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		color var(--text-hint-on-background)
 		padding-left 1rem
 		display block
+	
+	.test-page
+		position fixed
+		z-index 99
+		display flex
+		align-items center
+		justify-content center
+		top 0
+		left 0
+		width 100%
+		height 100vh
+		background-color rgba(0, 0, 0, .54)
+	
+	.test-page .page
+		height 90vh
+		width 90vh
+		background-color #2d2d2d
+		padding 1rem
+		borderRadius()
+		overflow-y scroll
+		position relative
+	
+	.ss21-mdc-swatch
+		display flex
+		width 100%
+		height 10rem
+		align-items stretch
+		.primary
+			flex 1
 	
 	:root.is-search
 		.boardTitle
