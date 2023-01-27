@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.10
+@version        2.2.11
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -39,6 +39,7 @@
 @var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart*", "2:Star"]
 @var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque*", "2:Masonry (buggy)"]
 @var select     ss21backlinkStyle    "Backlink styling" ["1:Text*", "2:Icon"]
+@var checkbox   ss21catalogueIcons   "Display icons for catalogue stats" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -822,8 +823,11 @@
 		opacity 1
 	
 	// correct cursor style of +/- buttons in safari for `input[type="number"]`
-	::-webkit-inner-spin-button
-		height auto
+	:where(input[type="number"])
+		-moz-appearance textfield
+		&:hover,
+		&:focus
+			-moz-appearance number-input
 	
 	// removes the 'clear' button that chrome adds to `input[type=search]` elements
 	::-webkit-search-decoration,
@@ -885,6 +889,7 @@
 	
 	// XXX: ICONS! by no means a perfect implementation due to the limitations
 	// and the "workarounds" used in order to get icons to appear
+	$icons,
 	.fa::after,
 	.menu-button::after,
 	.n-pu::after,
@@ -3332,9 +3337,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		:root.catalog-mode
 			.board
 				&.catalog-small
-					grid-template-columns repeat(12, 1fr) // 12 rows for 'Small'
+					//grid-template-columns repeat(12, 1fr) // 12 columns for 'Small'
+					grid-template-columns repeat(auto-fit, minmax(10rem, 1fr))
 				&.catalog-large
-					grid-template-columns repeat(8, 1fr) // 8 rows for 'Large'
+					//grid-template-columns repeat(8, 1fr) // 8 coumns for 'Large'
+					grid-template-columns repeat(auto-fit, minmax(15rem, 1fr))
 		.catalog-thread
 			height 15rem
 			.postMessage
@@ -3471,6 +3478,51 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			// XXX: temp solution, make [code] %-based
 			.prettyprint
 				font-size 87.5%
+	
+	.catalog-icons:empty
+		display none
+	// XXX: maybe catalogue stats icons
+	// media: photo_library
+	// replies: content_copy
+	// page: article, find_in_page, description
+	
+	if ss21catalogueIcons
+		.catalog-stats
+			width 100%
+			flex-direction row
+		.catalog-stats > span[title]
+			font-size 0
+			span
+				font-size .75rem
+				display inline-flex
+				align-items center
+				margin-right .25rem
+			span::before
+				font-family 'Material Symbols Outlined'
+				font-weight normal
+				font-style normal
+				font-size 18px
+				line-height: 1
+				letter-spacing normal
+				text-transform none
+				display inline-flex // better vertical alignment
+				justify-content center
+				align-items center
+				white-space nowrap
+				word-wrap normal
+				direction ltr
+				-webkit-font-feature-settings 'liga'
+				-webkit-font-smoothing antialiased
+				color inherit // generally not explicity set, but should be
+				font-variation-settings 'FILL' 0, 'wght' 400, 'GRAD' 200, 'opsz' 18
+				margin-right .25rem
+				opacity .54
+			.post-count::before
+				content 'content_copy'
+			.file-count::before
+				content 'photo_library'
+			.page-count::before
+				content 'description'
 	
 	// XXX: keep the subject overlay separate
 	.catalog-post .subject:not(:empty)
@@ -4330,55 +4382,105 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 						min-width 4rem
 						height auto
 				a::before
-					font-family: 'Material Symbols Outlined';
-					font-weight: normal;
-					font-style: normal;
-					font-size: 24px;
-					line-height: 1;
-					letter-spacing: normal;
-					text-transform: none;
-					display: inline-block;
-					white-space: nowrap;
-					word-wrap: normal;
-					direction: ltr;
-					-webkit-font-feature-settings: 'liga';
-					-webkit-font-smoothing: antialiased;
+					@extends $icons
 					// added to make it m3
 					border-radius 32rem
 					padding .25rem 1rem
 					transition all .25s
+					font-variation-settings "FILL" 0
 		#fourchanx-settings nav
 			a:hover::before,
 			.tab-selected::before
-				font-variation-settings "FILL" 1
 				padding .25rem 1.5rem
 				background-color shade(ss21primary, 15%)
+				if ss21iconFont == 2
+					font-variation-settings "FILL" 1
 			.tab-selected::after
 				display none i
 			.tab-main::before
-				content 'home'
+				if ss21iconFont == 0
+					content 'home'
+				else if ss21iconFont == 1
+					content '\F423'
+				else if ss21iconFont == 2
+					content 'home'
 			.tab-filter::before
-				content 'tune'
+				if ss21iconFont == 0
+					content 'tune'
+				else if ss21iconFont == 1
+					content '\F789'
+				else if ss21iconFont == 2
+					content 'tune'
 			.tab-sauce::before
-				content 'image_search'
+				if ss21iconFont == 0
+					content 'image_search'
+				else if ss21iconFont == 1
+					content '\F18F'
+				else if ss21iconFont == 2
+					content 'image_search'
 			.tab-advanced::before
-				content 'settings'
+				if ss21iconFont == 0
+					content 'settings'
+				else if ss21iconFont == 1
+					content '\F3E5'
+				else if ss21iconFont == 2
+					content 'settings'
 			.tab-keybinds::before
-				content 'keyboard_alt'
+				if ss21iconFont == 0
+					content 'keyboard_alt'
+				else if ss21iconFont == 1
+					content '\F451'
+				else if ss21iconFont == 2
+					content 'keyboard_alt'
 			.tab-ss21::before
-				content 'waves'
+				if ss21iconFont == 0
+					content 'waves'
+				else if ss21iconFont == 1
+					content '\F617'
+				else if ss21iconFont == 2
+					content 'waves'
 			.export::before
-				content 'file_upload'
+				if ss21iconFont == 0
+					content 'file_upload'
+				else if ss21iconFont == 1
+					content '\F603'
+				else if ss21iconFont == 2
+					content 'file_upload'
 			.import::before
-				content 'file_download'
+				if ss21iconFont == 0
+					content 'file_download'
+				else if ss21iconFont == 1
+					content '\F30A'
+				else if ss21iconFont == 2
+					content 'file_download'
 			.reset::before
-				content 'history'
+				if ss21iconFont == 0
+					content 'history'
+				else if ss21iconFont == 1
+					content '\F292'
+				else if ss21iconFont == 2
+					content 'history'
 			a[href*="blob"]::before
-				content 'commit'
+				if ss21iconFont == 0
+					content 'commit'
+				else if ss21iconFont == 1
+					content '\F2C6'
+				else if ss21iconFont == 2
+					content 'commit'
 			a[href*="report"]::before
-				content 'report'
+				if ss21iconFont == 0
+					content 'report'
+				else if ss21iconFont == 1
+					content '\F3CC'
+				else if ss21iconFont == 2
+					content 'report'
 			.fa-times::before
-				content 'menu_open'
+				if ss21iconFont == 0
+					content 'menu_open'
+				else if ss21iconFont == 1
+					content '\F659'
+				else if ss21iconFont == 2
+					content 'menu_open'
 			.fa-times::after
 				display none
 	
@@ -4536,10 +4638,15 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display inline-flex
 		align-items center
 		justify-content center
-		padding .5rem
+		//padding .5rem
 		borderRadius()
 		z-depth(4)
 		//height 1.75rem
+	
+	:root.float
+		#thread-stats > .move,
+		#updater
+			padding .5rem
 	
 	// make the draggable area a little bigger than the updater itself
 	#updater > .move
@@ -4716,8 +4823,21 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.last-page .watcher-page
 			color ss21red
 	
-	.shortcut #watcher-link.replies-quoting-you::after
-		color invert(ss21primary)
+	#watcher-link
+		position relative
+		&.replies-unread::before
+			content ''
+			display block
+			height .5rem
+			width .5rem
+			background-color ss21red
+			position absolute
+			top 0
+			left 0
+			border-radius 100%
+			visibility visible
+		&.replies-quoting-you::after
+			color invert(ss21primary)
 	
 	// menus
 	// styled based on:
@@ -5129,6 +5249,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		transform translateX(-100%)
 		transition transform .25s
 		overflow-y scroll
+		overscroll-behavior contain
 	.board-list-entry
 		tc(ss21BackgroundElevated, high)
 		display block
