@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.11
+@version        2.2.12
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -721,7 +721,7 @@
 			border-color ss21primary
 			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
 	
-	// checkboxes use to be pseudo elements, but generic styling is pretty easy and reliable now
+	// checkboxes used to be pseudo elements, but generic styling is pretty easy and reliable now
 	// HEAVILY inspired from bootstrap, gov.uk, and carbon
 	input[type="checkbox"]
 		width 1.25em
@@ -4213,6 +4213,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#t-slider[style*="vis"]
 		display none
 	
+	// this hides the captcha container when it deloads
+	#t-cnt:has(#t-fg:not([style*="image"]))
+		display none i
+	
+	#t-cnt
+		margin-top .5rem i
+	
 	#t-slider
 		margin-top .25rem i
 	
@@ -4467,7 +4474,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					content '\F2C6'
 				else if ss21iconFont == 2
 					content 'commit'
-			a[href*="report"]::before
+			a[href*="issues"]::before
 				if ss21iconFont == 0
 					content 'report'
 				else if ss21iconFont == 1
@@ -5459,7 +5466,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// please turn off oneechan...
 	:root.oneechan .fa-gears::after
-		content 'sentiment_very_dissatisfied'
+		if ss21iconFont == 0
+			content 'sentiment_dissatisfied'
+		else if ss21iconFont == 1
+			content '\F31D'
+		else if ss21iconFont == 2
+			content 'sentiment_dissatisfied'
 	:root.oneechan .tab-select:not(:checked) + .options-section
 		display none i
 	#oneechan-options
@@ -5491,6 +5503,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			position relative
 			tc(ss21primary, medium)
 			transition color .25s
+			&.selected,
 			&:hover
 				tc(ss21primary, high)
 			&::after
@@ -5510,20 +5523,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		flex 1
 		overflow-y scroll
 		overscroll-behavior contain
-	.buttons-container
-		position absolute
-		left 0
-		bottom 0
-	.import-input
-		position absolute i
-		width 1px i
-		height 1px i
-		padding 0 i
-		margin -1px i
-		overflow hidden i
-		clip rect(0,0,0,0) i
-		white-space nowrap i
-		border 0 i
 	.options-close
 		display inline-flex
 		justify-content flex-end
@@ -5532,39 +5531,39 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			box-shadow 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
 			box-shadow 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
-		&::before
-			content "This won't work... ->"
-			line-height 36px
 		.options-button
 			margin-left .5rem
+			height auto i
+			&[name="save"]
+				background-color ss21green
+				&:hover
+					background-color tint(ss21green, 10%)
 	
 	#main-section
+		&::after
+			content 'Most of these options exist in ss21. If not, request it.'
+		.buttons-container,
 		.option
-			display flex
-			align-content center
-			line-height 2.5rem
-			height 2.5rem
-			if ss21readingMode == ss21light
-				border-top 1px solid darken(ss21BackgroundElevated, 10%)
-			else if ss21readingMode == ss21dark
-				border-top 1px solid lighten(ss21BackgroundElevated, 15%)
-			&.header
-				font-weight 700
-		input[type="checkbox"]
-			display inline-block i
-			margin-top .65rem
-			margin-right 1rem
-			order -1
+			display none
+	
+	#themes-section
+		.buttons-container,
+		.theme-preview
+			display none
+		&::after
+			content 'If you desperately need one ported, request it.'
 	
 	// oneechan mascot selection
 	#mascot-section
 		display grid
 		grid-gap 1rem
-		grid-template-rows 1.5rem 1fr
 		grid-template-columns repeat(auto-fit, minmax(200px, 1fr))
 	.buttons-container
 		grid-column 1 / -1
 		margin 0
+		display flex
+		align-items center
+		justify-content space-evenly
 	.mascot-preview
 		// these importants are needed because oneechan applies `background` instead of just `background-image`?
 		background-position center i
@@ -5593,6 +5592,32 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		br
 			display none
 	
+	// XXX: so this is the power of oneechan...
+	// on that note, this is all you get.
+	#overlay2
+		position fixed
+		top 0
+		left 0
+		width 100%
+		height 100%
+		z-index 22
+		background-color rgba(33, 33, 33, .75)
+	
+	#add-mascot
+		position fixed
+		background-color ss21BackgroundElevated
+		inset 0
+		height 25rem
+		width 75vw
+		z-index 23
+		padding .75rem 1rem
+		margin auto
+		borderRadius()
+		z-depth(24)
+	
+	.add-mascot-label
+		display block
+	
 	:root.oneechan #id_css::after
 		display none
 	#mascot
@@ -5611,17 +5636,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// XXX: `style#fourchanx-bgcolor-css` needs to go
 	:root.oneechan .watch-thread-link
 		background-image none i
-	/*
-	#oneechan-options
-		background-color var(--background-primary)
-		padding 1rem
-		borderRadius()
-		z-depth(8)
-		&::after
-			content "I told you, this isn't going to work."
-		*
-			display none
-	*/
+	
 	/*
 	// scroll snapping?
 	:root.paged-mode
@@ -5631,6 +5646,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			scroll-snap-align start
 			scroll-margin-top 2rem // doesn't work when scrolling up due to autohide header
 	*/
+	
 	// XXX: https://github.com/rcc11/4chan-sounds-player
 	// users really should disable thread > limit post widths
 	:root.fcsp-enabled
@@ -5692,6 +5708,42 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		align-items stretch
 		.primary
 			flex 1
+	
+	#ss21-downloader
+		position fixed
+		top 5rem
+		right 1rem
+		background-color ss21BackgroundElevated
+		borderRadius()
+		z-depth(4)
+		max-height 20rem
+		overflow-y scroll
+		z-index 11
+	
+	.ss21-toprow
+		background-color ss21primary
+		tc(ss21primary, high)
+		padding .5rem 1rem
+	
+	.ss21-thirow
+		padding 0 .5rem
+		border-bottom 1px solid ss21BackgroundColour
+	
+	#ss21-proggers
+		width 100%
+	
+	.ss21-filerow:nth-child(odd)
+		background-color ss21BackgroundColour
+	
+	.ss21-secrow,
+	.ss21-filerow
+		padding .25rem .5rem
+		display flex
+		flex-direction row
+		justify-content space-between
+	
+	.ss21-fileurl
+		color ss21primary
 	
 	:root.is-search
 		.boardTitle
