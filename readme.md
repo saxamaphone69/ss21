@@ -1,7 +1,7 @@
 # ss21
 a self-centered, fresh attempt at (user)styling 4chan
 
-![screenshot of ss21 applied](img/ss21-preview.png)
+![screenshot of ss21 applied](img/browser-2023-03-04.png)
 
 following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020, 2021, 2022~~, 2023!
 
@@ -22,8 +22,6 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
 it should be noted that `ss21` **does not** function with the default 4chan extension or App/OneeChan
 
 it is **highly** recommended you play with the settings within the userstyle
-
-![screenshot of ss21 applied](img/ss21-settings.png)
 
 ## installation
 this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
