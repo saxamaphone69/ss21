@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.12
+@version        2.2.13
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -636,7 +636,11 @@
 	// reset generic form elements to look consistent across browsers
 	// XXX: https://bugzil.la/1536148 - except `option` in Firefox, which due to
 	// how they "render the process" cannot accept web fonts
-	button, input, option, select, textarea
+	button,
+	input,
+	option,
+	select,
+	textarea
 		font inherit
 		color inherit
 		margin 0
@@ -756,7 +760,7 @@
 	
 	// XXX: dropdown arrow sometimes covers writing, may need more padding on right
 	// XXX: the border needs to remain transparent OR opaque, cannot go between each
-	:where(select)
+	select
 		display inline-block
 		tc(ss21BackgroundColour, high)
 		background-color var(--background-primary)
@@ -948,7 +952,7 @@
 			display inline-flex
 			font-family bootstrap-icons
 			font-style normal
-			font-size 24px
+			font-size 1.5rem
 			font-weight normal
 			font-variant normal
 			text-transform none
@@ -960,7 +964,7 @@
 			font-family 'Material Symbols Outlined'
 			font-weight normal
 			font-style normal
-			font-size 24px
+			font-size 1.5rem
 			line-height: 1
 			letter-spacing normal
 			text-transform none
@@ -1347,7 +1351,7 @@
 	if ss21iconFont == 1
 		.shortcut .fa::after,
 		.shortcut .menu-button::after
-			font-size 24px
+			font-size 1.5rem
 		.watch-thread-link::after,
 		.post .menu-button::after,
 		.postContainer a[class$='reply-button'] .fa::after
@@ -1356,12 +1360,12 @@
 			font-size 0
 			&::after
 				content '\F479'
-				font-size 24px
+				font-size 1.5rem
 		.ss21--download-all
 			font-size 0
 			&::after
 				content '\F1B9'
-				font-size 24px
+				font-size 1.5rem
 	
 	if ss21openThread == 1
 		.summary::before
@@ -1627,7 +1631,6 @@
 			opacity .87
 	
 	// 4CHANX: container for the board list, custom or not
-	
 	#board-list
 		display flex
 		flex 1
@@ -2233,6 +2236,25 @@
 		color ss21primary
 		&:hover
 			color shade(ss21primary, 15%)
+	
+	// support for [sjis] on /jp/
+	// pretty much straight copied because it needs to be a specific size
+	/*
+	<blockquote class="postMessage"><span class="sjis">　　　　　　　　　　　　　／￣￣￣￣￣￣￣￣<br>　　　　 　∧＿∧ 　 ＜　 wrong message...<br>　　　　　（　´_ゝ`）　　　＼＿＿＿＿＿＿＿＿<br>　　　　／　　　　 ＼<br>　　　/ /＼　　　/￣＼<br>　＿|￣￣ ＼　/　 ヽ　＼_<br>　＼￣￣￣￣￣￣ ＼＿_）、<br>　　||＼　　　　　　　　　　　　＼<br>　　||＼||￣￣￣￣￣￣￣||￣<br>　　||　 ||￣￣￣￣￣￣￣||<br>　　 　 .||　　　　　　　　　　.||<br></span></blockquote> */
+	.sjis
+		font 16px/1 "IPAMonaPGothic", "Mona", "MS PGothic", monospace
+		white-space pre
+		overflow auto
+		display block
+		clear left
+	
+	// support for [math] on /sci/
+	// allows for overflow scroll when posts arent wide enough
+	// creates a span.MathJax within .postMessage
+	// e.g.: [math]\lim_{(x,y) \to (0,0)} \frac{\left| \frac{x^2y}{\sqrt{|xy|}}-0-\begin{pmatrix} 0 & 0 \end{pmatrix} \begin{pmatrix} x-0 \\ y-0 \end{pmatrix} \right|}{\| (x,y) \| }   = \lim_{(x,y) \to (0,0)} \frac{\left| \frac{x^2y}{\sqrt{|xy|}} \right|}{ \sqrt{x^2+y^2} }   = \lim_{(x,y) \to (0,0)} \frac{x^2\left|y\right|}{\sqrt{|xy|(x^2+y^2)}}   = \lim_{r \to 0^+} \frac{r^2\cos^2(\theta)\left|r\sin(\theta)\right|}{\sqrt{|r^2\cos(\theta)\sin(\theta)| \cdot r^2}}   = \lim_{r \to 0^+} \left|r\right| \frac{\cos ^2\left(\theta\right)\sqrt{\left|\sin \left(\theta\right)\right|}}{\sqrt{\left|\cos \left(\theta\right)\right|}}=0[/math]
+	// [math]\dfrac{s^n\cdot\binom{n(s-1)}{r-n}}{\binom{ns}r}[/math]
+	.post:has(.MathJax)
+		overflow-x auto
 	
 	// a very crude and simple sidebar, for those that can't let go of oneechan
 	if ss21sidebar != 0
@@ -3109,12 +3131,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			> .postInfo > .nameBlock
 				color ss21posterVerified
 	
-	:where(:root:not(.anonymize)) :where(.postContainer.poster--pass)
+	:root:not(.anonymize) .postContainer.poster--pass
 		> .post
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 			> .postInfo > .nameBlock
 				color ss21posterPass
-		+ :where(.summary)
+		+ .summary
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 	
 	.postContainer.post--aus
@@ -3181,6 +3203,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// `.postInfo`'s checkbox and `.nameBlock`
 	.deleted-post
 		opacity .54
+		// XXX: https://stackoverflow.com/a/11742116
+		z-index 1
 		.post,
 		.stub
 			background-color mix(ss21red, ss21BackgroundColour, 10%)
@@ -3625,6 +3649,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			strong
 				display contents
 				a
+					tc(ss21primary, high)
 					background-color ss21primary
 		a
 			font-size 2rem
@@ -3637,8 +3662,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			border-radius 100%
 			aspect-ratio 1/1
 			width 4rem
-			transition background-color .25s
+			transition color .25s, background-color .25s
 			&:hover
+				tc(ss21primary, high)
 				background-color alpha(ss21primary, .54)
 		.prev,
 		.next
@@ -3819,7 +3845,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display none
 	
 	// XXX: auto-hide checkbox should be keyboard accessible
-	
 	#qr
 		position fixed
 		z-index 10
@@ -3913,9 +3938,23 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.captcha-root
 		position relative
 		margin-bottom .5rem
-
-	.captcha-container > div
+	
+	.captcha-container
+		display flex
+		flex-wrap wrap
+		justify-content center
 		margin auto
+	
+	#t-cnt
+		margin auto
+	
+	#t-msg:not(:empty)
+		position relative i
+		margin-top .5rem
+	
+	// hides the "?" button next to the captcha input
+	#t-help
+		display none i
 	
 	.captcha-counter
 		text-align center
@@ -4104,7 +4143,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			color rgba(ss21red, .89)
 	
 	#custom-cooldown-button:not(.disabled) .fa-clock-o::after,
-	#qr.dump #dump-button .fa-plus-square::after
+	#qr.dump #dump-button .fa-plus-square::after,
+	#qr:has(.oekaki:not([hidden])) .fa-edit::after
 		tc(rgba(ss21BackgroundElevated), high)
 	
 	#char-count
@@ -4115,6 +4155,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		bottom 0
 	
 	// qr dump list ui
+	// XXX: holy smokes this looks like ASS
 	#dump-list .qr-preview:only-of-type > .remove, // if there's only post in the dump list, don't show the option to remove it
 	.qr-preview:not(.has-file) label, // if a post has no file attached, don't show the option to spoiler it
 	#qr:not(.has-spoiler) .qr-preview-spoiler // only show the spoiler option if the board supports it
@@ -4160,7 +4201,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				border-radius 50%
 				top 1px
 				right 1px
-				font-size .625rem
+				font-size .75rem
 				color #fff
 				background-color rgba(33, 33, 33, .5)
 			&:hover
@@ -4697,7 +4738,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			opacity 0
 			pointer-events none
 			border-radius 50%
-			background-color ss21red
+			if ss21watchButtonIcon == 1
+				background-color ss21red
+			if ss21watchButtonIcon == 2
+				background-color ss21orange
 			height 1.5rem
 			width 1.5rem
 			transform scale(.5)
