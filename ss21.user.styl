@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.13
+@version        2.2.14
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -27,6 +27,9 @@
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
 @var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
 @var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
+@var checkbox   ss21postInfoBg       "Give post information a background" 0
+@var checkbox   ss21postInfoFont     "Shrink post information font size" 1
+@var checkbox   ss21postInfoDisplay  "Show post information on hover" 1
 @var select     ss21fileInfo         "File information" ["1:Always displayed", "2:On hover*", "3:As a card"]
 @var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
@@ -40,6 +43,7 @@
 @var select     ss21catalogueStyle   "Catalogue styling" ["1:Default-esque*", "2:Masonry (buggy)"]
 @var select     ss21backlinkStyle    "Backlink styling" ["1:Text*", "2:Icon"]
 @var checkbox   ss21catalogueIcons   "Display icons for catalogue stats" 0
+@var checkbox   ss21compressBoards   "Reduce width of full board list" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -906,7 +910,6 @@
 	.pagelist .next a::after,
 	.watch-thread-link::after,
 	#index-search-clear::after,
-	#index-rev::after,
 	.has-submenu::after,
 	.show-announcement::after,
 	.report-link::after,
@@ -1586,8 +1589,6 @@
 	:root.fixed.bottom-header #header-bar.autohide:not(:hover)
 		transform translateY(100%)
 	
-	// XXX: better support for long board lists, whether it be scroll or flex-wrapping
-	
 	// when viewing the full board list, hide all the [, ], and /'s that are
 	// used as dividers
 	#full-board-list .boardList span
@@ -1670,6 +1671,15 @@
 		display flex
 		align-items center
 	
+	if ss21compressBoards == 1
+		#full-board-list a
+			font-size .875rem
+			min-width auto
+			padding 0
+			padding-right .125rem
+		#header-bar:has(#full-board-list:not([hidden])) .ss21--board-drawer-toggle
+			display none
+	
 	/*
 			&::after
 				display none
@@ -1706,31 +1716,52 @@
 		margin-right 2rem
 	
 	#shortcuts
+		display grid
+		grid-template-columns 1fr repeat(6, 2rem)
+		grid-auto-rows 1fr
+		grid-auto-flow column
+	
+	.shortcut
+		grid-row span 2
+	
+	#shortcut-updater
+		font-size .8rem
+		justify-content flex-end
+		grid-column 1
+		grid-row 1
+		padding 0
+		margin-right .25rem
+	
+	#shortcut-stats
+		font-size .8rem
+		justify-content flex-end
+		grid-column 1
+		grid-row 2
+		padding 0
+		margin-right .25rem
+	
+	// XXX: 2023-03: changed to grid just to have stats/updater on new lines
+	/*
+	#shortcuts
 		display flex
 		align-items center
-		//position relative
-		/*
-		&::before
-			content ''
-			position absolute
-			background-image linear-gradient(to right, rgba(0, 0, 0, 0), rgba(ss21primary, .8))
-			pointer-events none
-			height 100%
-			width 1.5rem
-			right 100%
 	*/
+	// XXX: make the board list overflow hide behind a gradient
+	/*
+	&::before
+		content ''
+		position absolute
+		background-image linear-gradient(to right, rgba(0, 0, 0, 0), rgba(ss21primary, .8))
+		pointer-events none
+		height 100%
+		width 1.5rem
+		right 100%
+	*/
+	
 	.shortcut
-		//min-width 2rem
-		/*
-		if ss21headerHeight == 1
-			height 3rem
-		else if ss21headerHeight == 2
-			height 2rem
-		*/
 		display inline-flex
 		align-items center
 		justify-content center
-		//padding 0 .25rem
 		padding .25rem
 		a,
 		.menu-button
@@ -1854,26 +1885,29 @@
 		top 100%
 	
 	.notification
-		color #fff // XXX: this should be text-on-primary
 		display flex
 		align-items center
 		justify-content center
-		padding .75rem .5rem .75rem .75rem // XXX: customisable
+		padding .75rem .5rem .75rem .75rem
 		borderRadius()
 		margin .5rem auto
 		width 50rem
-		max-width 100% // XXX: responsive?
+		max-width 100%
 		z-depth(6)
 		will-change opacity
 		transition opacity .25s
 		&.error
-			background-color ss21red // 4chan x is 90% transparent (.9)
+			background-color alpha(ss21red, .9) 
+			tc(@background-color, high)
 		&.info
-			background-color ss21blue
+			background-color alpha(ss21blue, .9)
+			tc(@background-color, high)
 		&.success
-			background-color ss21green
+			background-color alpha(ss21green, .9)
+			tc(@background-color, high)
 		&.warning
-			background-color ss21orange
+			background-color alpha(ss21orange, .9)
+			tc(@background-color, high)
 		.message
 			order -1
 			flex-grow 1
@@ -2181,15 +2215,17 @@
 		margin-left .5rem
 	
 	#index-rev
+		all unset
 		visibility hidden
-		width 1.5rem
-		height 100%
-		//margin 0 .25rem
 		display inline-flex
 		align-items center
 		&::after
+			tc(ss21primary, medium)
 			visibility visible
 			cursor pointer
+			transition color .25s
+		&:hover::after
+			tc(ss21primary, high)
 		&:checked::after
 			color var(--secondary)
 	
@@ -2549,6 +2585,8 @@
 	#qp
 		& > .postContainer
 			margin 0
+			min-width 20rem // XXX: narrow posts with an image get shrunk
+			overflow-wrap initial
 		&.warning
 			padding .5rem 1rem
 		img // XXX: would this even work? straight from 4chan x but like, what about videos?
@@ -2558,6 +2596,12 @@
 		pointer-events none
 		max-height 95vh
 		max-width 100vw
+	
+	@css {
+		#qp:not(:has(:first-child)) {
+			padding: .5rem;
+		}
+	}
 	
 	// 4CHANX: quote threading (we reddit now)
 	.threadContainer
@@ -3041,15 +3085,16 @@
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
 		font-size 0
-		color #fff
+		tc(invert(ss21primary), high)
 		background-color invert(ss21primary)
 		display inline-flex
 		align-items center
 		justify-content center
-		height 2rem
-		width 2rem
+		padding .25rem
 		borderRadius()
 		cursor pointer
+		&::after
+			font-size 1rem
 	
 	:root.fappeTyme .thread > .noFile,
 	:root.fappeTyme .threadContainer > .noFile
@@ -3198,6 +3243,29 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		}
 	}
 	
+	if ss21postInfoBg == 0
+		.postInfo
+			background-color initial
+			box-shadow none i
+		.postMessage
+			padding-top 0
+	
+	if ss21postInfoFont == 1
+		.postInfo
+			font-size .8rem
+	
+	if ss21postInfoDisplay == 1
+		.postInfo
+			position absolute
+			right 1px
+			background-color inherit
+			opacity 0
+			transition opacity .25s
+		.post:hover > .postInfo
+			opacity 1
+		.postMessage
+			padding-top .5rem
+	
 	// posts that get deleted have `.deleted-post` added to `.postContainer`,
 	// along with a `<strong class="warning">[Deleted]</strong>` added between
 	// `.postInfo`'s checkbox and `.nameBlock`
@@ -3232,7 +3300,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			display none
 	
 	// `<strong>[Deleted]</strong>` appears before `.nameBlock`
-	.postInfo .warning
+	//.postInfo .warning
 		//margin-right .25rem
 	
 	// 4CHANX: if enabled, allow you to jump to posts by the same id
