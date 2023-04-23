@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.14
+@version        2.2.15
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -860,14 +860,16 @@
 	// `s` is used for [spoiler] text. occasionally, this has issues with
 	// links and quoted text within spoilers
 	s,
-	s > .quote
+	s > .quote,
+	s > a
 		text-decoration none
 		color var(--grey-12) i
 		background-color var(--grey-12) i
 		transition color .25s
 	
 	s:hover,
-	s:hover .quote
+	s:hover .quote,
+	s:hover a
 		color var(--grey-100) i
 	
 	/*
@@ -895,6 +897,12 @@
 			&::after
 				content '[/spoiler]'
 	
+	// https://github.com/stylus/stylus/issues/2750#issuecomment-1378498822
+	buildL4(type, args...) {
+		st1 = join('', ':', type, '(', join('\, ', args), ')')
+		selector(st1)
+	}
+	
 	// XXX: ICONS! by no means a perfect implementation due to the limitations
 	// and the "workarounds" used in order to get icons to appear
 	$icons,
@@ -906,8 +914,8 @@
 	.postJumper a::after,
 	#index-rev::after,
 	.indicator::after,
-	.pagelist .prev a::after,
-	.pagelist .next a::after,
+	.pagelist :is(.prev, .next) a::after,
+	//.pagelist .next a::after,
 	.watch-thread-link::after,
 	#index-search-clear::after,
 	.has-submenu::after,
@@ -925,6 +933,7 @@
 	.jump::after,
 	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
+	.file--pdf:not(.expanded-image) > .post > .file > .fileThumb::after,
 	.native-settings::after,
 	.post--dubs .postNum a:nth-child(2n)::after,
 	span.fileThumb::before,
@@ -1285,6 +1294,14 @@
 		else if ss21iconFont == 2
 			content 'gif_box'
 			font-variation-settings 'FILL' 0
+	.file--pdf:not(.expanded-image) > .post > .file > .fileThumb::after // pdf icon for pdf thumbnails
+		if ss21iconFont == 0
+			content 'picture_as_pdf'
+		else if ss21iconFont == 1
+			content '\F756'
+		else if ss21iconFont == 2
+			content 'picture_as_pdf'
+			font-variation-settings 'FILL' 0
 	.fa-download::after,
 	.download-link::after // file download and add icon to menu entry
 		if ss21iconFont == 0
@@ -1371,7 +1388,7 @@
 				font-size 1.5rem
 	
 	if ss21openThread == 1
-		.summary::before
+		.is_index .summary::before
 			tc(ss21primary, medium)
 			font-size .875rem
 			margin-right .25rem
@@ -1386,9 +1403,9 @@
 				content '\F1C5'
 			else if ss21iconFont == 2
 				content 'open_in_new'
-		.summary:hover::before
+		.is_index .summary:hover::before
 			tc(ss21primary, high)
-		.summary-bottom
+		.is_index .summary-bottom
 			display none i
 	
 	// we also sub out the default 4chan icons to material icons, albeit as svg
@@ -2044,14 +2061,16 @@
 		display none
 	
 	// announcement hiding
-	:root.hide-announcement .globalMessage
+	:root.hide-announcement .globalMessage,
+	:root.site-loading .globalMessage,
+	.globalMessage
 		display none
-	
+	// XXX: for some reason the announcements was showing during page load
 	// ideally the icon should just be a dismiss label button
 	// and since the announcement is always inconsistent with h* and links,
 	// it's difficult to style this consistently and per material spec
 	// XXX: FIX FOR UNDER 75REM
-	.globalMessage
+	.globalMessage:not([hidden])
 		background-color ss21BackgroundElevated
 		position fixed
 		top 3rem
@@ -2507,7 +2526,9 @@
 		margin-top 1rem
 	
 	.is_thread .summary
-		display none
+		margin-bottom 1rem
+		&::before
+			display none
 	
 	if ss21postWidth == 0
 		.summary
@@ -2522,7 +2543,7 @@
 		.thread
 			margin-bottom 1.5rem
 		// turn it into a FAB
-		.summary
+		.is_index .summary
 			//all unset
 			margin-top 0
 			border 0
@@ -2991,6 +3012,9 @@
 		borderRadius()
 		z-depth(2)
 	
+	.inline + .hashlink
+		display none
+	
 	// XXX: make special kinds of quotelinks appear `sup`-scripted
 	+prefix-classes('qmark-')
 		.ct
@@ -3197,7 +3221,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// give webms and gifs a little visual icon overlay
 	// XXX: if a thumbnail is <32px high, the icon is higher than that
 	.file--gif,
-	.file--video
+	.file--video,
+	.file--pdf
 		.fileThumb
 			position relative
 		&:not(.expanded-image) > .post > .file
@@ -3417,7 +3442,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		if ss21catalogueStyle == 1 // default-esque style
 			grid-auto-rows 15rem // automatically create rows that are `240px` high
 		if ss21catalogueStyle == 2
-			grid-template-columns repeat(auto-fit, minmax(min(15em, 100%), 1fr))
+			grid-template-columns repeat(6, 1fr)
+			//grid-template-columns repeat(auto-fit, minmax(min(15em, 100%), 1fr))
 			grid-template-rows masonry // lifted from https://css-tricks.com/a-lightweight-masonry-solution/
 			justify-content center
 	
@@ -3432,7 +3458,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					//grid-template-columns repeat(12, 1fr) // 12 columns for 'Small'
 					grid-template-columns repeat(auto-fit, minmax(10rem, 1fr))
 				&.catalog-large
-					//grid-template-columns repeat(8, 1fr) // 8 coumns for 'Large'
+					//grid-template-columns repeat(8, 1fr) // 8 columns for 'Large'
 					grid-template-columns repeat(auto-fit, minmax(15rem, 1fr))
 		.catalog-thread
 			height 15rem
@@ -3703,6 +3729,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		opacity 0
 	
 	// pagelist styling
+	
 	.pagelist
 		display flex
 		margin 1rem
@@ -3729,7 +3756,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			background-color transparent
 			border-radius 100%
 			aspect-ratio 1/1
-			width 4rem
+			width clamp(4rem, 5rem, 6rem)
 			transition color .25s, background-color .25s
 			&:hover
 				tc(ss21primary, high)
@@ -3779,7 +3806,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		#boardNavDesktopFoot
 			display none
 		.absBotText
-			border-radius 64px 64px 0 0
+			border-radius 4rem 4rem 0 0
 	
 	// SIDEDISH: this grabs the current board list and categories from 4chan.org
 	// !important is used because it grabs the literal HTML, inline styles and all
@@ -3788,7 +3815,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		background-color var(--grey-900)
 		padding 3rem 1.5rem 1rem
 		position relative
-		border-radius 64px 64px 0 0
+		border-radius 4rem 4rem 0 0
 		margin 0 1rem
 		.boardList
 			display grid
@@ -3900,6 +3927,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// massive selector chain over and done with
 	#qr.autohide:not(.focus):not(:hover):not(:active) > form, // autohide the qr form when not in use
 	#autohide, // the checkbox to autohide (click the label)
+	#qr.forced-anon input[data-name="name"]:not(.force-show),
+	#qr.forced-anon input[data-name="sub"]:not(.force-show),
+	#qr.reply-to-thread input[data-name="sub"]:not(.force-show),
 	#qr.reply-to-thread:not(.show-new-thread-option) select[data-name="thread"], // hide new thread options if enabled
 	body:not(.board_f) #qr [name="filetag"], // tag for flash files when not on /f/
 	#qr.reply-to-thread [name="filetag"], // tag for flash files when in a thread (regardless if on /f/ or not)
@@ -4121,6 +4151,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					transform translateY(1px)
 	// XXX: make submit button look better
 	*/
+	// <input type="submit" value="Dead" disabled="">
+	#file-n-submit input[type="submit"][value="Dead"]
+		background-color var(--grey-500)
+	
 	#qr-file-button
 		width 15%
 		margin-right .25rem
@@ -4176,7 +4210,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		margin-right .25rem
 		#qr-file-spoiler
 			position absolute
-			visibility hidden
+			opacity 0
+			z-index 1
 			margin 0
 			&:checked + .checkbox-letter::after
 				tc(rgba(ss21BackgroundElevated), high)
@@ -4232,9 +4267,25 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#qr.dump #dump-list-container
 		display block // only display the dump list when enabled
 		position relative
+		margin-bottom .5rem
+		background-color rgba(0, 0, 0, .33)
+		borderRadius()
+	
+	#dump-list
+		display flex
+		flex-wrap wrap
+		padding .25rem
+		gap .25rem
+		max-height 14rem
+		overflow auto
+	/*
+	#qr.dump #dump-list-container
+		display block // only display the dump list when enabled
+		position relative
 		overflow-y hidden
 		margin-bottom .5rem
 		background-color rgba(0, 0, 0, .33)
+		borderRadius()
 	
 	#dump-list
 		overflow auto
@@ -4244,56 +4295,62 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		min-height 8.5rem // height of 2 previews
 		max-height 10rem // height of 3 previews
 		padding .25rem
-		.qr-preview
-			counter-increment thumbnails
-			cursor move // grab?
-			display inline-block
-			height 5rem
-			width 5rem
-			padding .25rem
-			margin .25rem
-			opacity .6
-			overflow hidden
-			position relative
-			background-size cover
-			flex none
-			transition opacity .25s, transform .25s
-			&::before
-				content: counter(thumbnails)
-				position absolute
-				display inline-flex
-				align-items center
-				justify-content center
-				height 1rem
-				width 1rem
-				border-radius 50%
-				top 1px
-				right 1px
-				font-size .75rem
-				color #fff
-				background-color rgba(33, 33, 33, .5)
-			&:hover
-				opacity .87
-			&:focus
-				opacity .87
-				//cursor grabbing // XXX: doesn't maintain this grabbing cursor
-			&#selected
-				opacity 1
-			&.drag
-				transform scale(.8)
-			&.over
-				transform scale(1.1)
-				z-index 1
-				border 1px dashed #fff
-			& > .remove
-				display inline-flex
-				cursor pointer
-				color ss21red
+	*/
+	.qr-preview
+		counter-increment thumbnails
+		cursor move // grab?
+		//display block
+		height 7rem
+		width 7rem
+		padding .25rem
+		//margin .25rem
+		opacity .6
+		overflow hidden
+		position relative
+		background-size cover
+		white-space normal // reverses what is on dump list, which could also go?
+		flex none
+		transition opacity .25s, transform .25s
+		borderRadius()
+		background-color rgba(0,0,0,.2)
+		&::before
+			content: counter(thumbnails)
+			position absolute
+			display inline-flex
+			align-items center
+			justify-content center
+			height 1rem
+			width 1rem
+			border-radius 50%
+			top 1px
+			right 1px
+			font-size .75rem
+			background-color rgba(33, 33, 33, .5)
+			tc(@background-color, high)
+		&:hover
+			opacity .87
+		&:focus
+			opacity .87
+			//cursor grabbing // XXX: doesn't maintain this grabbing cursor
+		&#selected
+			opacity 1
+		&.drag
+			transform scale(.9)
+		&.over
+			transform scale(1.05)
+			z-index 1
+			border 1px dashed rgba(255,255,255,0.87)
+		& > .remove
+			display inline-flex
+			cursor pointer
+			color ss21red
+		span
+			text-shadow 0 0 5px #000
 	
 	#add-post
 		font-size 0
 		position absolute
-		right 0
+		right 1rem
 		bottom 0
 		&::after
 			font-size 3rem
@@ -4879,7 +4936,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			& > .close
 				font-size 0
 		#menu
-			text-transform capitalize // because of the lowercase aesthetic, the menu is affected
+			text-transform initial // because of the lowercase aesthetic, the menu is affected
 	
 	// used to display the progress of the thread watcher checking the status of threads,
 	// but we use it to stretch the distance between the icons
@@ -5483,6 +5540,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.rake-btn::after
 		content 'brush' // XXX: reduced to just the icon name to save lines
 	
+	// 2023 april fools support
+	if ss21readingMode == ss21dark
+		.xa23i
+			filter invert(1)
+	
 	// XXX: archive and /f/ `table` support
 	// fun fact, the archive has about 10,000 entries displayed at any one time
 	// in the archive table, `.teaser-col` can contain the subject (`b`), `.quote`,
@@ -5868,3 +5930,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.commentForm
 			width fit-content
 			margin 1rem auto 0
+	
+	:root.is-ext
+		body::before
+			content 'You need to have 4chan X for this to work, mate.'
+		#boardNavDesktop
+			display block
+	
