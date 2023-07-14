@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.2.15
+@version        2.3
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -36,7 +36,7 @@
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB*"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
-@var select     ss21iconFont         "Icon font" ["0:Material Icons (old)", "1:Bootstrap", "2:Material Symbols (new)*"]
+@var select     ss21iconFont         "Icon font" ["1:Bootstrap", "2:Material Symbols (new)*"]
 @var checkbox   ss21navRail          "Display settings as navigation rail" 1
 @var select     ss21watchButton      "Watch thread button" ["1:Always displayed*", "2:On hover"]
 @var select     ss21watchButtonIcon  "Watch thread icon" ["1:Heart*", "2:Star"]
@@ -44,16 +44,15 @@
 @var select     ss21backlinkStyle    "Backlink styling" ["1:Text*", "2:Icon"]
 @var checkbox   ss21catalogueIcons   "Display icons for catalogue stats" 0
 @var checkbox   ss21compressBoards   "Reduce width of full board list" 0
+@var checkbox   ss21floatingHeader   "Detaches the header from the top" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
 	// XXX: probably should allow custom ui font, and monospace font
 	@import url('https://rsms.me/inter/inter.css');
 	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
-	if ss21iconFont == 0
-		@import url('https://fonts.googleapis.com/css2?family=Material+Icons&display=swap');
-	else if ss21iconFont == 1
-		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css");
+	if ss21iconFont == 1
+		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css");
 	else if ss21iconFont == 2
 		@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 	
@@ -495,7 +494,7 @@
 	// one day:
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/text-underline-offset
 	.linkify,
-	.globalMessage a:not(.fa),
+	:where(.globalMessage) :where(a):not(.fa),
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
 		text-decoration solid underline
 		text-underline-offset 2px // XXX: 1px suddenly stopped looking good?
@@ -940,27 +939,7 @@
 	.summary::before,
 	.ss21--board-drawer-toggle,
 	.ss21--download-all
-		if ss21iconFont == 0
-			font-family 'Material Icons'
-			font-weight normal
-			font-style normal
-			font-size 1.5rem // 24px, ideally
-			display inline-flex // better vertical alignment
-			justify-content center
-			align-items center
-			line-height 1 // might not be needed
-			text-transform none
-			letter-spacing normal
-			word-wrap normal
-			white-space nowrap
-			direction ltr
-			-webkit-font-smoothing antialiased
-			text-rendering optimizeLegibility
-			-moz-osx-font-smoothing grayscale
-			font-feature-settings 'liga'
-			color inherit // generally not explicity set, but should be
-			visibility visible // added from 4chan x
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			display inline-flex
 			font-family bootstrap-icons
 			font-style normal
@@ -1007,105 +986,81 @@
 	}
 	
 	.menu-button::after // menus
-		if ss21iconFont == 0
-			content 'more_vert'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F5D3'
 		else if ss21iconFont == 2
 			content 'more_vert'
 	.catalog-post .menu-button::after // menus in catalogue mode
-		if ss21iconFont == 0
-			content 'more_horiz'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F5D4'
 		else if ss21iconFont == 2
 			content 'more_horiz'
 	.fa-eye::after // thread watcher
-		if ss21iconFont == 0
-			content 'remove_red_eye'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F33E'
 		else if ss21iconFont == 2
 			content 'remove_red_eye'
 	.fa-expand::after // expand all images
-		if ss21iconFont == 0
-			content 'fullscreen'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F3DF'
 		else if ss21iconFont == 2
 			content 'fullscreen'
 	.fa-compress::after // compress all images
-		if ss21iconFont == 0
-			content 'fullscreen_exit'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F3DE'
 		else if ss21iconFont == 2
 			content 'fullscreen_exit'
 	.fa-picture-o::after // gallery mode
-		if ss21iconFont == 0
-			content 'photo'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F42A'
 		else if ss21iconFont == 2
 			content 'photo'
 	.fa-comment-o::after // menus in catalogue mode
-		if ss21iconFont == 0
-			content 'comment'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F25B'
 		else if ss21iconFont == 2
 			content 'comment'
 	.fa-refresh::after // refresh index
-		if ss21iconFont == 0
-			content 'refresh'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F116'
 		else if ss21iconFont == 2
 			content 'refresh'
 	.fa-wrench::after // 4chan x settings
-		if ss21iconFont == 0
-			content 'settings'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F3E2'
 		else if ss21iconFont == 2
 			content 'settings'
+	.fa-book::after // native catalog settings
+		if ss21iconFont == 1
+			content '\F5B1'
+		else if ss21iconFont == 2
+			content 'style'
 	.fa-minus-square::after,
 	.fa-minus-square-o::after // hide post
-		if ss21iconFont == 0
-			content 'remove_circle'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F2E5'
 		else if ss21iconFont == 2
 			content 'unfold_less'
 	.fa-plus-square::after,
 	.fa-plus-square-o::after // show post
-		if ss21iconFont == 0
-			content 'add_circle'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4F9'
 		else if ss21iconFont == 2
 			content 'unfold_more'
 	.fa-times::after,
 	.close::after,
 	.gal-close::after // close
-		if ss21iconFont == 0
-			content 'close'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F659'
 		else if ss21iconFont == 2
 			content 'close'
 	.fa-bolt::after // prefetch
-		if ss21iconFont == 0
-			content 'flash_on'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F46E'
 		else if ss21iconFont == 2
 			content 'flash_on'
 	.watch-thread-link::after // watch thread
-		if ss21iconFont == 0
-			content 'favorite_border'
-			color ss21red
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F417'
 			color ss21red
 		else if ss21iconFont == 2
@@ -1117,253 +1072,185 @@
 				content 'star'
 				color ss21orange
 	.watch-thread-link.watched::after // watched/unwatch thread
-		if ss21iconFont == 0
-			content 'favorite'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F415'
 		else if ss21iconFont == 2
 			font-variation-settings 'FILL' 1
 	#navlinks
 		a:first-of-type::after // navigate up
-			if ss21iconFont == 0
-				content 'keyboard_arrow_up'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F286'
 			else if ss21iconFont == 2
 				content 'keyboard_arrow_up'
 		a:last-of-type::after // navigate down
-			if ss21iconFont == 0
-				content 'keyboard_arrow_down'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F282'
 			else if ss21iconFont == 2
 				content 'keyboard_arrow_down'
 	.postJumper
 		a:first-of-type::after // jump to previous post by id
-			if ss21iconFont == 0
-				content 'arrow_upward'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F148'
 			else if ss21iconFont == 2
 				content 'arrow_upward'
 		a:last-of-type::after // jump to next post by id
-			if ss21iconFont == 0
-				content 'arrow_downward'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F128'
 			else if ss21iconFont == 2
 				content 'arrow_downward'
 	#index-rev::after // reverse index order
-		if ss21iconFont == 0
-			content 'swap_vert'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F127'
 		else if ss21iconFont == 2
 			content 'swap_vert'
 	.pagelist
 		.prev a::after // pagelist, previous page ($$$?)
-			if ss21iconFont == 0
-				content 'arrow_back'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F12F'
 			else if ss21iconFont == 2
 				content 'arrow_back'
 		.next a::after // pagelist, next page ($$$?)
-			if ss21iconFont == 0
-				content 'arrow_forward'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F138'
 			else if ss21iconFont == 2
 				content 'arrow_forward'
 	.fa-edit::after // oeaki mode in qr
-		if ss21iconFont == 0
-			content 'format_paint'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4B0'
 		else if ss21iconFont == 2
 			content 'format_paint'
 	.copy-text-link::after,
 	.fa-link::after // copy
-		if ss21iconFont == 0
-			content 'link'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F471'
 		else if ss21iconFont == 2
 			content 'link'
 	#paste-area::after // paste mode in qr
-		if ss21iconFont == 0
-			content 'content_paste'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F290'
 		else if ss21iconFont == 2
 			content 'content_paste'
 	.fa-clock-o::after // auto poster in qr
-		if ss21iconFont == 0
-			content 'timer'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F597'
 		else if ss21iconFont == 2
 			content 'timer'
 	#qr .fa-plus-square::after,
 	#add-post::after // dump list in qr
-		if ss21iconFont == 0
-			content 'add_box'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4FC'
 		else if ss21iconFont == 2
 			content 'add_box'
 	#index-search-clear::after,
 	.fa-times-circle::after // remove/clear
-		if ss21iconFont == 0
-			content 'remove'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F622'
 		else if ss21iconFont == 2
 			content 'cancel'
 			font-variation-settings 'FILL' 0
 	.qr-preview-spoiler::after,
 	.checkbox-letter::after // spoilers in qr
-		if ss21iconFont == 0
-			content 'strikethrough_s'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F5F5'
 		else if ss21iconFont == 2
 			content 'strikethrough_s'
 	.gal-start::after // play slideshow in gallery mode
-		if ss21iconFont == 0
-			content 'play_arrow'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4F4'
 		else if ss21iconFont == 2
 			content 'play_arrow'
 	.gal-stop::after // stop slideshow in gallery mode
-		if ss21iconFont == 0
-			content 'stop'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F592'
 		else if ss21iconFont == 2
 			content 'stop'
 	.has-submenu::after // add icon to menu entry
-		if ss21iconFont == 0
-			content 'keyboard_arrow_right'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F285'
 		else if ss21iconFont == 2
 			content 'keyboard_arrow_right'
 	.left .has-submenu::after // add icon to menu entry
-		if ss21iconFont == 0
-			content 'keyboard_arrow_left'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F284'
 		else if ss21iconFont == 2
 			content 'keyboard_arrow_left'
 	.jump::after // jumper in embedder
-		if ss21iconFont == 0
-			content 'subdirectory_arrow_right'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F132'
 		else if ss21iconFont == 2
 			content 'subdirectory_arrow_right'
 	.show-announcement::after // add icon to menu entry
-		if ss21iconFont == 0
-			content 'announcement'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F483'
 		else if ss21iconFont == 2
 			content 'announcement'
 	.report-link::after // add icon to menu entry
-		if ss21iconFont == 0
-			content 'warning'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F33A'
 		else if ss21iconFont == 2
 			content 'warning'
 	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after // play icon for webm thumbnails
-		if ss21iconFont == 0
-			content 'play_circle_outline'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4F3'
 		else if ss21iconFont == 2
 			content 'play_circle'
 			font-variation-settings 'FILL' 0
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after // gif icon for gif thumbnails
-		if ss21iconFont == 0
-			content 'GIF'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F366'
 		else if ss21iconFont == 2
 			content 'gif_box'
 			font-variation-settings 'FILL' 0
 	.file--pdf:not(.expanded-image) > .post > .file > .fileThumb::after // pdf icon for pdf thumbnails
-		if ss21iconFont == 0
-			content 'picture_as_pdf'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F756'
 		else if ss21iconFont == 2
 			content 'picture_as_pdf'
 			font-variation-settings 'FILL' 0
 	.fa-download::after,
 	.download-link::after // file download and add icon to menu entry
-		if ss21iconFont == 0
-			content 'file_download'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F30A'
 		else if ss21iconFont == 2
 			content 'download'
 	.n-pu::after // 4chan pass user
-		if ss21iconFont == 0
-			content 'person'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4DA'
 		else if ss21iconFont == 2
 			content 'person'
 	#shortcut-werk .indicator::after // werk tyme indicator
-		if ss21iconFont == 0
-			content 'work'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F1CB'
 		else if ss21iconFont == 2
 			content 'work'
 	#shortcut-fappe .indicator::after // fappe tyme indicator
-		if ss21iconFont == 0
-			content 'burst_mode'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F219'
 		else if ss21iconFont == 2
 			content 'burst_mode'
 	.native-settings::after // native 4chan extension
-		if ss21iconFont == 0
-			content 'settings_applications'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F5DB'
 		else if ss21iconFont == 2
 			content 'settings_applications'
 	.contact-links::after // for admins and mods
-		if ss21iconFont == 0
-			content 'contact_support'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4DB'
 		else if ss21iconFont == 2
 			content 'contact_support'
 	.post--dubs .postNum a:nth-child(2n)::after // dubs if filtered
-		if ss21iconFont == 0
-			content 'check'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F26F'
 		else if ss21iconFont == 2
 			content 'check'
 	span.fileThumb::before,
 	.dead-thread .fa-times::after // dead thread and remove from thread watcher
-		if ss21iconFont == 0
-			content 'delete_forever'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F5DD'
 		else if ss21iconFont == 2
 			content 'delete_forever'
 	.fa-play-circle::after // https://github.com/rcc11/4chan-sounds-player support
-		if ss21iconFont == 0
-			content 'music_note'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F4A0'
 		else if ss21iconFont == 2
 			content 'music_note'
@@ -1397,9 +1284,7 @@
 			transition color .25s
 			/:root.ua-gecko ^[0]
 				margin-top 1px
-			if ss21iconFont == 0
-				content 'open_in_new'
-			else if ss21iconFont == 1
+			if ss21iconFont == 1
 				content '\F1C5'
 			else if ss21iconFont == 2
 				content 'open_in_new'
@@ -1412,9 +1297,7 @@
 	// closed: lock, archive: inbox-multiple, sticky: place/pin
 	// XXX: need to make it so this changes along with which icon font you pick
 	.closedIcon
-		if ss21iconFont == 0
-			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z' /%3E%3C/svg%3E")
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z'/%3E%3C/svg%3E")
 		else if ss21iconFont == 2
 			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 20 20'%3E%3Cpath d='M5.417 18.917q-.875 0-1.459-.584-.583-.583-.583-1.458V8.708q0-.875.583-1.458.584-.583 1.459-.583v-2q0-1.938 1.343-3.282Q8.104.042 10 .042q1.917 0 3.25 1.343 1.333 1.344 1.333 3.282v2q.875 0 1.459.583.583.583.583 1.458v8.167q0 .875-.583 1.458-.584.584-1.459.584ZM10 14.625q.75 0 1.271-.531.521-.532.521-1.261 0-.75-.532-1.271-.531-.52-1.26-.52-.75 0-1.271.531-.521.531-.521 1.26 0 .75.532 1.271.531.521 1.26.521ZM7.458 6.667h5.084v-2q0-1.063-.74-1.823-.74-.761-1.802-.761t-1.802.761q-.74.76-.74 1.823Z'/%3E%3C/svg%3E");
@@ -1697,6 +1580,19 @@
 		#header-bar:has(#full-board-list:not([hidden])) .ss21--board-drawer-toggle
 			display none
 	
+	if ss21floatingHeader == 1
+		:root.fixed.top-header #header-bar
+			top 1rem
+			left 1rem
+			right 1rem
+			border-radius 64px
+			background-color alpha(ss21primary, .25) i
+			opacity .7 i
+			&:hover
+				opacity .9 i
+		#scroll-progress
+			width 90vw i
+			left 5vw i
 	/*
 			&::after
 				display none
@@ -2061,16 +1957,15 @@
 		display none
 	
 	// announcement hiding
-	:root.hide-announcement .globalMessage,
-	:root.site-loading .globalMessage,
 	.globalMessage
 		display none
+	
 	// XXX: for some reason the announcements was showing during page load
 	// ideally the icon should just be a dismiss label button
 	// and since the announcement is always inconsistent with h* and links,
 	// it's difficult to style this consistently and per material spec
 	// XXX: FIX FOR UNDER 75REM
-	.globalMessage:not([hidden])
+	:where(:root.ss21--banner-blocked) .globalMessage:not([hidden])
 		background-color ss21BackgroundElevated
 		position fixed
 		top 3rem
@@ -2637,6 +2532,14 @@
 			width 2px
 			height 100%
 			background-color var(--background-primary)
+	
+	.is_thread .navLinksBot.desktop
+		display block i
+		font-size 0
+		text-align center
+	.threadnewlink > a
+		font-size 1rem
+		display block
 	
 	// 4chan x has border-left: 1px solid rgba(128,128,128,.3);
 	// it also uses .threadOP clear both but i don't think we have that issue
@@ -3407,22 +3310,23 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// hides small/large thumbnail options when viewing as masonry
 	if ss21catalogueStyle == 2
-		#index-size
-			display none
-		.navLinks::after
-			content '"Masonry" mode might require an F5 to look good. Ignore the bottom of the page...'
-			display block
-			text-align center
-			padding .5rem 1rem
-			borderRadius()
-			background-color rgba(0, 0, 0, .69)
-			tc(@background-color, high)
-			position absolute
-			bottom 0
-			left 50%
-			max-width 20rem
-			transform translateX(-50%) translateY(-75%)
-			pointer-events none
+		:root.catalog-mode .is_index
+			#index-size
+				display none
+			.navLinks::after
+				content '"Masonry" mode might require an F5 to look good, as it tries to load full image thumbnails. You can also try quickly changing the sorting style. Ignore the bottom of the page...'
+				display block
+				text-align center
+				padding .5rem 1rem
+				borderRadius()
+				background-color rgba(0, 0, 0, .69)
+				tc(@background-color, high)
+				position absolute
+				bottom 0
+				left 50%
+				max-width 25rem
+				transform translateX(-50%) translateY(-75%)
+				pointer-events none
 	
 	// removes the direct link to thread thumbnail and thread stats when
 	// switching between 4chan x index and catalog (it keeps the old html for some reason)
@@ -3586,7 +3490,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			font-size .75rem
 			padding .25rem .5rem
 			&:empty
-				display block // this forces `catalog-stats` to the bottom
+				display none // this forces `catalog-stats` to the bottom
 			if ss21catalogueStyle == 1
 				flex 1
 				//flex 1 1 0 // XXX: DUH WHY DONT I UTILISE FLEX BASES
@@ -4508,6 +4412,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			borderRadius()
 			padding .2rem .4rem
 	
+	@css {
+		#fourchanx-settings {
+			transition: opacity .25s;
+			opacity: 1;
+			/* @starting-style in 115+ */
+			@initial {
+				opacity: 0;
+			}
+		}
+	}
+	
 	if ss21navRail == 1
 		@css {
 			@keyframes slideIn {
@@ -4571,86 +4486,62 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			.tab-selected::after
 				display none i
 			.tab-main::before
-				if ss21iconFont == 0
-					content 'home'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F423'
 				else if ss21iconFont == 2
 					content 'home'
 			.tab-filter::before
-				if ss21iconFont == 0
-					content 'tune'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F789'
 				else if ss21iconFont == 2
 					content 'tune'
 			.tab-sauce::before
-				if ss21iconFont == 0
-					content 'image_search'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F18F'
 				else if ss21iconFont == 2
 					content 'image_search'
 			.tab-advanced::before
-				if ss21iconFont == 0
-					content 'settings'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F3E5'
 				else if ss21iconFont == 2
 					content 'settings'
 			.tab-keybinds::before
-				if ss21iconFont == 0
-					content 'keyboard_alt'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F451'
 				else if ss21iconFont == 2
 					content 'keyboard_alt'
 			.tab-ss21::before
-				if ss21iconFont == 0
-					content 'waves'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F617'
 				else if ss21iconFont == 2
 					content 'waves'
 			.export::before
-				if ss21iconFont == 0
-					content 'file_upload'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F603'
 				else if ss21iconFont == 2
 					content 'file_upload'
 			.import::before
-				if ss21iconFont == 0
-					content 'file_download'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F30A'
 				else if ss21iconFont == 2
 					content 'file_download'
 			.reset::before
-				if ss21iconFont == 0
-					content 'history'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F292'
 				else if ss21iconFont == 2
 					content 'history'
 			a[href*="blob"]::before
-				if ss21iconFont == 0
-					content 'commit'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F2C6'
 				else if ss21iconFont == 2
 					content 'commit'
 			a[href*="issues"]::before
-				if ss21iconFont == 0
-					content 'report'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F3CC'
 				else if ss21iconFont == 2
 					content 'report'
 			.fa-times::before
-				if ss21iconFont == 0
-					content 'menu_open'
-				else if ss21iconFont == 1
+				if ss21iconFont == 1
 					content '\F659'
 				else if ss21iconFont == 2
 					content 'menu_open'
@@ -5015,6 +4906,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&.replies-quoting-you::after
 			color invert(ss21primary)
 	
+	/*
+	when "show site prefix" is enabled, and you have a thread watched on another domain,
+	this is what it would look like. note that with it off, it gets rid of the letter
+	before the board (/qa/ instead of k/qa/ in this example)
+<div data-full-i-d="qa.101517" data-site-i-d="kissu.moe" data-page="3" class="replies-unread"><a class="fa fa-times" href="javascript:;"></a> <a href="https://kissu.moe/qa/res/101517.html" title="k/qa/ - Winter 2023 Seasonal Anime" class="watcher-link"><span class="watcher-page">[3]</span><span class="watcher-unread">(225)</span><span class="watcher-title">k/qa/ - Winter 2023 Seasonal Anime</span></a></div>
+	*/
+	
 	// menus
 	// styled based on:
 	// https://www.material.io/components/menus/
@@ -5031,6 +4929,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position fixed
 		z-index 10
 		z-depth(8)
+		font-size .875rem // XXX: menus need a slight refresh anyway
 		color ss21TextPrimary
 		background-color var(--background-primary)
 		padding .5rem 0
@@ -5072,6 +4971,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			input
 				order 1
 				margin-left .5rem
+		&.disabled
+			opacity .3
+			cursor not-allowed
 		.shortcut-text
 			color var(--text-hint-on-background)
 			font-size 75%
@@ -5210,6 +5112,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			padding 0
 			border 0
 			margin 0
+			width auto i
+			height auto i
 	
 	#embedding
 		background-color var(--background-primary)
@@ -5640,9 +5544,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// please turn off oneechan...
 	:root.oneechan .fa-gears::after
-		if ss21iconFont == 0
-			content 'sentiment_dissatisfied'
-		else if ss21iconFont == 1
+		if ss21iconFont == 1
 			content '\F31D'
 		else if ss21iconFont == 2
 			content 'sentiment_dissatisfied'
@@ -5811,6 +5713,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	:root.oneechan .watch-thread-link
 		background-image none i
 	
+	// XXX: oneechan hides checkboxes
+	:root.oneechan .riceCheck
+		display none
+	:root.oneechan input[type="checkbox"]
+		display initial i
+	
 	/*
 	// scroll snapping?
 	:root.paged-mode
@@ -5828,6 +5736,27 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			z-index 100
 		svg
 			display inline-block
+	
+	// XXX: support for post preview
+	form[name="post"] .post-preview
+		display none
+	
+	.post-preview
+		if ss21readingMode == ss21light
+			box-shadow 0 -1px 0 0 darken(ss21BackgroundElevated, 10%)
+		else if ss21readingMode == ss21dark
+			box-shadow 0 -1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		margin-top .5rem
+		overflow-y auto
+	.post-preview-blockquote
+		min-height 80px
+		max-height 300px
+		word-wrap break-word
+		background-color rgba(0, 0, 0, .33)
+	.post-preview summary
+		padding .25rem .25rem 0
+		cursor pointer
+		user-select none
 	
 	.ss21--download-all
 		tc(ss21primary, medium)
@@ -5937,3 +5866,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		#boardNavDesktop
 			display block
 	
+@-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog')
+	.is_catalog #content::before
+		content 'This won\t work because we block the native 4chan JS code. You should be using the 4chan X catalog anyway, so update your URLs.'
+		color ss21red
+		text-align center
+		display block
+	.is_catalog #content *:not(#threads)
+		display none i
