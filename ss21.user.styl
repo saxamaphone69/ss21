@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.3
+@version        2.4
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -12,7 +12,7 @@
 @var range      ss21fontSize         "Default font size" [16, 10, 18, 2, "px"]
 @var checkbox   ss21roundedCorners   "Rounded corners" 1
 @var select     ss21readingMode      "Reading mode" ["ss21dark:Dark theme*", "ss21light:Light theme", "ss21yotsuba:Yotsuba", "ss21tomorrow:Tomorrow", "ss21photon:Photon"]
-@var color      ss21primary          "Primary colour" #bb2649
+@var color      ss21primary          "Primary colour" #FFBE98
 @var select     ss21spacingLevel     "Spacing amount" ["0:Comfortable", "1:Compact"]
 @var checkbox   ss21underlineLink    "Underline external links" 1
 @var checkbox   ss21postWidth        "Full-width posts" 1
@@ -20,6 +20,7 @@
 @var select     ss21sidebar          "Sidebar" ["0:None*", "1:Right-hand side", "2:Left-hand side"]
 @var select     ss21QRPosition       "QR position" ["1:Floating*", "2:Locked right", "3:Fixed pop-out"]
 @var select     ss21buttonStyle      "Button style" ["1:Contained", "2:Outline", "3:Text", "4:Material 3*"]
+@var select     ss21textStyle        "Text input style" ["1:Outline*", "2:Fill"]
 @var checkbox   ss21quoteColour      "Default olive" 0
 @var checkbox   ss21boardBanner      "Enable board title and banner" 1
 @var checkbox   ss21evenPosts        "Recolour even post backgrounds" 1
@@ -52,7 +53,7 @@
 	@import url('https://rsms.me/inter/inter.css');
 	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
 	if ss21iconFont == 1
-		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css");
+		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css");
 	else if ss21iconFont == 2
 		@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 	
@@ -245,7 +246,7 @@
 		--grey-700 #737376
 		--grey-900 #303033
 		--grey-12 #121212
-		--font-default 'Inter var', system-ui
+		--font-default 'InterVariable', system-ui
 		--font-monospace 'Inconsolata', monospace, monospace
 	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
@@ -728,6 +729,14 @@
 			border-color ss21primary
 			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
 	
+	if ss21textStyle == 2
+		.field
+			background var(--ss21-dc-inverseOnSurface)
+			border 0
+			border-bottom-left-radius 0
+			border-bottom-right-radius 0
+			border-bottom 1px solid var(--ss21-dc-outline)
+	
 	// checkboxes used to be pseudo elements, but generic styling is pretty easy and reliable now
 	// HEAVILY inspired from bootstrap, gov.uk, and carbon
 	input[type="checkbox"]
@@ -902,11 +911,60 @@
 		selector(st1)
 	}
 	
+	:root.fourchan-xt
+		.icon-shortcut > a,
+		#thread-watcher .refresh,
+		.menu-button,
+		.hide-thread-button,
+		.download-button,
+		#qr-oekaki-button
+		#qr-filerm,
+		#url-button,
+		#paste-area,
+		#custom-cooldown-button,
+		#dump-button
+			font-size 0
+			&::after
+				if ss21iconFont == 1
+					display inline-flex
+					font-family bootstrap-icons
+					font-style normal
+					font-size 1.5rem
+					font-weight normal
+					font-variant normal
+					text-transform none
+					line-height 1
+					-webkit-font-smoothing antialiased
+					-moz-osx-font-smoothing grayscale
+					visibility visible // added from 4chan x
+				else if ss21iconFont == 2
+					font-family 'Material Symbols Outlined'
+					font-weight normal
+					font-style normal
+					font-size 1.5rem
+					line-height: 1
+					letter-spacing normal
+					text-transform none
+					display inline-flex // better vertical alignment
+					justify-content center
+					align-items center
+					white-space nowrap
+					word-wrap normal
+					direction ltr
+					-webkit-font-feature-settings 'liga'
+					-webkit-font-smoothing antialiased
+					color inherit // generally not explicity set, but should be
+					visibility visible // added from 4chan x
+					font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
+	
 	// XXX: ICONS! by no means a perfect implementation due to the limitations
 	// and the "workarounds" used in order to get icons to appear
+	// XXX: end of 2023 note, this does not support 4chan XT as it removes font-awesome
 	$icons,
 	.fa::after,
 	.menu-button::after,
+	:root.fourchan-xt .shortcut a::after,
+	:root.fourchan-xt .hide-thread-button::after,
 	.n-pu::after,
 	.contact-links::after,
 	#navlinks a::after,
@@ -995,36 +1053,43 @@
 			content '\F5D4'
 		else if ss21iconFont == 2
 			content 'more_horiz'
+	:root.fourchan-xt #watcher-link::after,
 	.fa-eye::after // thread watcher
 		if ss21iconFont == 1
 			content '\F33E'
 		else if ss21iconFont == 2
 			content 'remove_red_eye'
+	:root.fourchan-xt .expand-all-shortcut::after,
 	.fa-expand::after // expand all images
 		if ss21iconFont == 1
 			content '\F3DF'
 		else if ss21iconFont == 2
 			content 'fullscreen'
+	:root.fourchan-xt .contract-all-shortcut::after,
 	.fa-compress::after // compress all images
 		if ss21iconFont == 1
 			content '\F3DE'
 		else if ss21iconFont == 2
 			content 'fullscreen_exit'
+	:root.fourchan-xt #shortcut-gallery > a::after,
 	.fa-picture-o::after // gallery mode
 		if ss21iconFont == 1
 			content '\F42A'
 		else if ss21iconFont == 2
 			content 'photo'
+	:root.fourchan-xt #shortcut-qr > a::after,
 	.fa-comment-o::after // menus in catalogue mode
 		if ss21iconFont == 1
 			content '\F25B'
 		else if ss21iconFont == 2
 			content 'comment'
+	:root.fourchan-xt #shortcut-index-refresh > a::after,
 	.fa-refresh::after // refresh index
 		if ss21iconFont == 1
 			content '\F116'
 		else if ss21iconFont == 2
 			content 'refresh'
+	:root.fourchan-xt .settings-link::after,
 	.fa-wrench::after // 4chan x settings
 		if ss21iconFont == 1
 			content '\F3E2'
@@ -1035,6 +1100,7 @@
 			content '\F5B1'
 		else if ss21iconFont == 2
 			content 'style'
+	:root.fourchan-xt .hide-thread-button::after,
 	.fa-minus-square::after,
 	.fa-minus-square-o::after // hide post
 		if ss21iconFont == 1
@@ -1054,6 +1120,7 @@
 			content '\F659'
 		else if ss21iconFont == 2
 			content 'close'
+	:root.fourchan-xt #shortcut-prefetch > a::after,
 	.fa-bolt::after // prefetch
 		if ss21iconFont == 1
 			content '\F46E'
@@ -1114,11 +1181,13 @@
 				content '\F138'
 			else if ss21iconFont == 2
 				content 'arrow_forward'
+	:root.fourchan-xt #qr-oekaki-button::after,
 	.fa-edit::after // oeaki mode in qr
 		if ss21iconFont == 1
 			content '\F4B0'
 		else if ss21iconFont == 2
 			content 'format_paint'
+	:root.fourchan-xt #url-button::after,
 	.copy-text-link::after,
 	.fa-link::after // copy
 		if ss21iconFont == 1
@@ -1130,17 +1199,20 @@
 			content '\F290'
 		else if ss21iconFont == 2
 			content 'content_paste'
+	:root.fourchan-xt #custom-cooldown-button::after,
 	.fa-clock-o::after // auto poster in qr
 		if ss21iconFont == 1
 			content '\F597'
 		else if ss21iconFont == 2
 			content 'timer'
+	:root.fourchan-xt #dump-button::after,
 	#qr .fa-plus-square::after,
 	#add-post::after // dump list in qr
 		if ss21iconFont == 1
 			content '\F4FC'
 		else if ss21iconFont == 2
 			content 'add_box'
+	:root.fourchan-xt #qr-filerm::after,
 	#index-search-clear::after,
 	.fa-times-circle::after // remove/clear
 		if ss21iconFont == 1
@@ -1952,6 +2024,19 @@
 		.navLinks.json-index
 			margin 1rem auto i
 	
+	// XXX: 2023 hotness, scroll-driven animations, all in css with no js
+	/*
+	.boardTitle
+		animation txtShadow linear forwards
+		animation-timeline scroll()
+		animation-range 0vh 33vh
+	
+	@keyframes txtShadow
+		from
+			text-shadow 1rem 1rem 0 var(--primary)
+		to
+			text-shadow 0 0 0 var(--primary)
+	*/
 	// SIDEDISH: check if the board banner was actually blocked
 	:root.ss21--banner-blocked #bannerCnt
 		display none
@@ -2345,14 +2430,14 @@
 		&:empty
 			display none
 	
-	.nameBlock
+	[class^="nameBlock"]
 		//margin-right .25rem
 		display inline-flex
 		align-items center
 		gap 0 .25rem
 	
 	if ss21forcedAnon == 1
-		.nameBlock
+		[class^="nameBlock"]
 			display none
 		.subject:not(:empty)::after
 			display none i
@@ -3073,7 +3158,8 @@
 	/*
 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21poster(admin)) + "' viewBox='0 0 16 16'%3E%3Cpath d='M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z'/%3E%3C/svg%3E")
 */
-	.postContainer.poster--admin
+	.postContainer.poster--admin,
+	.postContainer:has(.capcodeAdmin)
 		> .post
 			background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 			.identityIcon
@@ -3081,10 +3167,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			> .postInfo > .nameBlock
 				color ss21posterAdmin
 	
-	.stub:has(+ .poster--mod)
+	// XXX: .stub:has(~ .postContainer:has(.capcodeAdmin)) would be nice
+	.stub:has(~ .poster--mod)
 		background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 	
-	.postContainer.poster--mod
+	.postContainer.poster--mod,
+	.postContainer:has(.capcodeMod)
 		> .post
 			background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
 			.identityIcon
@@ -3092,7 +3180,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			> .postInfo > .nameBlock
 				color ss21poster(mod)
 	
-	.stub:has(+ .poster--mod)
+	.stub:has(~ .poster--mod)
 		background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
 	
 	.postContainer.poster--verified
@@ -3100,13 +3188,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			background-color mix(ss21posterVerified, ss21BackgroundColour, 10%)
 			.identityIcon
 				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(verified)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
-			> .postInfo > .nameBlock
+			> .postInfo > [class^="nameBlock"]
 				color ss21posterVerified
 	
 	:root:not(.anonymize) .postContainer.poster--pass
 		> .post
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
-			> .postInfo > .nameBlock
+			> .postInfo > [class^="nameBlock"]
 				color ss21posterPass
 		+ .summary
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
@@ -3171,6 +3259,24 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		}
 	}
 	
+	.file--ai .fileThumb
+		position relative
+	.file--ai .fileThumb::before
+		content ''
+		background-color #75ac9d
+		background-repeat no-repeat
+		background-position center center
+		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 256 256'%3E%3Cpath fill='%23fff' stroke-miterlimit='10' d='M11.13477 1.01758c-.26304-.01259-.528-.00875-.79687.01563-2.22436.20069-4.00167 1.76087-4.72852 3.78711-1.71233.35652-3.1721 1.48454-3.9375 3.13672-.93789 2.02702-.47459 4.34373.91602 5.98633-.54763 1.66186-.30227 3.49111.74414 4.97852 1.28618 1.82589 3.52454 2.58282 5.64258 2.19922 1.16505 1.30652 2.87295 2.00936 4.6875 1.8457 2.22441-.2007 4.0017-1.7608 4.72852-3.78711 1.71235-.35654 3.17321-1.4837 3.93945-3.13672.93809-2.0267.47529-4.34583-.91602-5.98828.54663-1.66125.29983-3.48985-.74609-4.97656-1.28618-1.82589-3.52454-2.58282-5.64258-2.19922-.99242-1.11291-2.37852-1.78893-3.89062-1.86133zm-.10938 1.49609c.89653.03518 1.7296.36092 2.40625.9082-.11306.05604-.23154.09454-.3418.1582L9.07617 5.89648c-.306.176-.496.50247-.5.85547l-.05859 5.48633L6.75 11.18945v-4.4043c0-2.136 1.55759-4.04291 3.68359-4.25391.19937-.01975.39689-.02523.5918-.01758zM16.125 4.25586c1.27358.00756 2.51484.5693 3.29297 1.6543.65289.90943.89227 1.99184.72852 3.03711-.10507-.06991-.19832-.15312-.30859-.2168l-4.01172-2.31641c-.306-.176-.68224-.17886-.99023-.00586l-4.7832 2.69531.02344-2.05469 3.81445-2.20117c.69375-.4005 1.47022-.59633 2.23438-.5918zM5.2832 6.47266c-.008.12587-.0332.24774-.0332.375v4.63281c0 .353.18623.67938.49023.85938l4.72461 2.79688-1.79102 1.00586-3.81445-2.20312c-1.85-1.068-2.7228-3.37236-1.8418-5.31836.46198-1.02041 1.27879-1.76751 2.26562-2.14844zm10.04297 1.38476 3.81445 2.20313c1.85 1.068 2.72475 3.37236 1.84375 5.31836-.46209 1.02065-1.28043 1.7676-2.26758 2.14844.00797-.12565.0332-.24797.0332-.375v-4.63086c0-.354-.18623-.68133-.49023-.86133l-4.72461-2.79687zm-3.30078 1.85352 1.96875 1.16797-.02734 2.28906-1.99219 1.11914-1.96875-1.16601.02539-2.28906zm3.45703 2.05078L17.25 12.81055v4.4043c0 2.136-1.55759 4.04291-3.68359 4.25391-1.11644.11059-2.17429-.22435-2.99805-.89062.11306-.05604.23154-.09454.3418-.1582l4.01367-2.31641c.306-.176.496-.50247.5-.85547zm-1.53515 3.13476-.02344 2.05469-3.81445 2.20117c-1.85 1.068-4.28234.6735-5.52734-1.0625-.65289-.90943-.89227-1.99184-.72852-3.03711.10521.07006.19816.15299.30859.2168l4.01172 2.31641c.306.176.68223.17886.99023.00586z' font-family='none' font-size='none' font-weight='none' style='mix-blend-mode:normal' text-anchor='none' transform='scale(10.66667)'/%3E%3C/svg%3E")
+		border-radius 8px
+		display block
+		height 32px
+		width 32px
+		position absolute
+		top -4px
+		left -4px
+		pointer-events none
+		opacity .87
+	
 	if ss21postInfoBg == 0
 		.postInfo
 			background-color initial
@@ -3181,6 +3287,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	if ss21postInfoFont == 1
 		.postInfo
 			font-size .8rem
+	
+	if ss21postInfoDisplay == 0
+		.fileThumb
+			margin-top .25rem
 	
 	if ss21postInfoDisplay == 1
 		.postInfo
@@ -5448,6 +5558,15 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	if ss21readingMode == ss21dark
 		.xa23i
 			filter invert(1)
+	
+	// 2023 merry christmas revert. you still need to disable:
+	// https://s.4cdn.org/js/snow.js
+	#js-snowfield
+		display none i
+	.boardBanner, #delform, .navLinksBot.desktop
+		padding-top 0
+		border 0
+		border-image none
 	
 	// XXX: archive and /f/ `table` support
 	// fun fact, the archive has about 10,000 entries displayed at any one time
