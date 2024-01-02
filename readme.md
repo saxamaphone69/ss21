@@ -3,7 +3,7 @@ a self-centered, fresh attempt at (user)styling 4chan
 
 ![screenshot of ss21 applied](img/browser-2023-03-04.png)
 
-following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) in ~~2019, 2020, 2021, 2022~~, 2023!
+following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with either [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) or [tuxedotako's typescript fork](https://github.com/TuxedoTako/4chan-xt) in ~~2019, 2020, 2021, 2022, 2023~~, 2024!
 
 created by **saxamaphone** "sax" `!3.saxN0DHY`, who has been making userstyles for 4chan since 2009 with styles such as 3 Shades of 4chan (which only exists as Midnight Caek in App/OneeChan now), curabitr, and xl
 
@@ -26,8 +26,8 @@ it is **highly** recommended you play with the settings within the userstyle
 ## installation
 this userstyle is currently being actively developed for chrome first, with firefox as an after thought. you will require [stylus](http://add0n.com/stylus.html) ([don't use stylish anymore](https://robertheaton.com/2018/08/16/stylish-is-back-and-you-still-shouldnt-use-it/)), a userscript manager such as [tampermonkey](https://tampermonkey.net/), and a blocking extension such as [ublock origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en).
 
-1. install [`ss21.user.styl`](https://github.com/saxamaphone69/ss21/raw/master/ss21.user.styl) (stylus should prompt you to install)
-2. install [`sidedish.user.js`](https://github.com/saxamaphone69/ss21/raw/master/sidedish.user.js) (your userscript manager should prompt you to install)
+1. install [`ss21.user.styl`](https://github.com/saxamaphone69/ss21/raw/main/ss21.user.styl) (stylus should prompt you to install)
+2. install [`sidedish.user.js`](https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js) (your userscript manager should prompt you to install)
 3. add the blocking filters (to your blocking extension) and 4chan x filters (to 4chan x) below
 4. cross your fingers and hope it works!
 
