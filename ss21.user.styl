@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.1
+@version        2.4.2
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -496,7 +496,8 @@
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/text-underline-offset
 	.linkify,
 	:where(.globalMessage) :where(a):not(.fa),
-	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]):not([href*="boards.4channel.org"])
+	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]),
+	.postMessage a[href*="boards.4chan.org"]:not(.quotelink)
 		text-decoration solid underline
 		text-underline-offset 2px // XXX: 1px suddenly stopped looking good?
 		unless ss21underlineLink
@@ -616,7 +617,6 @@
 	// when height is not a rounded amount
 	embed,
 	img,
-	svg,
 	video
 		display block // was `vertical-align: middle`
 		height auto
@@ -626,6 +626,10 @@
 	:where(audio)
 		vertical-align middle
 		width 100%
+	
+	:where(svg)
+		height auto
+		max-width 100%
 	
 	// remove the default border given to `iframe`
 	iframe
@@ -911,6 +915,9 @@
 		selector(st1)
 	}
 	
+	:root.fourchan-xt .icon
+		display none
+	
 	icon-style()
 		if ss21iconFont == 1
 			display inline-flex
@@ -945,7 +952,7 @@
 			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
 	
 	:root.fourchan-xt
-		.icon-shortcut > a,
+		.shortcut > a,
 		#thread-watcher .refresh,
 		.menu-button,
 		.hide-thread-button,
@@ -1055,12 +1062,12 @@
 	:root.fourchan-xt .hide-reply-button::after,
 	.fa-minus-square::after,
 	.fa-minus-square-o::after // hide post
-		content ss21iconFont == 1 ? '\F2E5' : 'unfold_less'
+		content ss21iconFont == 1 ? '\F27D' : 'unfold_less'
 	:root.fourchan-xt .show-thread-button span::after,
 	:root.fourchan-xt .show-reply-button span:after,
 	.fa-plus-square::after,
 	.fa-plus-square-o::after // show post
-		content ss21iconFont == 1 ? '\F4F9' : 'unfold_more'
+		content ss21iconFont == 1 ? '\F283' : 'unfold_more'
 	.fa-times::after,
 	.close::after,
 	.gal-close::after // close
@@ -1232,24 +1239,31 @@
 		if ss21iconFont == 1
 			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z'/%3E%3C/svg%3E")
 		else if ss21iconFont == 2
-			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 20 20'%3E%3Cpath d='M5.417 18.917q-.875 0-1.459-.584-.583-.583-.583-1.458V8.708q0-.875.583-1.458.584-.583 1.459-.583v-2q0-1.938 1.343-3.282Q8.104.042 10 .042q1.917 0 3.25 1.343 1.333 1.344 1.333 3.282v2q.875 0 1.459.583.583.583.583 1.458v8.167q0 .875-.583 1.458-.584.584-1.459.584ZM10 14.625q.75 0 1.271-.531.521-.532.521-1.261 0-.75-.532-1.271-.531-.52-1.26-.52-.75 0-1.271.531-.521.531-.521 1.26 0 .75.532 1.271.531.521 1.26.521ZM7.458 6.667h5.084v-2q0-1.063-.74-1.823-.74-.761-1.802-.761t-1.802.761q-.74.76-.74 1.823Z'/%3E%3C/svg%3E");
+			--closed-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 20 20'%3E%3Cpath d='M5.417 18.917q-.875 0-1.459-.584-.583-.583-.583-1.458V8.708q0-.875.583-1.458.584-.583 1.459-.583v-2q0-1.938 1.343-3.282Q8.104.042 10 .042q1.917 0 3.25 1.343 1.333 1.344 1.333 3.282v2q.875 0 1.459.583.583.583.583 1.458v8.167q0 .875-.583 1.458-.584.584-1.459.584ZM10 14.625q.75 0 1.271-.531.521-.532.521-1.261 0-.75-.532-1.271-.531-.52-1.26-.52-.75 0-1.271.531-.521.531-.521 1.26 0 .75.532 1.271.531.521 1.26.521ZM7.458 6.667h5.084v-2q0-1.063-.74-1.823-.74-.761-1.802-.761t-1.802.761q-.74.76-.74 1.823Z'/%3E%3C/svg%3E")
 		default-icon-style()
 		//margin-left .25rem
 		background-image var(--closed-icon)
 	
 	.stickyIcon
+		if ss21iconFont == 1
+			--sticky-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 16 16'%3E%3Cpath d='M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A6 6 0 0 1 5 6.708V2.277a3 3 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354'/%3E%3C/svg%3E")
+		else if ss21iconFont == 2
+			--sticky-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z' /%3E%3C/svg%3E")
 		default-icon-style()
 		//margin-left .25rem
-		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z' /%3E%3C/svg%3E")
+		background-image var(--sticky-icon)
 	
 	.archivedIcon
+		if ss21iconFont == 1
+			--archived-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21OppColour) + "' viewBox='0 0 16 16'%3E%3Cpath d='M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z'/%3E%3C/svg%3E")
+		else if ss21iconFont == 2
+			--archived-icon url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M19,8V5H5V8H9A3,3 0 0,0 12,11A3,3 0 0,0 15,8H19M19,3A2,2 0 0,1 21,5V12A2,2 0 0,1 19,14H5A2,2 0 0,1 3,12V5A2,2 0 0,1 5,3H19M3,15H9A3,3 0 0,0 12,18A3,3 0 0,0 15,15H21V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V15Z' /%3E%3C/svg%3E")
 		default-icon-style()
 		margin-left .25rem
-		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M19,8V5H5V8H9A3,3 0 0,0 12,11A3,3 0 0,0 15,8H19M19,3A2,2 0 0,1 21,5V12A2,2 0 0,1 19,14H5A2,2 0 0,1 3,12V5A2,2 0 0,1 5,3H19M3,15H9A3,3 0 0,0 12,18A3,3 0 0,0 15,15H21V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V15Z' /%3E%3C/svg%3E")
+		background-image var(--archived-icon)
 	
 	.identityIcon
 		default-icon-style()
-		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 	
 	// XXX: on "retina" (`window.devicePixelRatio >= 2`) displays, 4chan x switches
 	// to the @2x version of certain icons. until we switch the identityIcon to an
@@ -1268,6 +1282,26 @@
 		
 	:root:not(.shortcut-icons) #shortcuts .fa::after,
 	:root:not(.shortcut-icons) .native-settings::after
+		display none
+	
+	:root:not(.shortcut-icons) #shortcuts
+		grid-template-columns 1fr repeat(6, min-content)
+		.shortcut a
+			font-size inherit
+			white-space nowrap
+			&::after
+				display none
+	/*
+	:root.fourchan-xt:not(.shortcut-icons) #shortcuts
+		.shortcut a
+			font-size inherit
+			white-space nowrap
+			&::after
+				display none
+	*/
+	// 4chan xt 2.7.0
+	:root.fourchan-xt.shortcut-icons #shortcuts .icon--alt-text,
+	:root.fourchan-xt:not(.shortcut-icons) .shortcut::after
 		display none
 	
 	// generic classes used throughout 4chan and 4chan x
@@ -1497,6 +1531,7 @@
 		#header-bar:has(#full-board-list:not([hidden])) .ss21--board-drawer-toggle
 			display none
 	
+	// XXX: btw this makes notifications transparent too, silly
 	if ss21floatingHeader == 1
 		:root.fixed.top-header #header-bar
 			top 1rem
@@ -1593,11 +1628,11 @@
 		align-items center
 		justify-content center
 		padding .25rem
-		a,
+		& > a,
 		.menu-button
 			tc(ss21primary, medium)
 			transition color .25s
-		a:hover,
+		& > a:hover,
 		.menu-button:hover,
 		.menu-button.active,
 		.fa-bolt:not(.disabled),
@@ -2116,7 +2151,25 @@
 		color ss21primary
 		&:hover
 			color shade(ss21primary, 15%)
-	
+	/*
+	@css {
+		@scope (.postNum) {
+			a:first-child {
+				font-size: 0;
+			}
+			a:first-child::after {
+				content: '#';
+				font-size: var(--post-info-fs, 0.75rem);
+			}
+			a {
+				color: red;
+			}
+			a:hover {
+				color: maroon;
+			}
+		}
+	}
+	*/
 	// support for [sjis] on /jp/
 	// pretty much straight copied because it needs to be a specific size
 	/*
@@ -2275,14 +2328,14 @@
 		&:empty
 			display none
 	
-	[class^="nameBlock"]
+	.nameBlock
 		//margin-right .25rem
 		display inline-flex
 		align-items center
 		gap 0 .25rem
 	
 	if ss21forcedAnon == 1
-		[class^="nameBlock"]
+		.nameBlock
 			display none
 		.subject:not(:empty)::after
 			display none i
@@ -2506,9 +2559,20 @@
 	
 	// .stub ~ * is probably a little too expensive $$$ - but it's there because
 	// if json index is off and replies are shown, it covers all bases
+	/*
 	.stub ~ *
 		display none
-	
+	*/
+	// XXX: 2024: this was .postContainer, but doesn't work on index.
+	// but even with @scope, there are a lot of elements within .thread to be using
+	// a * for
+	@css {
+		@scope (.thread) {
+			.stub ~ * {
+				display: none;
+			}
+		}
+	}
 	.stub
 		display flex
 		align-items center
@@ -2522,13 +2586,15 @@
 			flex 1
 			display flex
 			align-items center
-			> .fa
+			> .fa,
+			> span
 				display inline-flex
 				margin-right .5rem
 				&::after
 					opacity .54
 					transition opacity .25s
-			&:hover .fa::after
+			&:hover .fa::after,
+			&:hover span::after
 				opacity .87
 	
 	// file formatting
@@ -2904,22 +2970,9 @@
 		:where(.container) :where(.backlink)
 			font-size 0
 		:where(.container) :where(.backlink)::after
-			content 'reply'
-			font-family 'Material Symbols Outlined'
-			font-weight normal
-			font-style normal
+			icon-style()
+			content ss21iconFont == 1 ? '\F51F' : 'reply'
 			font-size 18px
-			line-height: 1
-			letter-spacing normal
-			text-transform none
-			display inline-flex // better vertical alignment
-			justify-content center
-			align-items center
-			white-space nowrap
-			word-wrap normal
-			direction ltr
-			-webkit-font-feature-settings 'liga'
-			-webkit-font-smoothing antialiased
 			color ss21primary
 			font-variation-settings 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
 			opacity .54
@@ -2936,6 +2989,10 @@
 	
 	:where(.container:empty)
 		display none
+	
+	// XXX: https://github.com/TuxedoTako/4chan-xt/issues/10#issuecomment-1865093994
+	:root.fourchan-xt .post:target
+		scroll-margin-top 4rem
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
@@ -3007,12 +3064,19 @@
 	/*
 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(ss21poster(admin)) + "' viewBox='0 0 16 16'%3E%3Cpath d='M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z'/%3E%3C/svg%3E")
 */
+	
+	identity-icon-style(type)
+		if ss21iconFont == 1
+			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + type + "' viewBox='0 0 16 16'%3E%3Cpath d='M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708'/%3E%3C/svg%3E")
+		else if ss21iconFont == 2
+			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + type + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
+	
 	.postContainer.poster--admin,
 	.postContainer:has(.capcodeAdmin)
 		> .post
 			background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 			.identityIcon
-				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(admin)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
+				identity-icon-style(hsl(ss21poster(admin)))
 			> .postInfo > .nameBlock
 				color ss21posterAdmin
 	
@@ -3025,7 +3089,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		> .post
 			background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
 			.identityIcon
-				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(mod)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
+				identity-icon-style(hsl(ss21poster(mod)))
 			> .postInfo > .nameBlock
 				color ss21poster(mod)
 	
@@ -3036,7 +3100,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		> .post
 			background-color mix(ss21posterVerified, ss21BackgroundColour, 10%)
 			.identityIcon
-				background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + hsl(ss21poster(verified)) + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
+				identity-icon-style(hsl(ss21poster(verified)))
 			> .postInfo > .nameBlock
 				color ss21posterVerified
 	
@@ -3045,8 +3109,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 			> .postInfo > .nameBlock
 				color ss21posterPass
-		+ .summary
-			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
+		if ss21openThread == 0
+			+ .summary
+				background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 	
 	.postContainer.post--aus
 		> .post
@@ -3093,8 +3158,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		z-index 1 // for some reason the menu gets offset when transformed
 		.postNum a:nth-child(2n)::after
 			color ss21green
-			vertical-align text-bottom
-			margin-left .25rem
+			position absolute
+			top 0
 			pointer-events none
 	
 	@css {
@@ -3419,13 +3484,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			min-height 4rem
 	.catalog-stats
 		order 5
-		font-size .75rem
 		padding .25rem .5rem
 		margin-top auto
 		display flex
 		align-items center
 		border-top 1px solid tint(ss21BackgroundElevated, 5%)
 		span[title]
+			font-size .75rem
 			color var(--text-hint-on-background)
 			cursor help
 			span
@@ -3892,15 +3957,88 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display flex
 		flex-wrap wrap
 		justify-content center
+		gap .5rem
 		margin auto
 		width auto i
 	
+	// XXX: july 2021: new captcha system
+	#t-resp
+		font inherit i
+		font-family var(--font-monospace) i
+		width auto i
+		height auto i
+		margin 0 i
+		display inline-block
+		background inherit
+		width calc(50% - 0.5rem) i
+		padding .5rem .75rem i
+		border 1px solid alpha(ss21OppColour, .33)
+		borderRadius()
+		transition border .25s, box-shadow .25s
+		&:hover
+			border-color alpha(ss21OppColour, .8)
+		&:focus
+			border-color ss21primary
+			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
+	
+	#t-cnt:not([style*="width"]),
+	#t-slider[style*="vis"]
+		display none
+	
+	// this hides the captcha container when it deloads
+	#t-cnt:has(#t-fg:not([style*="image"]))
+		display none i
+	
+	#t-frame
+		height auto i
+	
+	// this makes the 'get captcha' button full width on initial load of qr, and
+	// hides the captcha input
+	@css {
+		.captcha-container:has(#t-fg:not([style*="image"])) {
+			#t-load {
+				width: 100% !important;
+			}
+			#t-resp {
+				display: none !important;
+			}
+		}
+	}
+	
+	if ss21readingMode == ss21dark
+		#t-cnt
+			filter invert(.935)
+	
+	// XXX: https://github.com/ccd0/4chan-x/issues/3196
+	#t-bg
+		filter sepia(100%) saturate(500%) hue-rotate(90deg) brightness(100%) contrast(100%)
+	
+	#t-load
+		font-size .875rem i
+		padding 0 .75rem i
+		margin 0 i
+		width calc(50% - 0.5rem) i
+		height 42px i
+	
+	// this makes it so if you have the auto-solver, each element only takes up 33%
+	@css {
+		.captcha-container:has(#t-auto-solve:not([style*="none"])) :is(#t-load, #t-resp, #t-auto-solve) {
+			width: calc(33% - 0.5rem) !important;
+		}
+	}
+	
+	// 4chan captcha solver support
+	#t-auto-solve
+		font-size inherit i
+		padding 0 .75rem i
+		margin 0 i
+		height auto i
+	
 	#t-cnt
-		margin auto
+		margin 0
 	
 	#t-msg:not(:empty)
 		position relative i
-		margin-top .5rem
 	
 	// hides the "?" button next to the captcha input
 	#t-help
@@ -3969,7 +4107,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		height calc(2.5rem + 2px) // technically each row of the qr is this height
 		//align-items stretch
 		input[type="submit"]
-			width 15%
+			icon-style()
+			width 10%
 			margin-left .25rem
 			background-color ss21green
 			/*
@@ -4008,7 +4147,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		background-color var(--grey-500)
 	
 	#qr-file-button
-		width 15%
+		icon-style()
+		width 10%
 		margin-right .25rem
 		&:focus
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
@@ -4056,10 +4196,27 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#file-n-submit:not(.has-file) #qr-spoiler-label // only show spoiler option when a file is uploaded
 		display none
 	
+	// 4chan xt 2.7.0
+	#qr-randomize::after
+		content ss21iconFont == 1 ? '\F544' : 'shuffle'
+		icon-style()
+	#qr-restore-name::after
+		content ss21iconFont == 1 ? '\F292' : 'history'
+		icon-style()
+	
+	#file-n-submit:not(.has-file)
+		#qr-randomize,
+		#qr-restore-name
+			display none
+	
+	.row
+		display contents
+		a
+			display inline-flex
+	
 	#qr-spoiler-label
 		display inline-flex
 		align-items center
-		margin-right .25rem
 		#qr-file-spoiler
 			position absolute
 			opacity 0
@@ -4100,6 +4257,28 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#custom-cooldown-button:not(.disabled) .fa-clock-o::after,
 	#qr.dump #dump-button .fa-plus-square::after,
 	#qr:has(.oekaki:not([hidden])) .fa-edit::after
+		tc(rgba(ss21BackgroundElevated), high)
+	
+	:root.fourchan-xt #file-n-submit
+		a
+			display inline-flex
+			align-items center
+			cursor pointer
+			&::after
+				tc(rgba(ss21BackgroundElevated), low)
+				transition color .25s
+			&:hover::after
+				tc(rgba(ss21BackgroundElevated), medium)
+	
+	:root.fourchan-xt #file-n-submit #qr-filerm
+		&::after
+			color rgba(ss21red, .54)
+		&:hover::after
+			color rgba(ss21red, .89)
+	
+	:root.fourchan-xt #custom-cooldown-button:not(.disabled)::after,
+	:root.fourchan-xt #qr.dump #dump-button::after,
+	:root.fourchan-xt #qr:has(.oekaki:not([hidden])) #qr-oekaki-button::after
 		tc(rgba(ss21BackgroundElevated), high)
 	
 	#char-count
@@ -4207,65 +4386,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&::after
 			font-size 3rem
 			color ss21blue
-	
-	// XXX: july 2021: new captcha system
-	#t-resp
-		font inherit i
-		font-family var(--font-monospace) i
-		width auto i
-		height auto i
-		margin-right .5rem i
-		display inline-block
-		background inherit
-		flex 1
-		padding .5rem .75rem i
-		border 1px solid alpha(ss21OppColour, .33)
-		borderRadius()
-		transition border .25s, box-shadow .25s
-		&:hover
-			border-color alpha(ss21OppColour, .8)
-		&:focus
-			border-color ss21primary
-			box-shadow 0 0 0 .2rem alpha(ss21primary, .25)
-	
-	#t-cnt:not([style*="width"]),
-	#t-slider[style*="vis"]
-		display none
-	
-	// this hides the captcha container when it deloads
-	#t-cnt:has(#t-fg:not([style*="image"]))
-		display none i
-	
-	#t-cnt
-		margin-top .5rem i
-	
-	#t-slider
-		margin-top .25rem i
-	
-	if ss21readingMode == ss21dark
-		#t-cnt
-			filter invert(.935)
-	
-	// XXX: https://github.com/ccd0/4chan-x/issues/3196
-	#t-bg
-		filter sepia(100%) saturate(500%) hue-rotate(90deg) brightness(100%) contrast(100%)
-	
-	.captcha-container
-		button
-			font-size .875rem i
-			padding 0 .75rem i
-			margin 0 i
-			width auto i
-			height 42px i
-			&:first-of-type
-				margin-right .5rem i
-	
-	// 4chan captcha solver support
-	#t-auto-solve
-		font-size inherit i
-		padding 0 .75rem i
-		margin 0 i
-		height auto i
 	
 	// 4CHANX: settings
 	// easier styling thanks to https://github.com/ccd0/4chan-x/pull/2322
@@ -4830,6 +4950,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&.replies-quoting-you::after
 			color invert(ss21primary)
 	
+	:root:not(.shortcut-icons)
+		#watcher-link
+			&.replies-unread
+				text-decoration 2px underline ss21red
+				text-underline-offset 2px
+				&::before
+					display none
+			&.replies-quoting-you
+				color invert(ss21primary)
+	
 	/*
 	when "show site prefix" is enabled, and you have a thread watched on another domain,
 	this is what it would look like. note that with it off, it gets rid of the letter
@@ -4850,18 +4980,55 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		cursor pointer // sometimes it's a `span`, so we need this
 	
 	#menu
-		position fixed
+		position fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
 		z-index 10
 		z-depth(8)
-		font-size .875rem // XXX: menus need a slight refresh anyway
 		color ss21TextPrimary
-		background-color var(--background-primary)
-		padding .5rem 0
+		background-color ss21BackgroundElevated
+		padding .25rem 0
 		borderRadius()
 		white-space nowrap
 		outline none // XXX: doesn't need a focus style
 		user-select none
 	
+	.entry
+		font-size .875rem
+		display flex
+		align-items center
+		justify-content flex-start
+		gap .75rem
+		min-inline-size 10rem
+		padding .25rem .75rem
+		position relative // used to align submenus
+		transition background-color .25s
+		&:hover
+			background-color ss21BackgroundColour
+		&::after
+			order -1 // puts any icons before the text
+			color var(--text-hint-on-background)
+			font-size 1em
+		&.disabled
+			opacity .3
+			cursor not-allowed
+		.field
+			width auto
+		&.has-shortcut-text
+			justify-content space-between
+		.shortcut-text
+			color var(--text-hint-on-background)
+			font-size 75%
+		input[type="checkbox"]
+			margin 0
+			block-size 1em
+			inline-size 1em
+		input[type="range"] // volume slider on sound-enabled boards
+			order 1
+		& > label
+			display contents
+		input[type="number"] // 'show last 1000 posts'
+			padding 0 0 0 .25rem
+			width 6.5ch
+	/*
 	.entry
 		display flex
 		//justify-content space-between
@@ -4874,7 +5041,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		line-height 2
 		transition background-color .25s
 		&:hover
-			background-color var(--background-secondary)
+			background-color ss21BackgroundColour
 		&::after
 			// XXX: icons are added to some menu entries to look fancy
 			//position absolute
@@ -4921,20 +5088,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&::after
 			right auto
 			left .75rem
-
+	*/
 	.submenu
 		display none
 		position absolute
 		left 100%
 		z-index 10
 		z-depth(8)
-		background-color var(--background-primary)
-		padding .5rem 0
+		background-color ss21BackgroundElevated
+		padding .25rem 0
 		borderRadius()
-		margin-top calc(.5rem * -1) // counters the offset because of the top and bottom padding
+		margin-top calc(.25rem * -1) // counters the offset because of the top and bottom padding
 		&[style*='m: 0']
 			margin-top 0
-			margin-bottom calc(.5rem * -1)
+			margin-bottom calc(.25rem * -1)
 	
 	// only show the submenu when its parent has hover/focus
 	.focused > .submenu
@@ -5661,6 +5828,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			z-index 100
 		svg
 			display inline-block
+		.fcsp-chan-x-controls
+			font-size .75rem
+			grid-column -9
+			grid-row span 2
 	
 	// XXX: support for post preview
 	form[name="post"] .post-preview
@@ -5772,6 +5943,19 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.ss21-fileurl
 		color ss21primary
+	
+	#ss21-frog-counter
+		position fixed
+		bottom 1rem
+		right 1rem
+		padding .5rem .75rem
+		background-color ss21BackgroundElevated
+		borderRadius()
+		z-depth(2)
+	
+	#ss21-frog-list
+		max-height 75vh
+		overflow auto
 	
 	:root.is-search
 		.boardTitle
