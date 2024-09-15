@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.2
+@version        2.4.3
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -46,6 +46,8 @@
 @var checkbox   ss21catalogueIcons   "Display icons for catalogue stats" 0
 @var checkbox   ss21compressBoards   "Reduce width of full board list" 0
 @var checkbox   ss21floatingHeader   "Detaches the header from the top" 0
+@var checkbox   ss21tweetCard        "When using fxtwitter for 4chan XT, make inline embeds look like cards" 1
+@var checkbox   ss21noReplyAllowed   "Make 'You cannot reply anymore' appear as a toast" 1
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -56,7 +58,6 @@
 		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 	else if ss21iconFont == 2
 		@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
-	
 	/*
 	material spec:
 	 text black on white, #000 high .87
@@ -74,7 +75,6 @@
 	 * unique; standing out from the (onee|app)chan styles that the majority of
 	 * ricers use.
 	 */
-	
 	// really, this should also be able to accept a text emphasis/state level
 	// and then determine how much opacity to apply
 	// for example, if te === high, take white and make it .87,
@@ -90,7 +90,6 @@
 			color rgba(255, 255, 255, _emphasis)
 		else
 			color rgba(33, 33, 33, _emphasis)
-	
 	if ss21readingMode == ss21dark
 		ss21OppColour = #fff
 		ss21TextPrimary = alpha(#fff, .87)
@@ -152,7 +151,6 @@
 		ss21TextHint = alpha(#333, .38)
 		ss21BackgroundColour = #eee
 		ss21BackgroundElevated = #ddd
-	
 	z-depth(n = 1)
 		if n == 1
 			box-shadow 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)
@@ -174,12 +172,10 @@
 			border-radius 4px
 	
 	i = !important
-	
 	/* thankfully we have css custom properties (a.k.a. variables) we can use,
 	 * along with stylus-lang to create a dynamic and truly customisable
 	 * userstyle
 	 */
-	
 	// stylus variables, only so we can use functions
 	ss21-primary = ss21primary
 	ss21-on-primary = tc(ss21primary, high)
@@ -192,7 +188,6 @@
 	ss21posterManager = #ff0080
 	ss21posterVerified = #007fff
 	ss21posterPass = #afb42b
-	
 	ss21poster(type)
 		if type == 'founder'
 			return #117743
@@ -208,24 +203,19 @@
 			return #007fff
 		if type == 'pass'
 			return #afb42b
-	
 	ss21red = #f44336
 	ss21blue = #2196f3
 	ss21green = #4caf50
 	ss21purple = #9c27b0
 	ss21orange = #ff9800
 	ss21minContrastRatio = 3
-	
 	// should be tint to lighten
 	// should be shade to darken
-	
 	ss21spacer = 1rem
-	
 	// bootstrap breakpoints
 	// sm 540, md 720, lg 960, xl 1140, xxl 1320
 	// https://github.com/twbs/bootstrap/blob/master/scss/_variables.scss
 	// https://github.com/twbs/bootstrap/blob/master/scss/_functions.scss
-	
 	:root
 		--primary ss21primary
 		--secondary invert(ss21primary)
@@ -248,7 +238,6 @@
 		--grey-12 #121212
 		--font-default 'InterVariable', system-ui
 		--font-monospace 'Inconsolata', monospace, monospace
-	
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
 	// it loads. also create a pseudo element loader/spinner in the mean time
 	:root.site-loading
@@ -273,6 +262,7 @@
 		.board,
 		.pagelist
 			display none i
+	
 	@css {
 		@keyframes loading {
 			to {
@@ -280,12 +270,12 @@
 			}
 		}
 	}
-	
 	// let's hide stuff we don't need: ads!
 	// first, let's keep `!important` away as to not pollute scope
 	.center,
 	.arc-ads,
 	.adl,
+	.danbo-slot,
 	[hidden]
 		display none i
 	
@@ -311,10 +301,8 @@
 	#navbotright,
 	#toggleMsgBtn // sometimes this leaks through, so we add it despite it having `.desktop`
 		display none
-	
 	// as always, using tried and tested web frameworks and design systems to
 	// create a reset, reboot, and sensible base
-	
 	// reset everything on `:root` as opposed to `body`
 	// 1. use google web fonts, or `system-ui`
 	// 2. set a relative baseline `font-size` and `line-height` for easy math
@@ -339,7 +327,6 @@
 		accent-color ss21primary
 		if ss21readingMode == ss21dark
 			color-scheme dark
-	
 	@css {
 		:root .navLinks {
 			--is-nws: brown;
@@ -349,11 +336,9 @@
 			--is-nws: initial;
 		}
 	}
-	
 	// XXX: https://css-tricks.com/fixing-smooth-scrolling-with-find-on-page/
 	:root:focus-within
 		scroll-behavior smooth
-	
 	// https://github.com/csstools/sanitize.css/blob/main/sanitize.css#L54
 	// this doesn't actually work but?
 	:where(body)
@@ -492,12 +477,10 @@
 		transition color .25s
 	
 	// the exception being linkified links
-	// one day:
-	// https://developer.mozilla.org/en-US/docs/Web/CSS/text-underline-offset
 	.linkify,
-	:where(.globalMessage) :where(a):not(.fa),
+	//:where(.globalMessage) :where(a):not(.fa), // XXX until theres another global announcement, there is no way this shit is good
 	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]),
-	.postMessage a[href*="boards.4chan.org"]:not(.quotelink)
+	.postMessage a[href*="boards.4chan.org"]:not(.quotelink):not(.hashlink)
 		text-decoration solid underline
 		text-underline-offset 2px // XXX: 1px suddenly stopped looking good?
 		unless ss21underlineLink
@@ -506,40 +489,36 @@
 		&:hover
 			color shade(ss21primary, 15%)
 	
-	// XXX: surely a better way to write this...
+	linkify-icons($icon, $icon2 = null)
+		content ''
+		display inline-block
+		width 1em
+		height 1em
+		vertical-align -.125em
+		margin-right .25rem
+		background-position 50% 50%
+		background-repeat no-repeat
+		if $icon2
+			background-image $icon, $icon2
+		else
+			background-image $icon
+	
+	// icons are, for the most part, grabbed from font awesome
 	.linkify
-		&.twitter::before
-			content ''
-			display inline-block
-			width 1rem
-			height 20px
-			margin-right .25rem
-			vertical-align text-bottom
-			background-position 50% 50%
-			background-repeat no-repeat
-			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%231da1f2' d='M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z'/%3E%3C/svg%3E")
 		&.youtube::before
-			content ''
-			display inline-block
-			width 1rem
-			height 20px
-			margin-right .25rem
-			vertical-align text-bottom
-			background-position 50% 50%
-			background-repeat no-repeat
-			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23f00' d='M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z'/%3E%3C/svg%3E"), radial-gradient(white 3px, transparent 3px) //yes, that just happened
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23f00' d='M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z'/%3E%3C/svg%3E"), radial-gradient(white .25em, transparent .25em))
+		&.twitter::before
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%231da1f2' d='M459.4 151.7c.3 4.5 .3 9.1 .3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53 51.7 63.7 129.3 105.3 216.4 109.8-1.6-7.8-2.6-15.9-2.6-24 0-57.8 46.8-104.9 104.9-104.9 30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3z'/%3E%3C/svg%3E"))
+		&[href^="https://x.com"]::before
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z'/%3E%3C/svg%3E"))
 		&.vocaroo
 			color #CAFF70 i
 		&[href^="https://github.com"]::before
-			content ''
-			display inline-block
-			width 1rem
-			height 20px
-			margin-right .25rem
-			vertical-align text-bottom
-			background-position 50% 50%
-			background-repeat no-repeat
-			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' viewBox='0 0 16 16'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E")
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' viewBox='0 0 16 16'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E"))
+		&[href*="reddit.com"]::before
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23FF5700' d='M0 256C0 114.6 114.6 0 256 0S512 114.6 512 256s-114.6 256-256 256L37.1 512c-13.7 0-20.5-16.5-10.9-26.2L75 437C28.7 390.7 0 326.7 0 256zM349.6 153.6c23.6 0 42.7-19.1 42.7-42.7s-19.1-42.7-42.7-42.7c-20.6 0-37.8 14.6-41.8 34c-34.5 3.7-61.4 33-61.4 68.4l0 .2c-37.5 1.6-71.8 12.3-99 29.1c-10.1-7.8-22.8-12.5-36.5-12.5c-33 0-59.8 26.8-59.8 59.8c0 24 14.1 44.6 34.4 54.1c2 69.4 77.6 125.2 170.6 125.2s168.7-55.9 170.6-125.3c20.2-9.6 34.1-30.2 34.1-54c0-33-26.8-59.8-59.8-59.8c-13.7 0-26.3 4.6-36.4 12.4c-27.4-17-62.1-27.7-100-29.1l0-.2c0-25.4 18.9-46.5 43.4-49.9l0 0c4.4 18.8 21.3 32.8 41.5 32.8zM177.1 246.9c16.7 0 29.5 17.6 28.5 39.3s-13.5 29.6-30.3 29.6s-31.4-8.8-30.4-30.5s15.4-38.3 32.1-38.3zm190.1 38.3c1 21.7-13.7 30.5-30.4 30.5s-29.3-7.9-30.3-29.6c-1-21.7 11.8-39.3 28.5-39.3s31.2 16.6 32.1 38.3zm-48.1 56.7c-10.3 24.6-34.6 41.9-63 41.9s-52.7-17.3-63-41.9c-1.2-2.9 .8-6.2 3.9-6.5c18.4-1.9 38.3-2.9 59.1-2.9s40.7 1 59.1 2.9c3.1 .3 5.1 3.6 3.9 6.5z'/%3E%3C/svg%3E"), radial-gradient(white .45em, transparent .45em))
+		&.twitchtv::before
+			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23a970ff' d='M391.2 103.5H352.5v109.7h38.6zM285 103H246.4V212.8H285zM120.8 0 24.3 91.4V420.6H140.1V512l96.5-91.4h77.3L487.7 256V0zM449.1 237.8l-77.2 73.1H294.6l-67.6 64v-64H140.1V36.6H449.1z'/%3E%3C/svg%3E"))
 	
 	// correct some weird browser inconsistencies in font inheritance, and while
 	// we're here, set tripcodes and user ids to also use a monospace font
@@ -653,7 +632,7 @@
 		color inherit
 		margin 0
 	
-	button,
+	button:not(.watch-thread-link),
 	input[type="button"],
 	input[type="submit"],
 	a.replylink,
@@ -797,16 +776,12 @@
 		&:focus
 			border 1px solid alpha(tint(ss21primary, 33%), .9)
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
-	
-	// `textarea` should only resize vertically as to not break their containers
-	textarea
-		resize vertical
-	
 	textarea
 		background inherit
 		padding .5rem .75rem
 		border 1px solid alpha(ss21OppColour, .33)
 		borderRadius()
+		resize vertical // `textarea` should only resize vertically as to not break their containers
 		transition border .25s, box-shadow .25s
 		&:hover
 			border-color alpha(ss21OppColour, .8)
@@ -894,6 +869,8 @@
 <blockquote class="postMessage" id="m4662311"><a href="#p4662298" class="quotelink">&gt;&gt;4662298</a><br><a href="//boards.4chan.org/r/#s=eddit" class="quotelink">&gt;&gt;&gt;/r/eddit</a></blockquote>
 
 <blockquote class="postMessage" id="m563068435"><s>&gt;Is an asshole to you throughout the game<br><span class="quote">&gt;Tries to kill you and won't tell you why</span><br><span class="quote">&gt;Gets all your friends to betray and try to kill you</span><br><span class="quote">&gt;You still hang out with your "friends" like nothing they don't even bother to tell you why they want you dead and you're such a loser that you're fine with that and them continuing to try to oppose you.</span><br><span class="quote">&gt;You are also fine with her killing your dad, being free to kill you along with your friends trying to kill you.</span><br></s><br><br>No sane humans acts like this.<s><br>Yet you are all fine with it, do you enjoy your friends wanting to kill you and your family?</s><br>Explain.</blockquote>
+
+<blockquote class="postMessage" id="m201302280"><s></s><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://thetvapp.to/tv/hbo-east-live-stream/"><s>https://thetvapp.to/tv/hbo-east-liv<wbr>e-stream/</s></a> ep 4 right now</blockquote>
 
 */
 	
@@ -999,15 +976,15 @@
 	.gal-close::after,
 	.close::after,
 	.jump::after,
-	.file--video:not(.expanded-image) > .post > .file > .fileThumb::after,
-	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after,
-	.file--pdf:not(.expanded-image) > .post > .file > .fileThumb::after,
+	:is(.file--video, .file--gif, .file--pdf):not(.expanded-image) > .post > .file > .fileThumb::after,
+	.file--sound:not(.expanded-image) > .post > .file > .fileThumb > .mobile::after
 	.native-settings::after,
 	.post--dubs .postNum a:nth-child(2n)::after,
 	span.fileThumb::before,
 	.summary::before,
 	.ss21--board-drawer-toggle,
-	.ss21--download-all
+	.ss21--download-all,
+	.page-num--icon::after
 		icon-style()
 	
 	:root.fourchan-xt .spin::after,
@@ -1024,7 +1001,7 @@
 				transform: rotate(0);
 			}
 			100% {
-				transform: rotate(359deg);
+				transform: rotate(1turn);
 			}
 		}
 	}
@@ -1038,10 +1015,10 @@
 		content ss21iconFont == 1 ? '\F33E' : 'remove_red_eye'
 	:root.fourchan-xt .expand-all-shortcut::after,
 	.fa-expand::after // expand all images
-		content ss21iconFont == 1 ? '\F3DF' : 'fullscreen'
+		content ss21iconFont == 1 ? '\F3DF' : 'open_in_full'
 	:root.fourchan-xt .contract-all-shortcut::after,
 	.fa-compress::after // compress all images
-		content ss21iconFont == 1 ? '\F3DE' : 'fullscreen_exit'
+		content ss21iconFont == 1 ? '\F3DE' : 'close_fullscreen'
 	:root.fourchan-xt #shortcut-gallery > a::after,
 	.fa-picture-o::after // gallery mode
 		content ss21iconFont == 1 ? '\F42A' : 'photo'
@@ -1098,9 +1075,9 @@
 		a:last-of-type::after // navigate down
 			content ss21iconFont == 1 ? '\F282' : 'keyboard_arrow_down'
 	.postJumper
-		a:first-of-type::after // jump to previous post by id
+		.prev:first-of-type::after // jump to previous post by id
 			content ss21iconFont == 1 ? '\F148' : 'arrow_upward'
-		a:last-of-type::after // jump to next post by id
+		.next:last-of-type::after // jump to next post by id
 			content ss21iconFont == 1 ? '\F128' : 'arrow_downward'
 	#index-rev::after // reverse index order
 		content ss21iconFont == 1 ? '\F127' : 'swap_vert'
@@ -1168,6 +1145,11 @@
 		else if ss21iconFont == 2
 			content 'picture_as_pdf'
 			font-variation-settings 'FILL' 0
+	.file--sound:not(.expanded-image) > .post > .file > .fileThumb > .mobile::after
+		if ss21iconFont == 1
+			content '\F756'
+		else if ss21iconFont == 2
+			content 'music_note'
 	:root.fourchan-xt .download-button::after,
 	.fa-download::after,
 	.download-link::after // file download and add icon to menu entry
@@ -1189,6 +1171,15 @@
 		content ss21iconFont == 1 ? '\F5DD' : 'delete_forever'
 	.fa-play-circle::after // https://github.com/rcc11/4chan-sounds-player support
 		content ss21iconFont == 1 ? '\F4A0' : 'music_note'
+	.page-num--icon::after
+		content ss21iconFont == 1 ? '\F4A0' : 'draft'
+	
+	.page-num--icon
+		position relative
+	.page-num--icon::after
+		font-size .75rem
+		position absolute
+		top 1px
 	
 	if ss21iconFont == 1
 		.shortcut .fa::after,
@@ -1345,7 +1336,6 @@
 	.posteruid
 		font-size 0
 		display inline-block
-		//margin 0 .25rem
 		.hand
 			font-size .75rem
 	
@@ -1415,31 +1405,24 @@
 		align-items center
 		justify-content space-between
 		flex-wrap wrap
-		will-change background-color, transform
+		//will-change background-color, transform
 		transition background-color .25s, transform .25s
-	
 	:root.fixed #header-bar
 		position fixed
-	
 	:root.top-header #header-bar
 		top 0
-	
 	:root.bottom-header #header-bar
 		bottom 0
-	
 	// 4CHANX: if enabled, center the board links in the header
 	:root.centered-links #board-list,
 	:root.centered-links #header-bar .boardList
 		justify-content center
-	
 	// autohide the header when not hovered
 	:root.fixed.top-header #header-bar.autohide:not(:hover)
 		margin-bottom -1rem
 		transform translateY(-100%)
-	
 	:root.fixed.bottom-header #header-bar.autohide:not(:hover)
 		transform translateY(100%)
-	
 	// when viewing the full board list, hide all the [, ], and /'s that are
 	// used as dividers
 	#full-board-list .boardList span
@@ -1494,6 +1477,7 @@
 		//margin -.75rem 0
 		overflow auto hidden
 		white-space nowrap
+		scrollbar-width thin
 		a
 			//text-transform lowercase
 			display inline-flex
@@ -1542,9 +1526,9 @@
 			opacity .7 i
 			&:hover
 				opacity .9 i
-		#scroll-progress
-			width 90vw i
-			left 5vw i
+		//#scroll-progress
+		//	width 90vw i
+		//	left 5vw i
 	/*
 			&::after
 				display none
@@ -1577,9 +1561,11 @@
 	
 	// 4CHANX: at some point, 4chan x may add `.autohiding-scrollbar`, so if this
 	// affects you, we support you
+	// XXX2024: sike, not anymore
+	/*
 	:root.autohiding-scrollbar #shortcuts
 		margin-right 2rem
-	
+	*/
 	#shortcuts
 		display grid
 		grid-template-columns 1fr repeat(6, 2rem)
@@ -1640,6 +1626,10 @@
 		.fa-comment-o:not(.disabled)
 			tc(ss21primary, high)
 	
+	:root.fourchan-xt #shortcut-qr a:not(.disabled)::after,
+	:root.fourchan-xt #shortcut-prefetch a:not(.disabled)::after
+		tc(ss21primary, high)
+	
 		/*
 		.fa::after,
 		.menu-button::after,
@@ -1683,8 +1673,64 @@
 	:root.fixed.bottom-header #scroll-marker
 		bottom 100%
 	
+	#scroll-progress
+		--bar-colour ss21green
+	
+	@css {
+		:root {
+			scroll-timeline: --page-scroll-progress block, --page-text-shadow block, --page-parallax block;
+		}
+		#scroll-progress {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			height: .25rem;
+			background-color: var(--bar-colour);
+			transform-origin: 0 50%;
+			animation: grow-progress auto linear;
+			animation-timeline: --page-scroll-progress;
+		}
+		@keyframes grow-progress {
+			from {
+				transform: scaleX(0);
+			}
+			to {
+				transform: scaleX(1);
+			}
+		}
+		.boardTitle {
+			animation: shadow-shift auto linear;
+			animation-timeline: --page-text-shadow;
+			animation-range: 0 23vh;
+		}
+		@keyframes shadow-shift {
+			from {
+				text-shadow: 1rem 1rem 0 var(--primary-500);
+			}
+			to {
+				text-shadow: 0 0 0 var(--primary-500);
+			}
+		}
+		/*
+		.boardBanner {
+			animation: parallax-shift auto linear;
+			animation-timeline: --page-parallax;
+			animation-range: 0 23vh;
+		}
+		@keyframes parallax-shift {
+			from {
+				transform: translate3d(0, 0, 0);
+			}
+			to {
+				transform: translate3d(0, 50px, 0);
+			}
+		}*/
+	}
+	
 	// SIDEDISH: we add a scrolling progress indicator
 	// XXX: this only works if `#header-bar` is set to fixed
+	/*
 	#scroll-progress
 		appearance none
 		border 0
@@ -1695,7 +1741,7 @@
 		height .25rem
 		opacity 0
 		background-color var(--grey-500)
-		will-change opacity
+		//will-change opacity
 		transition opacity .25s
 		pointer-events none
 		&::-webkit-progress-bar
@@ -1711,7 +1757,7 @@
 	
 	#header-bar.scrolled #scroll-progress
 		opacity 1
-	
+	*/
 	@media (max-width: 66rem)
 		#header-bar
 			padding 0 .5rem
@@ -1787,7 +1833,7 @@
 			align-items center
 			margin-left .5rem
 			opacity .6
-			will-change opacity
+			//will-change opacity
 			transition opacity .25s
 			&:hover
 				opacity .87
@@ -1815,7 +1861,7 @@
 			user-select none
 			contain layout
 			transform translate3d(0, 0, 0)
-			will-change transform
+			//will-change transform
 			//box-shadow inset 0 0 0px 20px red
 			animation gradientShift 10s ease infinite
 			&::after
@@ -1868,7 +1914,7 @@
 			text-transform lowercase
 			--primary-500 ss21primary
 			text-shadow 1rem 1rem 0 var(--primary-500)
-			will-change text-shadow
+			//will-change text-shadow
 			transition text-shadow .1s
 			z-index 1
 		
@@ -1925,12 +1971,26 @@
 	.globalMessage
 		display none
 	
+	@css {
+		@scope (.globalMessage) {
+			* {
+				margin: 0;
+				grid-column: 2;
+			}
+			a:not(.hide-announcement-button) {
+				color: var(--primary);
+			}
+		}
+	}
+	
 	// XXX: for some reason the announcements was showing during page load
 	// ideally the icon should just be a dismiss label button
 	// and since the announcement is always inconsistent with h* and links,
 	// it's difficult to style this consistently and per material spec
 	// XXX: FIX FOR UNDER 75REM
-	:where(:root.ss21--banner-blocked) .globalMessage:not([hidden])
+	
+	//:where(:root.ss21--banner-blocked) .globalMessage:not([hidden])
+	.globalMessage:not([hidden])
 		background-color ss21BackgroundElevated
 		position fixed
 		top 3rem
@@ -1947,9 +2007,6 @@
 			display block
 		&::before
 			grid-column 1
-		*
-			margin 0
-			grid-column 2
 		&::after
 			grid-column 3
 		.hide-announcement-button
@@ -2029,12 +2086,26 @@
 				margin 1rem auto 0
 	
 	// XXX: Thread closed. You may not reply at this time.
-	.closed
-		font-size 2rem
-		font-weight 700
-		text-align center
-		background-color ss21red
-		position relative
+	// Option 1 is the usual banner style (only at the top of the page)
+	// Option 2 is a non-dismisable toast
+	if ss21noReplyAllowed == 0
+		.closed
+			font-size 2rem
+			font-weight 700
+			text-align center
+			background-color ss21red
+			position relative
+	else if ss21noReplyAllowed == 1
+		.closed
+			position fixed
+			z-index 3
+			background-color ss21red
+			inset auto auto 1rem 50%
+			transform translateX(-50%)
+			inline-size 80rem
+			padding 1rem
+			borderRadius()
+			opacity .69
 	
 	// index sorting and what not. only enabled with json mode in 4chan x
 	// first up, only some elements are shown, depending on which mode is enabled
@@ -2061,16 +2132,15 @@
 		flex-wrap wrap
 		align-items center
 		justify-content center
+		gap .25rem
 		borderRadius()
 		select
 			background-color ss21BackgroundElevated
 			tc(@background-color, high)
-			margin-right .25rem
-			&:last-child
-				margin-right 0
 	
 	@media (max-width: 77rem)
 		.navLinks.json-index
+			font-size .875rem
 			margin -1.5rem 1rem 1.5rem
 			max-width none
 		#index-last-refresh,
@@ -2087,11 +2157,9 @@
 		background-color ss21BackgroundElevated
 		tc(@background-color, high)
 		padding-right 1rem
-		margin-left .5rem
 	
 	#hidden-label
 		tc(ss21primary, medium)
-		margin-left .5rem
 	
 	#index-rev
 		all unset
@@ -2109,8 +2177,23 @@
 			color var(--secondary)
 	
 	#index-options
-		display flex
+		display inline-flex
 		align-items center
+		gap .25rem
+	
+	@css {
+		.navLinks.json-index {
+			container: indexoptions / inline-size;
+		}
+		@container indexoptions (inline-size < 50rem) {
+			#index-search {
+				max-width: 5rem;
+			}
+			#index-options select {
+				width: 4rem;
+			}
+		}
+	}
 	
 	#lastlong-options
 		display inline-flex
@@ -2363,12 +2446,12 @@
 	
 	// coverts the "No.6900" into "#6900", where the '#' functions the same as the 'No.'
 	.postNum
-		> a:first-child
+		& > a:first-child
 			font-size 0
 			&::after
 				content '#'
 				font-size var(--post-info-fs, .75rem)
-		> span:last-child
+		& > span:last-child
 			font-size 0
 	
 	.postMessage
@@ -2413,7 +2496,7 @@
 	
 	if ss21openThread == 1
 		// get rid if [View] / [Reply]
-		.postNum span:last-child
+		.postNum > span:last-child
 			display none
 		// give the FAB a bit more breathing room
 		.thread
@@ -2447,6 +2530,17 @@
 					tc(ss21primary, low)
 					margin-left .25rem
 	
+	// XXX: 4chan xt generates summaries for op every time, then shows it for inline
+	// and quote previews, to match parity with the native extension
+	.preview-summary
+		display none
+	// still needs some style work
+	#qp .preview-summary
+		all unset
+		display block
+		font-size 80%
+		margin .25rem
+	
 	// Comment too long, and also EXIF data on /p/
 	.abbr
 		color var(--text-hint-on-background)
@@ -2455,7 +2549,7 @@
 			&:hover
 				color alpha(ss21primary, .87)
 	
-	// EXIF data table
+	// EXIF data table on /p/
 	.exif
 		display none
 		font-size .75rem
@@ -2503,17 +2597,117 @@
 	// 4CHANX: quote threading (we reddit now)
 	.threadContainer
 		position relative
-		margin 0 0 1rem 1rem // bottom margin is the usual offset, left is the indent
+		//margin 0 0 1rem//1rem // bottom margin is the usual offset, left is the indent
+	
+	.threadContainer
+		display grid
+		grid-template-columns 1rem 1fr
+	
+	.threadContainer .postContainer
+		margin-bottom 1rem i
+	
+	.threadContainer > *
+		grid-column 2
+	
+	.threadContainer::before
+		content ''
+		position absolute
+		left .5rem // not quite flush to the left
+		top -1rem // puts it between flush to the post above due to the margin
+		display block
+		width 2px
+		height calc(100% + 1rem)
+		z-index -3
+		background-color var(--background-primary)
+	
+	.threadContainer > .threadContainer:last-child::after
+		content ''
+		background var(--background-secondary)
+		height 100%
+		width 2px
+		position absolute
+		display block
+		top 3rem
+		left .5rem
+		z-index -2
+	
+	.threadContainer > .postContainer::before
+		content ''
+		width 1rem
+		height 5rem
+		display block
+		position absolute
+		top -1rem
+		left -.5rem
+		z-index -1
+		background-color var(--background-secondary)
+		border-left 2px solid var(--background-primary)
+		border-bottom 2px solid var(--background-primary)
+		border-bottom-left-radius 1rem
+		box-shadow 0 .5rem var(--background-secondary), -.5rem 0 var(--background-secondary)
+		//box-shadow 0 .5rem var(--background-secondary), -1rem 0 var(--background-secondary)
+	
+	.threadContainer > .postContainer:last-child::after
+		content ''
+		background var(--background-secondary)
+		height 100%
+		width 2px
+		position absolute
+		display block
+		top 3rem
+		left -.5rem
+		z-index -2
+	/*
 		&::before
 			content ''
 			position absolute
-			left -.5rem
-			top -1rem
+			left -.75rem // not quite flush to the left
+			top -1rem // puts it between flush to the post above due to the margin
 			display block
 			width 2px
 			height 100%
-			background-color var(--background-primary)
+			z-index -3
+			background-color blue//var(--background-primary)
+		&::after
+			content ''
+			height 50%
+			width 2px
+			position absolute
+			display block
+			bottom 0
+			left -.75rem
+			z-index -4
+			background-color red//var(--background-primary)
 	
+	.threadContainer > .postContainer
+		&::before
+			content ''
+			width 3rem
+			height 1rem
+			display block
+			position absolute
+			top 50%
+			left -.75rem
+			z-index -1
+			background-color var(--background-secondary)
+			border-left 2px solid var(--background-primary)
+			border-bottom 2px solid var(--background-primary)
+			border-bottom-left-radius 1rem
+			box-shadow 0 .5rem var(--background-secondary), -.5rem 0 var(--background-secondary)
+			//box-shadow 0 .5rem var(--background-secondary), -1rem 0 var(--background-secondary)
+		&::after
+			content ''
+			height 100%
+			width 2px
+			position absolute
+			display block
+			bottom 0
+			left -.75rem
+			z-index -3
+			background-color green//var(--background-primary)
+		&:last-child::after
+			height 50%
+	*/
 	.is_thread .navLinksBot.desktop
 		display block i
 		font-size 0
@@ -2533,7 +2727,7 @@
 		right 2.75rem
 		opacity 0
 		z-index 1
-		will-change opacity
+		//will-change opacity
 		display inline-flex
 		align-items center
 		height 1.75rem
@@ -2567,7 +2761,7 @@
 	// but even with @scope, there are a lot of elements within .thread to be using
 	// a * for
 	@css {
-		@scope (.thread) {
+		@scope (.postContainer) {
 			.stub ~ * {
 				display: none;
 			}
@@ -2912,6 +3106,10 @@
 	.inline + .hashlink
 		display none
 	
+	// XXX: when xt restores posts from the archive
+	.from-archive
+		opacity .5
+	
 	// XXX: make special kinds of quotelinks appear `sup`-scripted
 	+prefix-classes('qmark-')
 		.ct
@@ -3136,32 +3334,54 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				position absolute
 				inset 0
 				display inline-flex
-				align-items center;
+				align-items center
 				justify-content center
 				background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))
 				color #fff
 				opacity .8
-				will-change opacity
+				borderRadius()
+				//will-change opacity
 				transition opacity .25s
 				pointer-events none
 				overflow hidden
 			&:hover > .fileThumb::after
 				opacity .6
 	
+	.file--sound
+		.fileThumb
+			position relative
+		&:not(.expanded-image) > .post > .file
+			& > .fileThumb .mobile
+				display block
+				font-size 0
+				position absolute
+				top 0
+				left -2rem
+				&::after
+					content 'music_note'
+					font-size 1rem
+					color ss21blue
+					pointer-events none
+	
 	.thread-chip--mire .post
 		background-color mix(pink, ss21BackgroundColour, 10%)
 	
 	.post--dubs
-		will-change transform
+		//will-change transform
 		transform perspective(1px) translateZ(0)
 		animation buzz .25s linear infinite
 		z-index 1 // for some reason the menu gets offset when transformed
-		.postNum a:nth-child(2n)::after
-			color ss21green
-			position absolute
-			top 0
-			pointer-events none
-	
+		--post--dubs-color ss21green
+	@css {
+		@scope (.post--dubs) {
+			.postNum a:nth-child(2n)::after {
+				color: var(--post--dubs-color);
+				position: absolute;
+				top: 0;
+				pointer-events: none;
+			}
+		}
+	}
 	@css {
 		@keyframes buzz {
 			50% {
@@ -3266,8 +3486,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display inline-flex
 		flex-direction column
 		justify-content center
-		//margin 0 .25rem
-		a
+		.prev,
+		.next
 			width .75rem
 			&::after
 				font-size .75rem
@@ -3277,10 +3497,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				opacity .89
 	
 	.flag
-		//margin 0 .25rem
+		top initial
 	
 	// 4CHANX: copy text link hidden textarea
 	// wonder if a visiblity: hidden would suffice here
+	// XXX: 2024 note: no, it doesnt
 	.copy-text-element
 		height 0
 		width 0
@@ -3416,7 +3637,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&:hover
 			z-index 2
 	
-	// in order to achieve the "whole card exapnded on hover"
+	// in order to achieve the "whole card expanded on hover"
 	// but, this only applies in default-esque mode because in masonry mode, you will always
 	// see the whole thread
 	if ss21catalogueStyle == 1
@@ -3430,6 +3651,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					//margin -1rem -3rem
 					// because menu is a child of the catalog post, the pixels used to calculate where to position it
 					// next to the button you just clicked also get scaled up, so we try to counter the scale here
+					/*
 					.menu-button.active + #menu
 						transform scale(1) translateX(70%) translateY(5%)
 						position absolute
@@ -3438,6 +3660,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 						right 0 i
 						&.left
 							transform scale(1) translateX(0) translateY(5%)
+					*/
 				.postMessage
 					max-height none
 					overflow auto
@@ -3482,6 +3705,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				min-height auto
 		&:has(.no-file)
 			min-height 4rem
+	
+	.file--tall .catalog-thumb
+		object-fit contain
+	
 	.catalog-stats
 		order 5
 		padding .25rem .5rem
@@ -3502,7 +3729,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.menu-button
 			opacity 1
 			transition opacity .25s
-			will-change opacity
+			//will-change opacity
 	.catalog-post
 		.postInfo
 			all unset
@@ -3525,7 +3752,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			// XXX: temp solution, make [code] %-based
 			.prettyprint
 				font-size 87.5%
-	
+	/*
+	.catalog-post:has(.postMessage:empty)
+		.catalog-link
+			flex 1
+		.catalog-thumb
+			height 13.5rem i
+	*/
 	.catalog-icons:empty
 		display none
 	// XXX: maybe catalogue stats icons
@@ -3645,7 +3878,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		opacity 0
 	
 	// pagelist styling
-	
 	.pagelist
 		display flex
 		margin 1rem
@@ -3916,7 +4148,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				.field
 					display block
 					min-height 10rem
-					width 100%
+					min-width 100%
 			> select
 				width 100%
 			input[type="file"]
@@ -4782,12 +5014,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// adds a "ripple" effect when watching a thread
 	// XXX: both the heart and star icon don't actually fill up the entire 24px
 	// we allocate for icons, which throws off visual consistency by adding a "gap"
+	button.watch-thread-link
+		all unset
+		display inline-flex
+		position relative
+		opacity .54
+		//will-change opacity
+		transition opacity .25s
+	
 	.watch-thread-link
 		display inline-flex
 		position relative
 		//margin-right .25rem
 		opacity .54
-		will-change opacity
+		//will-change opacity
 		transition opacity .25s
 		&:hover
 			opacity .87
@@ -4805,7 +5045,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			width 1.5rem
 			transform scale(.5)
 			transform-origin 50% 50%
-			will-change transform, opacity
+			//will-change transform, opacity
 			transition transform .25s, opacity .25s
 		&:active::before
 			opacity .25
@@ -4978,9 +5218,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		align-items center
 		justify-content center
 		cursor pointer // sometimes it's a `span`, so we need this
+		anchor-name none
+	
+	/*
+		XXX24: holy moley, so in a 500+ post thread, using anchor positioning seems to add
+		2-3+ _SECONDS_ of lag on nearly every reaction. most likely because the menu
+		is rendered on click, but still, this affects quote preview and other hover
+		interactions...
+	*/
+	
+	.menu-button.active
+		anchor-name --anchor-el
 	
 	#menu
-		position fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
+		position absolute//fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
 		z-index 10
 		z-depth(8)
 		color ss21TextPrimary
@@ -4990,6 +5241,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		white-space nowrap
 		outline none // XXX: doesn't need a focus style
 		user-select none
+		inset auto i
+		position-anchor --anchor-el
+		inset-area block-end inline-start // XXX: chrome 129 this will be `position-area`
+		position-try flip-inline
+		//inset-area bottom//bottom right
+		//position-try-options left//bottom left
 	
 	.entry
 		font-size .875rem
@@ -5115,7 +5372,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.post > .postInfo > .menu-button
 		opacity 0
-		will-change opacity
+		//will-change opacity
 		transition opacity .25s
 		&:focus
 			opacity .6
@@ -5189,7 +5446,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	// https://stackoverflow.com/a/60803488/490291
 	// XXX: potentially fix resize embedded content
-	.media-embed
+	#embedding .media-embed
 		clear both
 		display flex
 		padding 0
@@ -5204,6 +5461,15 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			width auto i
 			height auto i
 	
+	// XXX: this should apply only to 4chan xt and when fxtwitter is enabled
+	.postMessage .twitter-tweet
+		color var(--text-primary-on-background) // this is because it embeds inside `.quote`
+		p
+			margin 0
+		a
+			display inline-block
+	
+	// 4CHANX: floating embed
 	#embedding
 		background-color var(--background-primary)
 		position fixed
@@ -5319,12 +5585,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		height 100%
 	// XXX: i think something has changed, this needs to be adjusted
 	// and, either stretch to it or fit to it
-	:root.gal-fit-width .gal-image img,
-	:root.gal-fit-width .gal-image video
+	:root.gal-fit-width .gal-image :is(img, video)
 		max-width 100%
 	
-	:root.gal-fit-height .gal-image img,
-	:root.gal-fit-height .gal-image video
+	:root.gal-fit-height .gal-image :is(img, video)
 		max-height 85vh
 	
 	// previous and next buttons for gallery
@@ -5411,7 +5675,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display flex
 		position absolute
 		flex-direction column
-		will-change transform
+		//will-change transform
 		transform translateX(-100%)
 		transition transform .25s
 		overflow-y scroll
@@ -5957,6 +6221,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		max-height 75vh
 		overflow auto
 	
+	@css {
+		@view-transition {
+			navigation: auto;
+		}
+	}
+	
 	:root.is-search
 		.boardTitle
 			font-size calc(100vw / (var(--length, 1) * 0.5) * .8) i
@@ -6005,9 +6275,20 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			a[target='_top']::after
 				content ss21iconFont == 1 ? '\F422' : 'home'
 	
+	:root:not(.sidedish-enabled) #id_css::before
+		content 'Just checking, have you got sidedish enabled...?'
+		position fixed
+		bottom 0
+		z-index 3
+	
+	:root.fourchan-xt #shortcut-ss21 .icon
+		display block
+		width 1.5rem
+		height 1.5rem
+	
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog')
 	.is_catalog #content::before
-		content 'This wont work because we block the native 4chan JS code. You should be using the 4chan X catalog anyway, so update your URLs.'
+		content "This won't work because we block the native 4chan JS code. You should be using the 4chan X catalog anyway, so update your URLs."
 		color ss21red
 		text-align center
 		display block
