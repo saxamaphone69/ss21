@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.3
+@version        2.4.4
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -26,7 +26,7 @@
 @var checkbox   ss21evenPosts        "Recolour even post backgrounds" 1
 @var checkbox   ss21blotter          "Show blotter" 0
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
-@var checkbox   ss21opacityHeader    "Make header slightly transparent" 1
+@var checkbox   ss21opacityHeader    "Make header slightly transparent" 0
 @var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
 @var checkbox   ss21postInfoBg       "Give post information a background" 0
 @var checkbox   ss21postInfoFont     "Shrink post information font size" 1
@@ -46,8 +46,9 @@
 @var checkbox   ss21catalogueIcons   "Display icons for catalogue stats" 0
 @var checkbox   ss21compressBoards   "Reduce width of full board list" 0
 @var checkbox   ss21floatingHeader   "Detaches the header from the top" 0
-@var checkbox   ss21tweetCard        "When using fxtwitter for 4chan XT, make inline embeds look like cards" 1
+@var checkbox   ss21nonPrimaryHeader "Makes the header surface-coloured" 0
 @var checkbox   ss21noReplyAllowed   "Make 'You cannot reply anymore' appear as a toast" 1
+@var checkbox   ss21tableView        "'All threads' appear as a table" 1
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -240,6 +241,7 @@
 		--font-monospace 'Inconsolata', monospace, monospace
 	// SIDEDISH: we add a `site-loading` class to `html` to hide content while
 	// it loads. also create a pseudo element loader/spinner in the mean time
+	/*
 	:root.site-loading
 		#delform
 			display flex
@@ -262,6 +264,9 @@
 		.board,
 		.pagelist
 			display none i
+	*/
+	:root
+		interpolate-size allow-keywords
 	
 	@css {
 		@keyframes loading {
@@ -341,13 +346,14 @@
 		scroll-behavior smooth
 	// https://github.com/csstools/sanitize.css/blob/main/sanitize.css#L54
 	// this doesn't actually work but?
+	/*
 	:where(body)
 		block-size -moz-available
 		block-size -webkit-fill-available
 		block-size stretch
 		min-height 100vh
 		//font-size ss21fontSize
-	
+	*/
 	// let's reset `box-sizing` so that when we say `1rem`, we mean it
 	// http://www.paulirish.com/2012/box-sizing-border-box-ftw/ along with
 	// https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
@@ -427,7 +433,7 @@
 	h1, h2, h3, h4, h5, h6
 		line-height 1.2
 		font-weight 700
-		margin-bottom .5rem
+		//margin-bottom .5rem
 	
 	h1
 		font-size calc(1.375rem + 1.5vw)
@@ -934,15 +940,16 @@
 		.menu-button,
 		.hide-thread-button,
 		.hide-reply-button,
-		.show-thread-button span,
-		.show-reply-button span,
+		.show-thread-button .stub-icon,
+		.show-reply-button .stub-icon,
 		.download-button,
 		#qr-oekaki-button
 		#qr-filerm,
 		#url-button,
 		#paste-area,
 		#custom-cooldown-button,
-		#dump-button
+		#dump-button,
+		#split-post
 			font-size 0
 			&::after
 				icon-style()
@@ -984,7 +991,11 @@
 	.summary::before,
 	.ss21--board-drawer-toggle,
 	.ss21--download-all,
-	.page-num--icon::after
+	.page-num--icon::after,
+	:root.fourchan-xt .hide-announcement-button::after,
+	#qr-view::after,
+	#split-post::after,
+	.fxt-stats_meta span::after
 		icon-style()
 	
 	:root.fourchan-xt .spin::after,
@@ -1037,11 +1048,12 @@
 		content ss21iconFont == 1 ? '\F5B1' : 'style'
 	:root.fourchan-xt .hide-thread-button::after,
 	:root.fourchan-xt .hide-reply-button::after,
+	:root.fourchan-xt .hide-announcement-button::after,
 	.fa-minus-square::after,
 	.fa-minus-square-o::after // hide post
 		content ss21iconFont == 1 ? '\F27D' : 'unfold_less'
-	:root.fourchan-xt .show-thread-button span::after,
-	:root.fourchan-xt .show-reply-button span:after,
+	:root.fourchan-xt .show-thread-button .stub-icon::after,
+	:root.fourchan-xt .show-reply-button .stub-icon:after,
 	.fa-plus-square::after,
 	.fa-plus-square-o::after // show post
 		content ss21iconFont == 1 ? '\F283' : 'unfold_more'
@@ -1173,6 +1185,16 @@
 		content ss21iconFont == 1 ? '\F4A0' : 'music_note'
 	.page-num--icon::after
 		content ss21iconFont == 1 ? '\F4A0' : 'draft'
+	#qr-view::after
+		content ss21iconFont == 1 ? '\F4A0' : 'preview'
+	#split-post::after
+		content ss21iconFont == 1 ? '\F528' : 'content_cut'
+	.fxt-likes::after
+		content ss21iconFont == 1 ? '\F415' : 'favorite'
+	.fxt-reposts::after
+		content ss21iconFont == 1 ? '\F813' : 'repeat'
+	.fxt-replies::after
+		content ss21iconFont == 1 ? '\F24E' : 'chat_bubble'
 	
 	.page-num--icon
 		position relative
@@ -1842,6 +1864,16 @@
 	:root.tainted .report-error
 		display none
 	
+	if ss21nonPrimaryHeader
+		#header-bar
+			color var(--text-primary-on-background)
+			background-color var(--background-primary)
+		#updater,
+		#thread-stats span,
+		#shortcuts a,
+		#shortcuts span
+			color var(--text-primary-on-background) i
+	
 	// if enabled, show the board title as a customisable hero image
 	if ss21boardBanner
 		.boardBanner
@@ -1852,7 +1884,7 @@
 			align-items center
 			justify-content center
 			text-align center
-			height 33vh
+			height 330px
 			width 100%
 			//z-index -1
 			background-image linear-gradient(45deg, #8c696f, #014c82)
@@ -1975,13 +2007,17 @@
 		@scope (.globalMessage) {
 			* {
 				margin: 0;
-				grid-column: 2;
+			}
+			br {
+				display: none;
 			}
 			a:not(.hide-announcement-button) {
 				color: var(--primary);
 			}
 		}
 	}
+	:root.fourchan-xt .hide-announcement-button
+		font-size 0
 	
 	// XXX: for some reason the announcements was showing during page load
 	// ideally the icon should just be a dismiss label button
@@ -1990,7 +2026,9 @@
 	// XXX: FIX FOR UNDER 75REM
 	
 	//:where(:root.ss21--banner-blocked) .globalMessage:not([hidden])
-	.globalMessage:not([hidden])
+	// 2024XXX: this will always look bad because of the inconsistent elements placed
+	// inside the announcement, and that the elements arent wrapped in anything
+	:root.fourchan-x .globalMessage:not([hidden])
 		background-color ss21BackgroundElevated
 		position fixed
 		top 3rem
@@ -1998,7 +2036,6 @@
 		padding 1rem 1.5rem
 		display grid
 		grid-template-columns 1fr auto 1fr
-		z-index 3
 		z-depth(6)
 		transition top .25s
 		&::before,
@@ -2502,7 +2539,7 @@
 		.thread
 			margin-bottom 1.5rem
 		// turn it into a FAB
-		.is_index .summary
+		.is_index .summary:not(.preview-summary)
 			//all unset
 			margin-top 0
 			border 0
@@ -2761,7 +2798,7 @@
 	// but even with @scope, there are a lot of elements within .thread to be using
 	// a * for
 	@css {
-		@scope (.postContainer) {
+		@scope (.thread) {
 			.stub ~ * {
 				display: none;
 			}
@@ -2772,7 +2809,7 @@
 		align-items center
 		justify-content left
 		padding .5rem 1rem
-		height 3rem
+		//height 3rem
 		background-color var(--background-primary)
 		borderRadius()
 		.show-thread-button,
@@ -2781,15 +2818,35 @@
 			display flex
 			align-items center
 			> .fa,
-			> span
+			> .stub-icon
 				display inline-flex
 				margin-right .5rem
 				&::after
 					opacity .54
 					transition opacity .25s
 			&:hover .fa::after,
-			&:hover span::after
+			&:hover .stub-icon::after
 				opacity .87
+	
+	/*
+	 * as of 4chan-xt 2.15.0-2.15.2, stubs have a bit more styling options
+	 */
+	
+	:root.fourchan-xt
+		.stub .show-thread-button
+			flex-wrap wrap
+		.stub-subject
+			font-weight 700
+			margin-right 1ch
+		.stub-replies
+			margin-left 1ch
+			color var(--text-hint-on-background)
+		.stub-reasons
+			flex-basis 100%
+			margin-left 2rem
+			color var(--text-hint-on-background)
+			.stub-reason:not(:only-of-type, :last-child)::after
+				content ', '
 	
 	// file formatting
 	.file
@@ -3303,6 +3360,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				color ss21posterVerified
 	
 	:root:not(.anonymize) .postContainer.poster--pass
+		--post-bg mix(ss21posterPass, ss21BackgroundColour, 10%)
+		> .stub
+			background-color var(--post-bg)
 		> .post
 			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
 			> .postInfo > .nameBlock
@@ -3333,9 +3393,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				font-size 3rem
 				position absolute
 				inset 0
-				display inline-flex
-				align-items center
-				justify-content center
 				background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))
 				color #fff
 				opacity .8
@@ -3425,7 +3482,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	if ss21postInfoDisplay == 0
 		.fileThumb
-			margin-top .25rem
+			//margin-top .25rem
 	
 	if ss21postInfoDisplay == 1
 		.postInfo
@@ -4087,7 +4144,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#qr:not(.tex-preview) #tex-preview, // hide the live tex preview
 	#qr:not(.dump) #dump-list-container, // when not in dump mode, hide the dumper
 	#qr .oekaki.has-file, // don't offer to start a fresh drawing if there's a file
-	#file-n-submit:not(.has-file) #qr-filerm // file remove icon if there is no file
+	#file-n-submit:not(.has-file) #qr-filerm, // file remove icon if there is no file
+	#file-n-submit:not(.has-file) #qr-view // file preview icon if there is no file (4chan xt only)
 		display none
 	
 	// XXX: auto-hide checkbox should be keyboard accessible
@@ -4286,6 +4344,18 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display block
 		margin auto
 	
+	/*
+	 * anti spam styling added to /biz/ and /v/
+	 */
+	@css {
+		#t-msg:has(a[href*="4chan"]) {
+			top: 0 !important;
+			a {
+				color: var(--primary);
+			}
+		}
+	}
+	
 	// oekaki support for /i/ and /ic/ mainly, but also for any board
 	// XXX: find a better way to present the width/height input
 	// XXX: make input[type="color"] look potentially nicer
@@ -4340,7 +4410,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		//align-items stretch
 		input[type="submit"]
 			icon-style()
-			width 10%
+			//width 10%
 			margin-left .25rem
 			background-color ss21green
 			/*
@@ -4380,7 +4450,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	#qr-file-button
 		icon-style()
-		width 10%
+		//width 10%
 		margin-right .25rem
 		&:focus
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
@@ -4753,7 +4823,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				}
 			}
 		}
-		#overlay
+		#overlay:not(.media-preview)
 			align-items initial
 			justify-content initial
 		#fourchanx-settings
@@ -4883,7 +4953,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			padding 0
 			margin 0
 		li
-			margin 0 1.5rem .25rem
+			margin 0 1.5rem
 		select
 			width 100%
 			margin-bottom 1rem
@@ -4891,6 +4961,27 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			min-height 70vh
 	
 	// sauce section
+	@css {
+		@scope (.section-sauce) {
+			#sauce-doc {
+				margin-block-end: 1rem;
+			}
+			ul {
+				padding: 0;
+			}
+			li {
+				margin: 0 1.5rem;
+			}
+			label[for] {
+				display: none;
+			}
+			textarea {
+				min-block-size: 10rlh;
+				field-sizing: content;
+			}
+		}
+	}
+	/*
 	.section-sauce
 		ul
 			padding 0
@@ -4898,7 +4989,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			margin 0 1.5rem .25rem
 		textarea
 			min-height 70vh
-	
+	*/
+	/*
 	#sauce-doc-expand:not(:checked) ~ #sauce-doc
 		max-height 9rem
 		overflow auto
@@ -4908,7 +5000,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	#sauce-doc
 		margin-bottom 1rem
-	
+	*/
 	.favicon-preview
 		display inline-flex
 		flex-direction row
@@ -4962,10 +5054,18 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#updater
 		tc(ss21primary, medium)
 	
+	// at some point, 4chan stopped tracking ips, so hide it
+	#ip-count
+		display none
+	// but, because of that, there's a stray slash. so we gotta bit more work to do
 	#thread-stats
-		tc(ss21primary, low)
+		font-size 0
 		span
+			font-size .8rem
 			tc(ss21primary, medium)
+			&:not(:last-child)::after
+				content ' / '
+				tc(ss21primary, low)
 		.warning // have to re-mention this here due to specificty
 			color ss21red
 	
@@ -5112,6 +5212,28 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		#menu
 			text-transform initial // because of the lowercase aesthetic, the menu is affected
 	
+	#thread-watcher
+		display block
+		opacity 1
+		transform scale(1)
+		transition display .25s, opacity .25s, transform .25s
+		transition-behavior allow-discrete
+	
+	@css {
+		@starting-style {
+			#thread-watcher {
+				display: block;
+				opacity: 0;
+				transform: scale(.75);
+			}
+		}
+	}
+	
+	#thread-watcher[hidden]
+		display none
+		opacity 0
+		transform scale(.75)
+	
 	// used to display the progress of the thread watcher checking the status of threads,
 	// but we use it to stretch the distance between the icons
 	#watcher-status
@@ -5243,11 +5365,50 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		user-select none
 		inset auto i
 		position-anchor --anchor-el
-		inset-area block-end inline-start // XXX: chrome 129 this will be `position-area`
+		position-area block-end inline-start // XXX: chrome 129 this will be `position-area`
 		position-try flip-inline
 		//inset-area bottom//bottom right
 		//position-try-options left//bottom left
 	
+	#menu
+		display block
+		opacity 1
+		transform scale(1)
+		transition display .25s, opacity .25s, transform .25s
+		transition-behavior allow-discrete
+	
+	@css {
+		@starting-style {
+			#menu {
+				display: block;
+				opacity: 0;
+				transform: scale(.75);
+			}
+		}
+	}
+	/*
+	#thread-watcher
+		display block
+		opacity 1
+		transform scale(1)
+		transition display .25s, opacity .25s, transform .25s
+		transition-behavior allow-discrete
+	
+	@css {
+		@starting-style {
+			#thread-watcher {
+				display: block;
+				opacity: 0;
+				transform: scale(.75);
+			}
+		}
+	}
+	
+	#thread-watcher[hidden]
+		display none
+		opacity 0
+		transform scale(.75)
+	*/
 	.entry
 		font-size .875rem
 		display flex
@@ -5503,6 +5664,218 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		audio
 			min-width 30rem
 	
+	// 4CHANXT: fxtwitter embeds
+	// first, set up some stylus variables as custom properties for later
+	.fxt-card
+		if ss21readingMode == ss21light
+			--border-colour darken(ss21BackgroundElevated, 10%)
+		else if ss21readingMode == ss21dark
+			--border-colour lighten(ss21BackgroundElevated, 15%)
+		--red ss21red
+		--blue ss21blue
+		--green ss21green
+	@css {
+		@scope (.fxt-card) {
+			:scope {
+				display: flex;
+				flex-direction: column;
+				gap: .25rem;
+				padding: .5rem;
+				border: 1px solid var(--border-colour);
+				border-radius: .25rem;
+				max-inline-size: 20rem;
+			}
+			.fxt-meta_profile {
+				display: flex;
+				flex-direction: row;
+				gap: .5rem;
+				img {
+					inline-size: 2rem;
+					block-size: 2rem;
+					border-radius: 100%;
+				}
+				.fxt-meta_author_username { font-weight: bold }
+			}
+			.fxt-text a { color: var(--primary) }
+			.fxt-media_container:empty { display: none }
+			.fxt-stats {
+				font-size: .875rem;
+				color: var(--text-hint-on-background);
+				display: flex;
+				flex-direction: column;
+				gap: .25rem;
+				.fxt-stats_meta {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-evenly;
+					span {
+						display: inline-flex;
+						align-items: center;
+						line-height: 1rem;
+						&::after {
+							font-size: 1rem;
+							margin-inline-start: .25rem;
+						}
+					}
+					.fxt-likes { color: var(--red) }
+					.fxt-replies { color: var(--blue) }
+					.fxt-reposts { color: var(--green) }
+				}
+			}
+		}
+	}
+	/*
+.fxt-stats_meta {
+		padding-top: 8px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+		gap: 8px;
+	}
+	.fxt-stats_meta span {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
+	:root {
+		--xt-fxt-bg: var(--xt-background);
+		--xt-fxt-border: var(--xt-border);
+	}
+
+	.fxt-card {
+		color: var(--xt-fxt-fg, #000);
+		background-color: var(--xt-fxt-bg, #000);
+		padding: 16px;
+		border: 1px solid var(--xt-fxt-border);
+		border-radius: 12px;
+		width: 400px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		white-space: pre-line;
+		word-break: break-word;
+	}
+	.fxt-meta {
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+	}
+	.fxt-meta_profile {
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+	}
+	.fxt-meta_profile img {
+		height: 48px;
+		width: 48px;
+		aspect-ratio: 1;
+		border-radius: 100%;
+		overflow: hidden;
+	}
+	.fxt-meta_author {
+		display: flex;
+		flex-direction: column;
+	}
+	.fxt-meta_author_username {
+		font-weight: bold;
+	}
+	.fxt-stats_meta {
+		padding-top: 8px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+		gap: 8px;
+	}
+	.fxt-stats_meta span {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.fxt-poll {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.fxt-choice {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 75%;
+		height: 24px;
+	}
+	.fxt-choice.highlight {
+		font-weight: bold;
+	}
+
+	.fxt-choice_label {
+		margin-left: 6px;
+		z-index: 1;
+	}
+	.fxt-choice_percentage {
+		margin-right: 6px;
+		z-index: 1;
+	}
+	.fxt-choice .bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 24px;
+		border-radius: 4px;
+		background-color: currentColor;
+		opacity: .3;
+		z-index: 0;
+	}
+
+	.fxt-total-votes {
+		font-size: 75%;
+		opacity: .5;
+	}
+	.fxt-media {
+		width: 100%;
+		height: 100%;
+		border-radius: 4px;
+		overflow: hidden;
+	}
+	.fxt-media :is(img,
+	video) {
+		display: block;
+		max-width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center;
+	}
+	.fxt-media_container {
+		display: grid;
+		gap: 0;
+		grid-template-columns: 1fr;
+	}
+	.fxt-media_container.fxt-media-multiple {
+		gap: 4px;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.fxt-quote {
+		border: 1px solid var(--xt-fxt-border);
+		border-radius: 12px;
+		overflow: hidden;
+	}
+	.fxt-quote .fxt-meta_profile img {
+		height: 24px;
+		width: 24px;
+	}
+
+	.fxt-quote .fxt-meta {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+		padding: 4px;
+	}
+	*/
+	
 	// 4CHANX: appchan's gallery mode, baked right into 4chan x
 	// TODO: when you work out text colour, make the '/' in the counter lighter
 	#a-gallery
@@ -5636,6 +6009,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.gal-highlight
 		background-color alpha(invert(ss21primary), .5)
+	
+	/*
+	 * 4CHANXT 2.15.0 support
+	 * Export settings dialogue box
+	 */
+	#export-dialog
+		position fixed
+		z-index 22
+		background-color var(--background-primary)
+		z-depth(24)
+		borderRadius()
 	
 	// SIDEDISH: support for the board drawer added by sidedish
 	.ss21--board-drawer-background
@@ -5807,6 +6191,57 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		padding-top 0
 		border 0
 		border-image none
+	
+	if ss21tableView == 1
+		:root.all-pages-mode
+			.postContainer
+				margin 0
+				display grid
+			.post
+				display grid
+				grid-template-areas "thumbnail subject comment details"
+				grid-auto-flow column
+				grid-template-columns 64px 20ch 1fr 1fr
+				grid-template-rows 1fr
+				background-color initial
+				border-radius initial
+			.file
+				all unset
+				grid-column thumbnail
+				aspect-ratio 1 / 1
+				overflow hidden
+				.fileThumb
+					all unset
+					overflow hidden
+				.fileThumb img
+					height 100% i
+					width initial i
+					object-fit cover
+				.fileText
+					display none
+			.postInfo
+				all unset
+				*:not(.subject)
+					display none
+			.postMessage
+				max-height 3rlh
+				overflow hidden
+				padding 0
+				grid-column span 2
+			.summary:not(.preview-summary)
+				display none
+			.preview-summary
+				all unset
+				position absolute
+				font-size .75rem
+				right 0
+				bottom 0
+			.container
+				display none
+			.file--tall .fileThumb img
+				height initial i
+				width 100% i
+				object-fit contain
 	
 	// XXX: archive and /f/ `table` support
 	// fun fact, the archive has about 10,000 entries displayed at any one time
@@ -6285,6 +6720,39 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display block
 		width 1.5rem
 		height 1.5rem
+	
+	#shortcut-search
+		display inline-flex
+		align-items center
+		justify-content center
+		padding 0 .25rem
+		grid-row span 2
+		margin 0
+		.icon
+			display block
+			height 1.25rem
+			width 1.25rem
+		dialog
+			top 5rem
+	
+	// 4CHAN EXT - if you don't enable the 'disable native extension' option
+	// in 4chan x, it still shows up as an header shortcut
+	#settingsMenu
+		position fixed
+		display flex
+		align-items center
+		justify-content center
+		inset 0
+		inline-size 100vw
+		block-size 100vh
+		z-index 12
+		background-color rgba(33 33 33 .87)
+	
+	.extPanel
+		background-color var(--background-primary)
+		max-height 80vh
+		max-width 75vw
+		overflow-y scroll
 	
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog')
 	.is_catalog #content::before
