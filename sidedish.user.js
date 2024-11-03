@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.4.3
+// @version     2.4.4
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -16,9 +16,10 @@
 // @run-at      document-start
 // @icon        data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 96 960 960'%3E%3Cpath d='M70 622q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 590q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 590q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 606q-37 0-63.5 28.5T617 663q-48 0-74-28.5T481 606q-36 0-63.5 28.5T342 663q-47 0-72-28.5T208 606q-31 0-51.5 18T101 650q-13 2-22-6.5T70 622Zm0 185q0-14 10.5-28.5T110 756q22-9 44-23t54-14q47 0 72 28.5t63 28.5q37 0 64-28.5t74-28.5q47 0 72.5 28.5T617 776q36 0 62.5-28.5T753 719q32 0 54 14t45 23q18 8 28.5 22t10.5 29q0 14-9 22t-21 6q-36-8-56.5-25.5T753 792q-37 0-63.5 28.5T617 849q-48 0-74-28.5T481 792q-36 0-63.5 28.5T343 849q-47 0-73-28.5T208 792q-31 0-51.5 17.5T100 835q-12 2-21-6t-9-22Zm0-371q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 404q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 404q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 420q-37 0-63.5 28.5T617 477q-48 0-74-28.5T481 420q-36 0-64 28.5T342 477q-47 0-72-28.5T208 420q-31 0-51.5 18T101 464q-13 2-22-6.5T70 436Z'/%3E%3C/svg%3E
 // @noframes
-// ==/UserScript==
 // @updateURL   https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
 // @downloadURL https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
+// ==/UserScript==
+
 (async () => {
 	"use strict";
 	//console.group("Initialising ss21 sidedish...");
@@ -377,7 +378,7 @@
 
 		function convertSummaries() {
 			//console.log("Converting summaries");
-			let summaries = $$(".summary:not(.summary-bottom)");
+			let summaries = $$(".summary:not(.summary-bottom, .preview-summary)");
 			for (let summary of summaries) {
 				summary.classList.add('summary--converted');
 				let oldText, newText;
@@ -514,7 +515,7 @@
 
 		function stripPageBrackets() {
 			//console.log("Switching OP's post info");
-			let pagenums = $$(".page-num");
+			let pagenums = $$(".page-num:not(.page-num--converted)");
 			for (let pagenum of pagenums) {
 				let oldText, newText;
 				oldText = pagenum.innerText;
@@ -742,7 +743,7 @@
 			});
 		}
 		on(d, "OpenSettings", function () {
-			document.startViewTransition(() => addTransition());
+			d.startViewTransition(() => addTransition());
 		});
 
 
@@ -931,7 +932,7 @@ printAddress();
 		}
 
 		boardDrawer();
-
+/*
 		function getBoardInfo() {
 			let cbBoard, cbTitle, cbMetad;
 			fetch("https://a.4cdn.org/boards.json")
@@ -945,26 +946,40 @@ printAddress();
 		}
 
 		getBoardInfo();
+*/
+		function changeFileName(observer) {
+			// Temporarily disconnect the observer to avoid a loop
+			if (observer) observer.disconnect();
 
-		function changeFileName() {
 			$('#qr-file-button').value = 'upload';
 			$('#file-n-submit input[type="submit"]').value = 'send';
+
+			// Reconnect the observer after the change with inline config
+			if (observer) {
+				observer.observe($('#qr'), {
+					attributes: true,// Watch for attribute changes
+					attributeFilter: ['value'], // Only watch the 'value' attribute
+					subtree: true,// Monitor changes within child elements of #qr
+				});
+			}
 		}
 
 		on(d, 'QRDialogCreation', function() {
-			changeFileName();
-			const observer = new MutationObserver((mutationsList, observer) => {
+			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
-					if (mutation.type === 'attributes' && mutation.attributeName === 'hidden') {
-						changeFileName();
+					if (mutation.target.matches('#file-n-submit input[type="submit"]') && mutation.attributeName === 'value') {
+						changeFileName(observer);
 					}
 				}
 			});
-			const config = {
-				attributes: true, // Watch for attribute changes
-				attributeFilter: ['hidden'] // Watch only the 'hidden' attribute
-			}
-			observer.observe($('#qr'), config);
+
+			// Initial call to set the values
+			changeFileName(observer);
+			observer.observe($('#qr'), {
+				attributes: true,// Watch for attribute changes
+				attributeFilter: ['value'], // Only watch the 'value' attribute
+				subtree: true,// Monitor changes within child elements of #qr
+			});
 		});
 
 		function resizeQuotePreviews() {
@@ -1745,6 +1760,7 @@ boxes.forEach(el => {
 		//wrapNodeContents('#thread-watcher');
 
 		// Function to extract the initial number and update the data attribute
+		if (config === "index") {
 		function updateHiddenCount(element) {
 			if (!element) {
 				return false;
@@ -1779,6 +1795,7 @@ boxes.forEach(el => {
 
 		// Observe changes to the element's text content
 		observer.observe(hiddenCountElement, { childList: true, characterData: true, subtree: true });
+		}
 
 		/*
 // simple version of psa hiding: https://github.com/ccd0/4chan-x/blob/f0150afd69268f173cb618b5af70e0bdf0b37273/src/Miscellaneous/AnnouncementHiding.coffee
