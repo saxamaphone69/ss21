@@ -1,0 +1,323 @@
+/* ==UserStyle==
+@name           ss18 catalogue
+@namespace      github.com/openstyles/stylus
+@version        1.0.0
+@description    A new userstyle
+@author         Me
+==/UserStyle== */
+
+@-moz-document domain("boards.4chan.org"),
+	domain('boards.4channel.org') {
+	/**
+	 * catalogue support 😂👌
+	 * what level of css archeticure are you on?
+	 * idk, bem or something
+	 * ha, pathetic; watch this
+	 *
+	 */
+  
+  /**
+   * if you switch from catalogue view to any other index view, the catalogue
+   * specific elements remain in the dom, so need to hide them
+   */
+  
+  :root:not(.catalog-mode) .board [class^=catalog] {
+    display: none;
+  }
+	
+	.catalog-container > .hide-thread-button,
+	.catalog-post .fileThumb,
+	:root.bottom-backlinks .catalog-post > .container,
+	.werkTyme-filename {
+		display: none;
+	}
+
+	:root.catalog-mode .board {
+		max-width: 100%;
+		width: 100%;
+		display: grid;
+    grid-gap: 1rem;
+    grid-auto-rows: 22.5rem;
+    grid-auto-flow: dense;
+		justify-content: stretch;
+		padding: 0 1.5rem;
+		margin-bottom: 2rem;
+	}
+	
+	:root.catalog-mode .board .thread:last-of-type {
+		margin-bottom: 0;
+	}
+  
+  :root.catalog-mode .board.catalog-small {
+  	grid-template-columns: repeat(12, 1fr);
+  }
+
+  :root.catalog-mode .board.catalog-large {
+  	grid-template-columns: repeat(6, 1fr);
+  }
+	
+	/**
+	 * by default, each thread takes up 1 column. we also have to remove the
+	 * `padding` and `margin` we give to normal threads
+	 */
+
+	.catalog-thread {
+		position: relative;
+    grid-column: span 1;
+		padding: 0;
+		margin-bottom: 0;
+		/*overflow: hidden;*/
+		z-index: 2;
+		max-height: 20rem;
+		border-radius: 2px;
+		box-shadow: 0 .125rem .25rem rgba(33, 33, 33, .25);
+		transition: all .25s;
+	}
+	
+	.catalog-thread.thread--long {
+		grid-column: span 2;
+	}
+	
+	.catalog-thread.thread--extra-long {
+		grid-column: span 2;
+		grid-row: span 2;
+		max-height: 41rem;
+	}
+	/*
+	.catalog-thread::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: -1rem;
+		top: -1rem;
+		width: calc(100% + 2rem);
+		height: calc(100% + 2rem);
+		background-color: transparent;
+		transition: background-color .25s, transform .25s;
+		transform: scale(0);
+	}
+	
+	.catalog-thread:hover::after {
+		background-color: var(--background-primary);
+		box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+			0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+			0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+		transform: scale(1);
+		z-index: 3;
+	}
+	*/
+	/*
+	.catalog-thread:hover .catalog-post {
+		z-index: 4;
+		transform: scale(1.2);
+	}
+	*/
+	/*
+	
+	.catalog-thread:hover {
+		transform: scale(1.02);
+		z-index: 3;
+	}
+	
+	.catalog-thread::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: -1rem;
+		top: -1rem;
+		width: calc(100% + 2rem);
+		height: calc(100% + 2rem);
+		background-color: transparent;
+		transition: background-color .25s;
+		z-index: 2;
+	}
+	
+	.catalog-thread:hover::after {
+		background-color: var(--background-primary);
+		box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+			0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+			0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+	}*/
+
+	.catalog-post {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		padding: 0;
+		min-height: 20rem;
+		position: relative;
+		transition: transform .25s;
+	}
+	
+	.catalog-post > .postInfo > :not(.subject),
+	.catalog-post .subject:not(:empty)::after {
+		display: none;
+	}
+	
+	.catalog-post .file {
+		order: 1;
+	}
+	
+	.catalog-thread.thread--extra-long .catalog-post {
+		min-height: 41rem;
+	}
+	
+	.catalog-link {
+		display: block;
+		position: relative;
+		order: 2;
+	}
+	
+	.catalog-thumb {
+		object-fit: cover;
+		object-position: 50% 50%;
+		width: 100% !important;
+		height: 10rem !important;
+	}
+	
+	.catalog-stats {
+		order: 5;
+		position: relative;
+		padding: 0 .5rem 0 .75rem;
+		display: flex;
+		align-items: center;
+		height: 3rem;
+		background-color: var(--background-secondary);
+		border-top: 1px solid var(--background-outline);
+	}
+	
+	.catalog-stats > span[title] {
+		color: var(--text-hint-on-background);
+		cursor: help;
+	}
+	
+	.catalog-stats > span[title] > span {
+		color: var(--text-primary-on-background);
+	}
+	
+	.catalog-stats > .catalog-icons {
+		flex: 1;
+	}
+	
+	.catalog-icons > img {
+		margin-left: .5rem;
+	}
+	
+	.catalog-stats > .menu-button {
+		position: relative;
+		top: auto;
+		right: auto;
+		display: inline-flex;
+		align-items: center;
+	}
+	
+	.catalog-post > .postInfo {
+		order: 3;
+		position: relative;
+	}
+	
+	.catalog-post .subject:not(:empty) {
+		color: var(--text-primary-on-dark);
+		background-color: rgba(0, 0, 0, .5);
+		display: block;
+		position: absolute;
+		top: -3rem;
+		width: 100%;
+		padding: 0 1rem;
+		height: 3rem;
+		line-height: 3;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		pointer-events: none;
+	}
+
+	.catalog-post > .postMessage {
+		font-size: .875rem;
+		padding: 1rem 1rem 1.5rem;
+		margin: 0;
+		flex: 1 1 4.5rem;
+		overflow: hidden;
+		order: 4;
+		word-break: break-word;
+	}
+	/*
+	.catalog-post > .postMessage:empty {
+		display: none;
+	}
+	*/
+	.catalog-replies {
+		display: none;
+		order: 6;
+	}
+	/*
+	.catalog-thread:hover .catalog-post > .postMessage {
+		overflow: auto;
+	}
+  */
+  /**
+   * idea of a "full card" on hover taken from smashing magazine redesign and also
+   * 4chan x's catalogue
+   */
+  
+  /*
+  .article--grid::before {
+    display: block;
+    width: calc(100% + 60px);
+    height: calc(100% + 60px);
+    height: 100%;
+    content: "";
+    position: absolute;
+    left: -30px;
+    top: -30px;
+    transition: background-color .1s ease-out;
+    background-color: transparent;
+    padding: 30px;
+}
+  .article--grid:not(.col--article--meow):hover::before {
+    background-color: #fff;
+    box-shadow: 0 0 40px rgba(0,0,0,.15);
+}
+  
+  .article--grid {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0 1em;
+    padding-bottom: 150px;
+    transition: all .2s ease-out;
+    position: relative;
+}
+  .article--grid:not(.col--article--meow):hover {
+    transform: scale(1.02);
+}
+  .article--grid__title a {
+    transition: all .2s ease-out;
+    color: #111;
+    text-decoration: none;
+    padding: 10px 0;
+    background-image: linear-gradient(#2da2c5,#2da2c5);
+    background-repeat: no-repeat;
+    background-size: 100% 1.5px;
+    background-position: center bottom 29%;
+    background-origin: padding-box;
+    text-shadow: 3px 0 #f6f3f2, 2px 0 #f6f3f2, 1px 0 #f6f3f2, -1px 0 #f6f3f2, -2px 0 #f6f3f2, -3px 0 #f6f3f2;
+    transition: color .1s ease-out;
+    position: static;
+}
+  .article--grid:hover .article--grid__title a {
+    color: #d33a2c;
+    text-decoration: none;
+    padding: 10px 0;
+    background-image: linear-gradient(#666,#666);
+    background-repeat: no-repeat;
+    background-size: 100% 1.5px;
+    background-position: center bottom 29%;
+    background-origin: padding-box;
+    text-shadow: 3px 0 #fff, 2px 0 #fff, 1px 0 #fff, -1px 0 #fff, -2px 0 #fff, -3px 0 #fff;
+    transition: color .1s ease-out;
+}
+  */
+}
