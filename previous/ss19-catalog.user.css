@@ -1,0 +1,330 @@
+/* ==UserStyle==
+@name           ss19 catalogue
+@namespace      github.com/openstyles/stylus
+@version        1.0.0
+@description    A new userstyle
+@author         Me
+==/UserStyle== */
+@-moz-document domain('boards.4chan.org'),
+	domain('boards.4channel.org'){
+	
+	/*
+	 * hides the file thumbnail
+	 */
+	
+	:root:not(.catalog-mode) .board [class^=catalog],
+	.catalog-container > .hide-thread-button,
+	.catalog-post > .file,
+	.catalog-post > .postInfo > :not(.subject),
+	.catalog-post .subject:not(:empty)::after,
+	:root .catalog-post > .container {
+		display: none;
+	}
+	
+	/*
+	.catalog-container:not(:hover) > * > .file,
+	.catalog-container:not(:hover) > * > .postInfo > :not(.subject),
+	.catalog-container:not(:hover) > * > .catalog-replies,
+	.catalog-container:not(:hover) .extra-linebreak,
+	.catalog-container:not(:hover) .abbr,
+	:root:not(.catalog-hover-expand) .catalog-container > * > .file,
+	:root:not(.catalog-hover-expand) .catalog-container > * > .postInfo > :not(.subject),
+	:root:not(.catalog-hover-expand) .catalog-container > * > .catalog-replies,
+	:root:not(.catalog-hover-expand) .catalog-container .extra-linebreak,
+	:root:not(.catalog-hover-expand) .catalog-container .abbr,
+	.catalog-thread > .catalog-container > :not(.catalog-post),
+	.catalog-post > .file > :not(.fileText),
+	.catalog-post > * > .fileText > :not(:first-child),
+	.catalog-post > .postInfo > :not(.subject):not(.nameBlock):not(.dateTime),
+	.catalog-post > * > * > .posteruid,
+	:root.bottom-backlinks .catalog-post > .container,
+	.post:not(.catalog-post) > .catalog-link,
+	.post:not(.catalog-post) > .catalog-stats,
+	.post:not(.catalog-post) > .catalog-replies {
+		display: none;
+	}
+	*/
+	/*
+	 * in catalogue mode, reset the board to take full width
+	 */
+	
+	:root.catalog-mode .board {
+		max-width: none;
+		padding: 0 3.5rem;
+		display: grid;
+		grid-gap: 1rem;
+		grid-auto-rows: 15rem;
+		align-items: stretch;
+		grid-auto-flow: dense;
+	}
+	
+	:root.catalog-mode .board.catalog-small {
+  	grid-template-columns: repeat(12, 1fr);
+  }
+
+  :root.catalog-mode .board.catalog-large {
+  	grid-template-columns: repeat(8, 1fr);
+  }
+		
+	@media (max-width: 75rem) {
+		:root.catalog-mode .board.catalog-small {
+			grid-template-columns: repeat(6, 1fr);
+		}
+
+		:root.catalog-mode .board.catalog-large {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	
+	/**
+	 * by default, each thread takes up 1 column. we also have to remove the
+	 * `padding` and `margin` we give to normal threads
+	 */
+
+	.catalog-thread {
+		position: relative;
+    grid-column: span 1;
+		padding: 0;
+		margin: 0;
+		z-index: 2;
+		min-height: 15rem;
+		max-height: 15rem;
+		    /*box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),
+					0 2px 2px 0 rgba(0,0,0,.14),
+					0 1px 5px 0 rgba(0,0,0,.12);*/
+		transition: all .25s;
+		border-radius: 4px;
+	}
+	
+	.catalog-thread.thread--long {
+		grid-column: span 2;
+	}
+	
+	.catalog-thread.thread--extra-long {
+		grid-column: span 2;
+		grid-row: span 2;
+		max-height: 31rem;
+	}
+	
+	.catalog-post {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		position: relative;
+		box-shadow: none;
+		transition: all .25s;
+		min-height: 15rem;
+		border-radius: 4px;
+		overflow: hidden;
+	}
+	
+	.catalog-thread.thread--extra-long .catalog-post {
+		min-height: 31rem;
+	}
+	
+	.catalog-post .postInfo {
+		background: none;
+		padding: 0;
+		order: 3;
+		position: relative;
+		line-height: inherit;
+		height: auto;
+	}
+	
+	.catalog-post .subject:not(:empty) {
+		color: var(--text-primary-on-dark);
+		background-color: rgba(0, 0, 0, .5);
+		display: block;
+		position: absolute;
+		top: calc(-1 * (18px + 32px));
+		width: 100%;
+		max-width: none;
+		padding: 0 .5rem;
+		height: 2rem;
+		line-height: 2;
+		letter-spacing: .02em;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		pointer-events: none;
+	}
+	
+	.catalog-link {
+		display: block;
+		position: relative;
+		order: 1;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		overflow: hidden;
+	}
+	
+	.catalog-stats {
+		order: 2;
+		text-align: center;
+		font-size: .75rem;
+	}
+	
+	.catalog-stats > span[title] {
+		color: var(--text-hint-on-background);
+	}
+	
+	.catalog-stats > span[title] > span {
+		color: var(--text-primary-on-background);
+	}
+	
+	.catalog-post:not(:hover) .menu-button {
+		opacity: 0;
+	}
+	
+	.catalog-icons {
+		display: inline-block;
+		transform: scale(.75);
+	}
+	
+	.catalog-stats #menu {
+		text-align: left;
+	}
+	
+	.catalog-thumb {
+		object-fit: cover;
+		object-position: 50% 50%;
+		width: 100% !important;
+		height: 7.5rem !important;
+	}
+	
+	.catalog-post > .postMessage {
+		font-size: .75rem;
+		letter-spacing: 0.025em;
+		flex: 1 1 auto;
+		margin: 0;
+		order: 4;
+		padding: .5rem .75rem;
+		position: relative;
+	}
+	/*
+	.catalog-post::before {
+		content: '';
+    display: block;
+    width: calc(100% + 2rem);
+    height: calc(100% + 2rem);
+    position: absolute;
+    left: -1rem;
+    top: -1rem;
+    transition: all .25s ease-out;
+    background-color: transparent;
+    padding: 1rem;
+		border-radius: 3px;
+	}
+	
+	.catalog-post:hover::before {
+		    background-color: #fff;
+				box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14),
+			0 3px 14px 2px rgba(0,0,0,0.12),
+			0 5px 5px -3px rgba(0,0,0,0.2);
+	}
+*/
+	.catalog-replies {
+		font-size: .75rem;
+		position: relative;
+		order: 6;
+	}
+	/*
+	.catalog-post:hover {
+		transform: scale(1.02);
+		z-index: 1;
+	}
+	*/
+	.catalog-container:not(:hover) > * > .file,
+.catalog-container:not(:hover) > * > .postInfo > :not(.subject),
+.catalog-container:not(:hover) > * > .catalog-replies,
+.catalog-container:not(:hover) .extra-linebreak,
+.catalog-container:not(:hover) .abbr,
+:root:not(.catalog-hover-expand) .catalog-container > * > .file,
+:root:not(.catalog-hover-expand) .catalog-container > * > .postInfo > :not(.subject),
+:root:not(.catalog-hover-expand) .catalog-container > * > .catalog-replies,
+:root:not(.catalog-hover-expand) .catalog-container .extra-linebreak,
+:root:not(.catalog-hover-expand) .catalog-container .abbr,
+.catalog-thread > .catalog-container > :not(.catalog-post),
+.catalog-post > .file > :not(.fileText),
+.catalog-post > * > .fileText > :not(:first-child),
+.catalog-post > .postInfo > :not(.subject):not(.nameBlock):not(.dateTime),
+.catalog-post > * > * > .posteruid,
+:root.bottom-backlinks .catalog-post > .container,
+.post:not(.catalog-post) > .catalog-link,
+.post:not(.catalog-post) > .catalog-stats,
+.post:not(.catalog-post) > .catalog-replies {
+	display: none;
+}
+	
+	.catalog-replies::before {
+		content: '';
+		height: 1px;
+		width: calc(100% - 1rem);
+		margin: auto;
+		background-color: var(--background-outline);
+		display: block;
+	}
+	
+	.catalog-reply {
+	white-space: nowrap;
+
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+}
+.catalog-reply > * {
+	padding: 3px;
+	overflow: hidden;
+	flex: none;
+}
+.catalog-reply > span {
+	font-style: italic;
+	font-weight: bold;
+}
+.catalog-reply-excerpt {
+	-webkit-flex: 1 1 auto;
+	flex: 1 1 auto;
+}
+	
+	.catalog-container:not(:hover) {
+		overflow: hidden;
+		box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),
+					0 2px 2px 0 rgba(0,0,0,.14),
+					0 1px 5px 0 rgba(0,0,0,.12);
+	}
+	
+	.catalog-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 9;
+	}
+	
+	.catalog-post {
+		margin: 0;
+		overflow: visible;
+	}
+	
+	.catalog-post {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+	}
+	
+	.catalog-container:hover .catalog-post {
+		top: .5rem;
+		margin: -1rem -3rem;
+		transform: scale(1.02) translateY(-1%);
+		box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14),
+			0 3px 14px 2px rgba(0,0,0,0.12),
+			0 5px 5px -3px rgba(0,0,0,0.2);
+	}
+	
+	.catalog-thread:hover {
+		z-index: 10;
+	}
+	
+}
