@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.4
+@version        2.4.5
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -32,7 +32,7 @@
 @var checkbox   ss21postInfoFont     "Shrink post information font size" 1
 @var checkbox   ss21postInfoDisplay  "Show post information on hover" 1
 @var select     ss21fileInfo         "File information" ["1:Always displayed", "2:On hover*", "3:As a card"]
-@var checkbox   ss21twoWide          "On wide screens, show 2 threads" 1
+@var checkbox   ss21threeWide        "On wide screens, show 3 threads" 1
 @var checkbox   ss21thumbnailOpacity "Drastically reduce opacity of thumbnails" 0
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB*"]
@@ -995,6 +995,7 @@
 	:root.fourchan-xt .hide-announcement-button::after,
 	#qr-view::after,
 	#split-post::after,
+	.fxt-meta_profile + a::after,
 	.fxt-stats_meta span::after
 		icon-style()
 	
@@ -1103,6 +1104,7 @@
 		content ss21iconFont == 1 ? '\F4B0' : 'format_paint'
 	:root.fourchan-xt #url-button::after,
 	.copy-text-link::after,
+	.fxt-meta_profile + a::after,
 	.fa-link::after // copy
 		content ss21iconFont == 1 ? '\F471' : 'link'
 	#paste-area::after // paste mode in qr
@@ -2037,6 +2039,7 @@
 		display grid
 		grid-template-columns 1fr auto 1fr
 		z-depth(6)
+		z-index 10
 		transition top .25s
 		&::before,
 		&::after
@@ -2070,6 +2073,10 @@
 	:root.top-header:not(.fixed) #header-bar.scrolled ~ 
 		.globalMessage
 			top 0
+	
+	// when announcement is shown, don't have it cover the boardBanner
+	:root.top-header:has(#globalMessage:not([hidden])) body
+		padding-top 7.5rem
 	
 	// blotter support - one day it'd be nice if 4chan x could hide this in a
 	// similar fashion to announcement hiding, where it only shows when its
@@ -2187,8 +2194,10 @@
 			white-space nowrap
 			overflow hidden
 			text-overflow ellipsis
+		#index-size
+			max-width 12ch
 		#index-search
-			max-width 10rem
+			max-width 7rem
 	
 	#index-search
 		background-color ss21BackgroundElevated
@@ -2217,25 +2226,24 @@
 		display inline-flex
 		align-items center
 		gap .25rem
-	
+	/*
 	@css {
 		.navLinks.json-index {
 			container: indexoptions / inline-size;
 		}
-		@container indexoptions (inline-size < 50rem) {
+		@container indexoptions (inline-size < 1200px) {
 			#index-search {
 				max-width: 5rem;
 			}
-			#index-options select {
-				width: 4rem;
+			#index-size {
+				width: 10ch;
 			}
 		}
 	}
-	
+	*/
 	#lastlong-options
 		display inline-flex
 		flex-direction column
-		margin-right .25rem
 		& > input
 			font-family var(--font-monospace)
 			text-align center
@@ -2352,7 +2360,7 @@
 	
 	.thread
 		position relative
-		padding 0 1.5rem
+		padding 0 1rem
 		margin-bottom 1rem // this collapses anyway
 	
 	.board .thread:last-of-type
@@ -2366,18 +2374,16 @@
 		justify-content center
 		align-items center
 		min-height 10rem
-		if ss21twoWide
-			grid-column span 2
+		if ss21threeWide
+			grid-column span 3
 	
-	if ss21twoWide
+	if ss21threeWide
 		@media (min-width: 75rem)
 			:root.paged-mode .is_index .board
 				max-width none
 				display grid
 				grid-gap 0
-				grid-template-columns repeat(2, 50%)
-				.thread:last-of-type:nth-of-type(odd)
-					grid-column span 2
+				grid-template-columns repeat(3, 33%)
 	
 	.postContainer
 		position relative
@@ -2467,11 +2473,9 @@
 	// XXX: make this consistent
 	.ip-counter
 		color var(--text-hint-on-background)
-		//margin-left .25rem
 	
 	.dateTime
 		color var(--text-hint-on-background)
-		//margin-right .25rem
 	
 	.page-num
 		color var(--text-hint-on-background)
@@ -2790,13 +2794,14 @@
 	
 	// .stub ~ * is probably a little too expensive $$$ - but it's there because
 	// if json index is off and replies are shown, it covers all bases
-	/*
+	
 	.stub ~ *
 		display none
-	*/
+	
 	// XXX: 2024: this was .postContainer, but doesn't work on index.
 	// but even with @scope, there are a lot of elements within .thread to be using
 	// a * for
+	/*
 	@css {
 		@scope (.thread) {
 			.stub ~ * {
@@ -2804,6 +2809,7 @@
 			}
 		}
 	}
+*/
 	.stub
 		display flex
 		align-items center
@@ -3247,7 +3253,7 @@
 	
 	// XXX: https://github.com/TuxedoTako/4chan-xt/issues/10#issuecomment-1865093994
 	:root.fourchan-xt .post:target
-		scroll-margin-top 4rem
+		scroll-margin-top 5rem
 	
 	// 4CHANX: fappe and werk tyme support, including shortcuts indicators
 	.indicator
@@ -3479,7 +3485,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.postInfo
 			--post-info-fs .75rem
 			font-size var(--post-info-fs, .75rem)
-	
+	/*
+	@media (hover: none) {
+		#header-bar {
+			background: red !important;
+		}
+	}
+	*/
 	if ss21postInfoDisplay == 0
 		.fileThumb
 			//margin-top .25rem
@@ -3638,6 +3650,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.catalog-stats,
 		.catalog-replies
 			display none
+	
+	if ss21catalogueStyle
+		:root
+			--masonry 1
 	
 	// lots of explanation here for future looking back
 	// next thing we do is reset `.board` a little
@@ -5055,6 +5071,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		tc(ss21primary, medium)
 	
 	// at some point, 4chan stopped tracking ips, so hide it
+	// XXX: still works on ID'd boards, duh
 	#ip-count
 		display none
 	// but, because of that, there's a stray slash. so we gotta bit more work to do
@@ -5091,10 +5108,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#updater > .move
 		position absolute
 		z-index -1
-		top -.125rem
-		right -.125rem
-		bottom -.125rem
-		left -.125rem
+		inset -.125rem
 	
 	// make these appear clickable
 	#update-timer,
@@ -5353,7 +5367,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		anchor-name --anchor-el
 	
 	#menu
-		position absolute//fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
+		//position absolute//fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
+		position fixed
 		z-index 10
 		z-depth(8)
 		color ss21TextPrimary
@@ -5363,10 +5378,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		white-space nowrap
 		outline none // XXX: doesn't need a focus style
 		user-select none
+		/*
 		inset auto i
 		position-anchor --anchor-el
 		position-area block-end inline-start // XXX: chrome 129 this will be `position-area`
 		position-try flip-inline
+		*/
 		//inset-area bottom//bottom right
 		//position-try-options left//bottom left
 	
@@ -5685,19 +5702,36 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				border-radius: .25rem;
 				max-inline-size: 20rem;
 			}
+			.fxt-meta {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+			}
 			.fxt-meta_profile {
 				display: flex;
 				flex-direction: row;
+				align-items: center;
 				gap: .5rem;
 				img {
 					inline-size: 2rem;
 					block-size: 2rem;
 					border-radius: 100%;
 				}
+				.fxt-meta_author {
+					display: flex;
+					flex-direction: column;
+				}
 				.fxt-meta_author_username { font-weight: bold }
+				.fxt-meta_author_account { font-size: .75rem; }
 			}
 			.fxt-text a { color: var(--primary) }
 			.fxt-media_container:empty { display: none }
+			.fxt-quote {
+				padding: .5rem;
+				border: 1px solid var(--border-colour);
+				border-radius: .25rem;
+			}
 			.fxt-stats {
 				font-size: .875rem;
 				color: var(--text-hint-on-background);
