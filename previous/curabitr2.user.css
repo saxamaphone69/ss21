@@ -1,0 +1,1215 @@
+/* ==UserStyle==
+@name           curabitr 2
+@namespace      github.com/openstyles/stylus
+@version        1.0.0
+@description    A new userstyle
+@author         Me
+==/UserStyle== */
+@-moz-document domain("boards.4chan.org") {
+
+	/*
+    aw yeah, google web fonts BITCH
+*/
+	@font-face {
+		font-family: Gudea;
+		src: url('http://themes.googleusercontent.com/font?kit=thW9JAelqegPZr6cy_hdlJuy9QftGgiCbPT5J2Tle6QGEtCW0q5T6QHEAICoCh1h9R715REvNVFz5maQ3RAjMvuvYlUZxjWJuWoIFYd8ZVs9VGRJmXaKNSd0UG6XHo4E&text') format('woff');
+	}
+
+	@font-face {
+		font-family: GudeaBold;
+		font-weight: 800;
+		src: url('http://themes.googleusercontent.com/font?kit=6M2RKly85u67vSsXH0-zqihqGa-CSr3nQtF3lrv2wWeu7RP096c_0cFQ7arjjB7ybFaXKHeky_O7IdzbE_trRh2NL1ThVuLv506WDWjwTFK0tkCcv8VGcP6XCC56Ww8-&text') format('woff');
+	}
+
+	/*
+    next, we kill the crab (getting rid of shit i don't personally use)
+    1) banner and heading
+    2) posting mode: reply
+    3) [return] [bottom] [top]
+    4) bottom navigation
+    5) horizontal lines
+    6) style changer (you're using this one!) and reporting/post deletion (NO SHAME, NO BLAME)
+    7) copyright crap
+    8) ads (>not using adblock, >2025)
+*/
+	.boardBanner,
+	/* 1) */
+	.postingMode,
+	/* 2) */
+	.navLinks,
+	/* 3) */
+	#boardNavDesktopFoot,
+	/* 4) */
+	hr,
+	/* 5) */
+	.deleteform,
+	.stylechanger,
+	/* 6) */
+	#absbot,
+	/* 7) */
+	img[src^="//static.4chan.org/support/"]/* 8) */
+	{
+		display: none!important
+	}
+
+	/*
+    postform specific crap (only effects you if you AREN'T using quick reply for some reason)
+    1) formally .postblock
+    2) recaptcha buttons
+    3) more recaptcha stuff
+    4) browse button (file input for firefox)
+    5) (password used for file deletion)
+    6) posting rules
+*/
+	#postForm > tbody > tr > td:first-child,
+	/* 1) */
+	#recaptcha_table tr[height] > td:not(:first-child),
+	/* 2) */
+	#recaptcha_table tr[height] + tr > td:not(:first-child),
+	/* 3) */
+	#postForm #postFile > input[type=button],
+	/* 4) */
+	#postForm #postPassword + span,
+	/* 5) */
+	#postForm .rules/* 6) */
+	{
+		display: none!important
+	}
+
+	/*
+    general reset:
+    1) border-box because fuck you when i say 70 i mean 70
+    2) indian red selection (feel free to make highlighed text your own colour)
+    3) i don't want no ugly border around focused elements, i'm not blind
+    4) font reset (and making sure bold is actual bold, not faux bold)
+    5) links
+    6) text-shadow for web2.0
+*/
+	* {
+		/* 1) */
+		-moz-box-sizing: border-box !important;
+		box-sizing: border-box !important;
+	}
+
+	::selection {
+		/* 2) */
+		color: #fafafa !important;
+		background: indianRed !important;
+	}
+
+	::-moz-selection {
+		color: #fafafa !important;
+		background: indianRed !important;
+	}
+
+	:focus,
+	:active {
+		/* 3) */
+		outline: 0 !important;
+	}
+
+	/*
+-moz-hyphens:auto;
+-ms-hyphens:auto;
+-webkit-hyphens:auto;
+hyphens:auto;
+word-wrap:break-word;
+*/
+	html {
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		overflow-y: scroll;
+		position: relative;
+		height: 100%;
+	}
+
+	body,
+	span,
+	div,
+	input,
+	textarea,
+	select,
+	td,
+	strong,
+	a,
+	big {
+		/* 4) */
+		font-family: Gudea, Helvetica, Arial, sans-serif !important;
+		font-size: 1em !important;
+		font-weight: 400 !important;
+		line-height: 1.4 !important;
+		letter-spacing: .2px;
+		color: #2d2d2d !important;
+		vertical-align: baseline !important;
+	}
+
+	.subject,
+	.name,
+	.capcode,
+	.pages strong,
+	#boardNavDesktop .current {
+		font-family: GudeaBold, Helvetica, Arial, sans-serif !important;
+		font-weight: 800 !important;
+	}
+
+	a {
+		/* 5) */
+		color: cornflowerBlue !important;
+		text-decoration: none !important;
+	}
+
+	blockquote {
+		/* 6) */
+		text-shadow: 0 1px 1px #fafafa;
+	}
+
+	.abbr,
+	.summary {
+		color: #ababab !important;
+	}
+
+	.spoiler {
+		text-shadow: none;
+		background: #2d2d2d !important;
+		border-radius: 3px;
+		-moz-transition: color .1s;
+	}
+
+	.spoiler:hover {
+		color: #fafafa !important;
+	}
+
+	/*
+    the meaty part (vanilla 4chan only)
+*/
+	body {
+		/*background-color:
+    background-image:
+    background-position:
+    background-repeat:
+    background-attachment:*/
+		padding: 0 !important;
+		margin: 0 !important;
+		position: relative;
+		height: 100%;
+	}
+
+	body {
+		/* this means no harmony */
+    background-size: calc(10 * 0.5px) calc(10 * 0.5px), cover;
+		background-image: radial-gradient(#ddd 0.5px, transparent 0.5px), -webkit-radial-gradient(50% 50%, circle cover, #fafafa, #ededed 100%) !important;
+		background-attachment: fixed !important;
+		background-repeat: repeat !important;
+		/* but what is that you say? you want harmony? uncomment the following line for permanent harmony oh love */
+		/*background: url("http://static.4chan.org/image/tmp/rainbow.gif") repeat scroll 0 0 #EEF2FF !important;*/
+	}
+
+	/*
+body::after {
+    content: '';
+    display: block;
+    height: 935px;
+    width: 715px;
+    background: url('file:///W:/curabitr/ANIME.png');
+    position: fixed;
+    bottom: -250px;
+    right: -100px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: .2;
+}
+*/
+	/*url('file:///W:/curabitr/ANIME.png'),*/
+	/*
+    navigation
+*/
+	#boardNavDesktop {
+		font-size: 12px !important;
+		position: fixed;
+		/*bottom: 0;
+    left: 0;*/
+		width: 100%;
+		color: #bababa !important;
+		background-image: -moz-linear-gradient(#4c4c4c, #2d2d2d);
+		text-align: center;
+		padding-bottom: 2px;
+		box-shadow: 0 1px 10px rgba(0, 0, 0, .25);
+		z-index: 5;
+		-moz-user-select: none;
+		/*-moz-transition: left .2s ease-in-out;*/
+	}
+
+	/*
+#boardNavDesktop:not(:hover) {
+    left: -95%;
+    border-radius: 5px;
+}
+*/
+	#boardNavDesktop a {
+		color: #fafafa !important;
+		-moz-transition: text-shadow .2s ease-in-out;
+	}
+
+	#boardNavDesktop a:hover {
+		text-shadow: 0 0 1px #fafafa;
+	}
+
+	#navtopr {
+		float: none !important;
+	}
+
+	/*
+#boardNavDesktop {
+    font-size: 0 !important;
+    color: transparent !important;
+    position: fixed;
+    width: 100%;
+    text-align: center;
+    background: black;
+    padding-bottom: 2px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    z-index: 5;
+    opacity: .25;
+    -moz-transition: opacity .1s ease-in-out;
+}
+
+#boardNavDesktop:hover {
+    opacity: .75;
+}
+
+#boardNavDesktop a {
+    font-size: 14px !important;
+    color: #fafafa !important;
+    -moz-transition: text-shadow .2s ease-in-out;
+}
+
+#boardNavDesktop a:hover {
+    text-shadow: 0 0 1px #fafafa;
+}
+
+#navtopr {
+    float: none !important;
+}*/
+	/*
+#boardNavDesktop {
+    position: fixed;
+    width: 100%;
+    text-align: center;
+    background: black;
+    padding-bottom: 2px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    z-index: 5;
+    opacity: .25;
+    -moz-transition: opacity .1s ease-in-out;
+}
+
+#boardNavDesktop:hover {
+    opacity: .75;
+}
+
+#boardNavDesktop a {
+    color: #fafafa !important;
+    -moz-transition: text-shadow .2s ease-in-out;
+}
+
+#boardNavDesktop a:hover {
+    text-shadow: 0 0 1px #fafafa;
+}
+*/
+	#navtopr {
+		font-size: 0 !important;
+		color: transparent !important;
+		float: none !important;
+	}
+
+	#navtopr > a:first-child::before {
+		content: '';
+		font-family: Webdings !important;
+		font-size: 16px !important;
+		color: #fafafa !important;
+	}
+
+	/* 4chan s */
+	/*
+#boardNavDesktop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 5px;
+    color: #aaa !important;
+    text-align: center !important;
+    background-image: -webkit-linear-gradient(#3d3d3d,#2d2d2d);
+    background-image: -moz-linear-gradient(#3d3d3d,#2d2d2d);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    z-index: 2;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+#boardNavDesktop a {
+    color: #fafafa !important;
+    padding: 0 !important;
+}
+
+#boardNavDesktop a:hover {
+    text-shadow: 0 0 3px rgba(255,255,255,.75), 0 0 5px rgba(255,255,255,.5);
+}
+
+#boardNavDesktop, #navtopr {
+    float: none !important;
+}
+
+.current {
+    font-weight: bold !important;
+    text-shadow: 0 0 3px rgba(255,255,255,.75), 0 0 5px rgba(255,255,255,.5);
+}
+*/
+	/* 4chan s' hidden menu */
+	.hidemeaway {
+		position: relative;
+		cursor: pointer;
+		color: #bababa !important;
+	}
+
+	.hiddenmenu {
+		display: none;
+		position: absolute;
+		background: #2d2d2d;
+		box-shadow: 0 0 3px rgba(0, 0, 0, .25);
+		top: 100%;
+		left: 0;
+		width: 82px;
+		padding: 5px 0;
+	}
+
+	.hiddenmenu a {
+		display: block;
+	}
+
+	.hidemeaway:hover .hiddenmenu {
+		display: block;
+	}
+
+	/*
+    ensure space between navigation and content
+*/
+	#mpostform + div {
+		height: 50px;
+		position: static !important;
+	}
+
+	/*
+    postarea/postform
+*/
+	#postForm {
+		position: fixed;
+		right: 1%;
+		bottom: 1%;
+	}
+
+	.closed {
+		font-size: 2em !important;
+		padding: 50px 0 10px 0 !important;
+	}
+
+	/*
+    announcements
+*/
+	.globalMessage {
+		text-shadow: 0 1px 1px #fafafa;
+		width: 90%;
+		margin: auto;
+	}
+
+	.globalMessage strong,
+	.globalMessage big {
+		color: #dd3434 !important;
+	}
+
+	.globalMessage a {
+		color: #0050b3 !important;
+	}
+
+	#globalToggle {
+		display: block !important;
+		width: 300px;
+		margin: 0 auto;
+		text-align: center;
+		color: #fafafa !important;
+		background: -moz-linear-gradient(#e01919, #aa1111);
+		border-radius: 3px;
+		padding: 4px 0 5px;
+	}
+
+	.globalMessage.hideMobile {
+		display: none;
+	}
+
+	/*
+    main board
+*/
+	#delform {
+		width: 80%;
+		margin: 30px auto;
+	}
+
+	.thread::before,
+	.thread::after,
+	.op::before,
+	.op::after {
+		content: '';
+		display: table;
+	}
+
+	.thread::after,
+	.op::after {
+		clear: both;
+	}
+
+	.thread {
+		margin: 10px 0 !important;
+	}
+
+	.thread:first-of-type {
+		margin-top: 0 !important;
+	}
+
+	.thread:last-of-type {
+		margin-bottom: 0 !important;
+	}
+
+	.fileThumb,
+	.fileThumb img {
+		margin: 0 !important;
+	}
+
+	/*
+    replies
+*/
+	.opContainer {
+		margin-bottom: 5px;
+	}
+
+	.replyContainer {
+		position: relative;
+	}
+
+	.useremail .name,
+	.useremail .postertrip {
+		color: #0050b3 !important;
+	}
+
+	.fileThumb {
+		padding: 5px;
+		background: #ffffff;
+		border: 1px solid #e3e3e3;
+		border-radius: 5px;
+		box-shadow: 0 0 0 rgba(0, 0, 0, .25);
+		-moz-transition: box-shadow .2s ease-in-out;
+	}
+
+	.fileThumb:hover {
+		box-shadow: 0 0 2px rgba(0, 0, 0, .25);
+	}
+
+	/* get rid of fancy border around expanded images */
+	.image_expanded .fileThumb {
+		padding: 0;
+		box-shadow: none;
+		border: 0;
+		border-radius: 0;
+	}
+
+	.postNum {
+		font-size: 0 !important;
+		color: transparent !important;
+	}
+
+	.postNum > a:not(:first-child) {
+		font-size: 16px !important;
+		color: cornflowerBlue !important;
+	}
+
+	.postNum > a:first-child::after {
+		content: '#';
+		font-size: 16px !important;
+		color: cornflowerBlue !important;
+	}
+
+	.postNum > a.replylink {
+		font-size: 14px !important;
+		color: #2d2d2d !important;
+		/* okay for some nigger reason i need to have the extra a (although i think i know why) */
+		text-transform: lowercase;
+		text-shadow: 0 1px 1px rgba(255, 255, 255, .9);
+		display: inline-block;
+		padding: 3px 7px;
+		margin: 0 5px;
+		background: -webkit-linear-gradient(#fafafa, #e3e3e3);
+		background: -moz-linear-gradient(#fafafa, #e3e3e3);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+		border: 1px solid #bbb;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+	.replylink:hover {
+		box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	}
+
+	.replylink:active {
+		background-image: -webkit-linear-gradient(#e3e3e3, #fafafa);
+		background-image: -moz-linear-gradient(#e3e3e3, #fafafa);
+		position: relative;
+		top: 1px;
+	}
+
+	/*
+span[id^="nothread"] a:nth-of-type(3) {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    text-transform: lowercase;
+    text-shadow: 0 1px 1px rgba(255,255,255,.9);
+    color: #555 !important;
+    display: inline-block;
+    padding: 3px 7px;
+    margin: 0 5px;
+    background: -webkit-linear-gradient(#fafafa,#e3e3e3);
+    background: -moz-linear-gradient(#fafafa,#e3e3e3);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    outline: 0;
+    cursor: pointer;
+}
+
+span[id^="nothread"] a:nth-of-type(3):hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+
+span[id^="nothread"] a:nth-of-type(3):active {
+    background-image: -webkit-linear-gradient(#e3e3e3,#fafafa);
+    background-image: -moz-linear-gradient(#e3e3e3,#fafafa);
+    position: relative;
+    top: 1px;
+}
+*/
+	/*.useremail:hover::after {content: attr(href);}*/
+	.postMessage > br + br + strong[style] {
+		color: #dd3434 !important;
+	}
+
+	a.summary {
+		display: inline-block;
+		margin-left: 10px;
+		position: relative;
+		top: 1px;
+		background: #fafafa;
+		font-size: .9em !important;
+		padding: 0 3px;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+		border: 1px solid #e6e6e6;
+		border-bottom: 0;
+	}
+
+	.postertrip {
+		font-family: monospace !important;
+		font-size: 1.2em !important;
+	}
+
+	.dateTime {
+		color: #bababa !important;
+	}
+
+	.quote {
+		color: #5c9e0f !important;
+	}
+
+	/*
+.op .file {
+    float: right !important;
+}
+*/
+	.fileInfo {
+		margin: 0 !important;
+	}
+
+	/*
+.fileInfo > a {
+    font-size: 0 !important;
+    color: transparent !important;
+    -moz-transition: all .2s;
+}
+
+.fileInfo:hover > a {
+    font-size: .8em !important;
+    color: cornflowerBlue !important;
+}
+*/
+	.fileInfo > a {
+		font-size: .75em !important;
+	}
+
+	.subject {
+		color: #696969 !important;
+	}
+
+	.sideArrows {
+		display: none;
+	}
+
+	.sideArrows.hide_reply_button {
+		display: block;
+		font-size: 12px !important;
+		position: absolute;
+		top: 1px;
+		right: 3px;
+		margin: 0 !important;
+		opacity: 0;
+		-moz-transition: opacity .3s ease-in-out;
+	}
+
+	.op .fileThumb {
+		float: right !important;
+	}
+
+	.post.reply .fileThumb {
+		margin-right: 5px !important;
+	}
+
+	.postContainer:hover .sideArrows.hide_reply_button {
+		opacity: .5;
+	}
+
+	.stub + .sideArrows + .post {
+		display: none !important;
+	}
+
+	.post input {
+		display: none;
+	}
+
+	.post {
+		margin: 0 !important;
+	}
+
+	.post.reply {
+		clear: both;
+		display: block !important;
+		background: #fafafa !important;
+		padding: 3px 0 3px 10px !important;
+		border: 1px solid #e6e6e6 !important;
+		border-bottom: 0 !important;
+		-moz-transition: background .5s ease-in-out;
+	}
+
+	.post.reply.highlight {
+		background: #efefef !important;
+	}
+
+	.thread .replyContainer:last-child .post.reply {
+		border-bottom: 1px solid #e3e3e3 !important;
+	}
+
+	.postMessage {
+		margin: 0 !important;
+	}
+
+	/*
+    /g/ [code] tags
+*/
+	.prettyprint {
+		background-color: #151717 !important;
+		padding: 5px !important;
+		margin: 0;
+		text-shadow: none;
+		white-space: pre-wrap;
+		border-radius: 5px;
+	}
+
+	.prettyprint span {
+		font-family: monospace !important;
+		color: #fafafa !imporant;
+		/* so that when .prettyprint loads */
+	}
+
+	.prettyprint .str {
+		color: #edd400 !important;
+	}
+
+	/* string - butter2 */
+	.prettyprint .kwd {
+		color: #fff !important;
+		font-weight: bold !important;
+	}
+
+	/* keyword - white */
+	.prettyprint .com {
+		color: #888a85 !important;
+	}
+
+	/* comment - aluminum4 */
+	.prettyprint .typ {
+		color: #8ae234 !important;
+		font-weight: bold !important;
+	}
+
+	/* type - chameleon1 */
+	.prettyprint .lit {
+		color: #edd400 !important;
+	}
+
+	/* literal - butter2 */
+	.prettyprint .pun {
+		color: #d3d7cf !important;
+	}
+
+	/* punctuation - aluminium2 */
+	.prettyprint .pln {
+		color: #d3d7cf !important;
+	}
+
+	/* plaintext - aluminium2 */
+	.prettyprint .tag {
+		color: #729fcf !important;
+	}
+
+	/* html/xml tag - skyblue1 */
+	.prettyprint .atn {
+		color: #8ae234 !important;
+		font-weight: bold !important;
+	}
+
+	/* html/xml attribute name - chameleon1 */
+	.prettyprint .atv {
+		color: #edd400 !important;
+	}
+
+	/* html/xml attribute value - butter2 */
+	.prettyprint .dec {
+		color: #ce5c00 !important;
+	}
+
+	/* decimal - orange3 */
+	/*
+    pages
+*/
+	.pagelist .next,
+	.pagelist .prev {
+		display: none;
+	}
+
+	.pagelist {
+		background: none !important;
+		padding: 0 !important;
+		border: 0 !important;
+		margin-bottom: 30px !important;
+		float: none !important;
+		word-spacing: 10px;
+		text-align: center;
+		overflow: visible !important;
+	}
+
+	.pagelist .pages {
+		padding: 0 !important;
+		float: none !important;
+		font-size: 0 !important;
+		color: transparent !important;
+	}
+
+	.pagelist .pages strong,
+	.pagelist .pages a {
+		display: inline-block;
+		font-size: 16px !important;
+		color: #2d2d2d !important;
+		min-width: 20px;
+		padding: 3px 7px 1px 8px;
+		border-radius: 5px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+		-webkit-transition: box-shadow .2s;
+		-moz-transition: box-shadow .2s;
+		transition: box-shadow .2s;
+	}
+
+	.pagelist .pages a {
+		background-image: -webkit-linear-gradient(#fafafa, #e3e3e3);
+		background-image: -moz-linear-gradient(#fafafa, #e3e3e3);
+		background-image: linear-gradient(#fafafa, #e3e3e3);
+	}
+
+	.pagelist .pages strong {
+		color: #e3e3e3 !important;
+		background-image: -webkit-linear-gradient(#3d3d3d, #2d2d2d);
+		background-image: -moz-linear-gradient(#3d3d3d, #2d2d2d);
+		background-image: linear-gradient(#3d3d3d, #2d2d2d);
+	}
+
+	.pages a:hover {
+		box-shadow: 0 1px 4px rgba(0, 0, 0, .75);
+	}
+
+	/*
+    4chan x specific
+*/
+	#overlay {
+		z-index: 10 !important;
+		background-image: -moz-radial-gradient(50% 50%, circle cover, rgba(50, 50, 50, .5), rgba(0, 0, 0, .75) 100%) !important;
+	}
+
+	#options {
+		background-color: #ededed !important;
+		border-radius: 5px;
+		width: 75% !important;
+		height: 75%;
+		vertical-align: middle !important;
+	}
+
+	#content {
+		height: 95% !important;
+	}
+
+	form[name=post] > h1 {
+		display: none;
+	}
+
+	.reply.dialog {
+		border: 0 !important;
+	}
+
+	.hide_thread_button > span {
+		background-image: -moz-linear-gradient(#fafafa, #e3e3e3);
+		margin-right: 5px;
+		text-align: center;
+		padding: 2px 4px;
+		border-radius: 5px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+	}
+
+	.hide_reply_button.stub {
+		background: #fafafa;
+		border: 1px solid #e6e6e6;
+		border-bottom: 0;
+	}
+
+	.thread .replyContainer:last-child .hide_reply_button.stub {
+		border-bottom: 1px solid #e6e6e6;
+	}
+
+	.hide_reply_button.stub > a {
+		display: block;
+		padding: 3px 0 3px 10px;
+	}
+
+	.hide_reply_button.stub > a > span {
+		display: none;
+	}
+
+	.post.reply.highlight {
+		background: #efefef !important;
+	}
+
+	.thread .replyContainer:last-child .post.reply {
+		border-bottom: 1px solid #e3e3e3 !important;
+	}
+
+	#stats {
+		font-size: 12px !important;
+		top: 3px !important;
+		left: auto !important;
+		right: 20px !important;
+		width: 60px;
+		text-align: right;
+		z-index: 6;
+	}
+
+	#stats > .move {
+		color: #fafafa !important;
+		cursor: default !important;
+	}
+
+	#postcount,
+	#imagecount {
+		color: #fafafa !important;
+	}
+
+	#watcher {
+		position: fixed !important;
+		width: 200px;
+		background: #fafafa !important;
+		border-radius: 5px;
+		opacity: .5;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+		z-index: 2;
+	}
+
+	#watcher:hover {
+		opacity: .9;
+	}
+
+	#watcher > div {
+		color: #bbb !important;
+	}
+
+	#watcher > .move {
+		text-align: center;
+		text-decoration: none !important;
+		text-transform: lowercase;
+	}
+
+	#watcher > div > a:first-child {
+		color: #dd3434 !important;
+	}
+
+	#imgControls {
+		height: 0;
+	}
+
+	#imageType {
+		display: none;
+	}
+
+	#imgControls > label {
+		font-size: 0 !important;
+		color: transparent !important;
+	}
+
+	#imageExpand {
+		position: fixed;
+		top: 6px;
+		right: 5px;
+		z-index: 6;
+		-moz-appearance: none;
+		height: 10px;
+		width: 10px;
+		border: 1px solid rgba(0, 0, 0, .5) !important;
+		background: #fafafa !important;
+		border-radius: 3px !important;
+		margin: 0;
+	}
+
+	.container {
+		display: block;
+		font-size: .8em !important;
+		line-height: .8 !important;
+		color: #bababa !important;
+		margin-left: 5px;
+	}
+
+	.container::before {
+		content: 'le quoted by: ';
+	}
+
+	.container::after {
+		content: '.';
+	}
+
+	.container .backlink:not(:only-child):not(:last-child)::after {
+		content: ',';
+	}
+
+	#updater {
+		font-size: 12px !important;
+		top: auto !important;
+		left: auto !important;
+		bottom: 0 !important;
+		right: 5px !important;
+	}
+
+	#updater #count:not(.new):not(.error) {
+		display: none;
+	}
+
+	#updater #count.new {
+		color: limeGreen !important;
+		background: none !important;
+	}
+
+	#qr {
+		right: 5px !important;
+		bottom: 5px !important;
+		top: auto !important;
+		left: auto !important;
+		background: none !important;
+		opacity: .3;
+		-moz-transition: opacity .2s ease-in-out;
+	}
+
+	#qr:hover {
+		opacity: .8;
+	}
+
+	#qr > .move > #autohide,
+	#qr > .move > span,
+	/*#qr:not(:hover) > form,*/
+	#qr [type=file] > [type=button] {
+		display: none;
+	}
+
+	#qr > .move {
+		color: #bbb !important;
+		text-transform: lowercase;
+		text-align: center;
+		cursor: default !important;
+	}
+
+	/*
+#qr {
+    opacity: .3;
+    background: none !important;
+    z-index: 6;
+    -moz-transition: opacity .2s ease-in-out;
+}
+
+#qr:hover {
+    opacity: .8;
+}
+
+#qr > .move {
+    display: none;
+}
+
+#qr .field {
+    border: 1px solid #bbb !important;
+    padding: 0;
+    background: #fafafa;
+}
+
+#qr .field:focus {
+    border: 1px solid cornflowerBlue !important;
+}
+
+#qr textarea.field {
+    min-height: 200px !important;
+    resize: vertical;
+} 
+
+#qr [type=file] > [type=button] {
+    display: none;
+}
+
+#qr [type=file] {
+    width: 30% !important;
+    margin: 0 !important;
+}
+
+#qr [type=submit] {
+    -moz-appearance: none;
+    width: 30% !important;
+    padding: 0 !important;
+    border: 0;
+    margin: 0 !important;
+}
+*/
+	#qp {
+		background: #fafafa !important;
+		box-shadow: 0 0 5px rgba(0, 0, 0, .25);
+		opacity: .95;
+		padding: 3px 10px !important;
+		border-radius: 1px;
+	}
+
+	#qp .post {
+		padding: 0 !important;
+		border: 0 !important;
+		margin: 0 !important;
+	}
+
+	.qphl {
+		outline: 0 !important;
+	}
+
+	.qphl.reply {
+		background: #e6e6e6 !important;
+	}
+
+	/*.sideArrows.hide_reply_button {
+    display: block;
+    font-size: 12px !important;
+    position: absolute;
+    top: 1px;
+    right: 3px;
+    margin: 0 !important;
+    opacity: 0;
+    -moz-transition: opacity .3s ease-in-out;
+}
+
+.postContainer:hover .sideArrows.hide_reply_button {
+    opacity: .5;
+}*/
+	.menu_button {
+		font-size: 12px !important;
+		color: #2d2d2d !important;
+		position: absolute;
+		top: 1px;
+		right: 25px;
+		opacity: 0;
+		-moz-transition: opacity .3s ease-in-out;
+	}
+
+	.postContainer:hover .menu_button {
+		opacity: .5;
+	}
+
+	/* yay, filters */
+	.filter_highlight {
+		box-shadow: none !important;
+	}
+
+	.filter_highlight .postMessage {
+		text-decoration: underline;
+		-moz-text-decoration-color: indianRed;
+	}
+
+	.seaweed .reply,
+	#qp.seaweed {
+		background: -moz-linear-gradient(to right, #fafafa, #f7d79a) !important;
+	}
+
+	.zixaphir .reply {
+		background: -moz-linear-gradient(to right, #fafafa, #7f89bd) !important;
+	}
+
+	.sax .reply {
+		background: -moz-linear-gradient(to right, #fafafa, #c5e6ee) !important;
+	}
+
+	.mayhem .reply {
+		background: -moz-linear-gradient(to right, #fafafa, #cd93de) !important;
+	}
+
+	.mod .reply {
+		background: -moz-linear-gradient(to right, #fafafa, #c647c6) !important;
+	}
+
+	.moot .reply {
+		background: -moz-linear-gradient(to right, #fafafa, #cc0000) !important;
+	}
+
+	.large.mb .fileThumb {
+		background: skyBlue;
+	}
+
+	.match .fileThumb {
+		background: yellowGreen;
+	}
+
+	.large .fileThumb {
+		background: indianRed;
+	}
+
+	/*
+    @media (min-width: 960px) {}
+    
+    page is BIGGER than 960px
+    
+    ----------------------------------------
+
+    @media (max-width: 960px) {}
+    
+    page is SMALLER than 960px
+    
+*/
+}
