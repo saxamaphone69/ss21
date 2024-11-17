@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.4.4
+// @version     2.4.5
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -23,7 +23,6 @@
 (async () => {
 	"use strict";
 	//console.group("Initialising ss21 sidedish...");
-
 	/*! @ryanmorr/ready v1.4.0 | https://github.com/ryanmorr/ready */
 	function _typeof(a){return _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(a){return typeof a}:function(a){return a&&"function"==typeof Symbol&&a.constructor===Symbol&&a!==Symbol.prototype?"symbol":typeof a},_typeof(a)}(function(a,b){"object"===("undefined"==typeof exports?"undefined":_typeof(exports))&&"undefined"!=typeof module?module.exports=b():"function"==typeof define&&define.amd?define(b):(a=a||self,a.ready=b())})(this,function(){'use strict';function a(a){for(var b,c=a.selector,d=a.callback,e=g.querySelectorAll(c),f=0,j=e.length;f<j;f++)b=e[f],b[h]||(b[h]=!0,d.call(b,b))}function b(){f.forEach(a)}function c(a){var b=f.indexOf(a);-1!==b&&f.splice(b,1),0===f.length&&null!=e&&(e.disconnect(),e=null)}function d(d,h){if("function"==typeof d&&(h=d,d=g,j))return h.call(g,g),function(){return null};e||(e=new MutationObserver(b),e.observe(g.documentElement,{childList:!0,subtree:!0}));var i={selector:d,callback:h};return f.push(i),a(i),function(){return c(i)}}var e=null,f=[],g=window.document,h=Symbol("ready"),j=/complete|loaded|interactive/.test(g.readyState);return j||g.addEventListener("DOMContentLoaded",function(){j=!0;for(var a,b=0,c=f.length;b<c;b++)a=f[b],a.selector===g&&(a.callback.call(g,g),f.splice(b--,1))}),d});
 
@@ -218,6 +217,7 @@
 	}
 
 	function removeStyles() {
+		//removeStyle($("link[rel='stylesheet']", d.head));
 		removeStyle($("style[type]", d.head)); // this removes the inline mobile css
 		removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
 		removeStyle($("#custom-css", d.head)); // this removes extra, custom css by 4chan x
@@ -965,6 +965,60 @@ printAddress();
 		}
 
 		on(d, 'QRDialogCreation', function() {
+const captchaContainer = document.querySelector(".captcha-root");
+
+  let tBgObserver = null;
+
+  const observeTBgStyle = (tBg) => {
+    // Disconnect any existing observer to avoid duplicate listeners
+    if (tBgObserver) {
+      tBgObserver.disconnect();
+      tBgObserver = null;
+    }
+
+    // If tBg exists, observe its style attribute
+    if (tBg) {
+      tBgObserver = new MutationObserver(() => {
+        const bgImage = window.getComputedStyle(tBg).backgroundImage;
+
+        if (bgImage && bgImage !== "none") {
+          captchaContainer.classList.add("captcha-loaded");
+        } else {
+          captchaContainer.classList.remove("captcha-loaded");
+        }
+      });
+
+      tBgObserver.observe(tBg, {
+        attributes: true,
+        attributeFilter: ["style"], // Only watch the style attribute
+      });
+
+      // Run the check immediately to handle cases where the background-image is already set
+      const bgImage = window.getComputedStyle(tBg).backgroundImage;
+      if (bgImage && bgImage !== "none") {
+        captchaContainer.classList.add("captcha-loaded");
+      } else {
+        captchaContainer.classList.remove("captcha-loaded");
+      }
+    } else {
+      // If tBg is not present, ensure the class is removed
+      captchaContainer.classList.remove("captcha-loaded");
+    }
+  };
+
+  const observer = new MutationObserver(() => {
+    const tBg = captchaContainer.querySelector("#t-bg");
+    observeTBgStyle(tBg); // Attach a new observer to the re-added #t-bg element
+  });
+
+  observer.observe(captchaContainer, {
+    childList: true, // Monitor direct child changes
+    subtree: true, // Monitor all descendant changes
+  });
+
+		});
+
+		on(d, 'QRDialogCreation', function() {
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
 					if (mutation.target.matches('#file-n-submit input[type="submit"]') && mutation.attributeName === 'value') {
@@ -1244,7 +1298,7 @@ console.log(grids);
 		masonry();
 */
 		function masonry() {
-			if(!getComputedStyle(document.documentElement).getPropertyValue("--primary")) {
+			if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
 				return false;
 			}
 			let grids = [...document.querySelectorAll(':root.catalog-mode .board')];
@@ -1308,7 +1362,9 @@ console.log(grids);
 			};
 
 			function subscriber(mutations) {
-				masonry();
+				if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
+					masonry();
+				}
 			}
 			const observer = new MutationObserver(subscriber);
 			observer.observe(target, config);
@@ -1681,12 +1737,14 @@ boxes.forEach(el => {
 
 		// 2025GRID
 		//cloneAndPrepend('.boardBanner', '#delform');
+
 		function OPAsBanner() {
 			ready(".op .fileThumb", (element) => {
 				let _this = element,
 						banner = $(".boardBanner");
 				let OpFullFile = _this.href;
 				if (OpFullFile.endsWith("m")) {
+					//comment start
 					/*
           let OpVideo = document.createElement("video");
           OpVideo.classList.add("ss21--op-banner");
@@ -1698,6 +1756,7 @@ boxes.forEach(el => {
           }
           OpVideo.muted = true;
           banner.appendChild(OpVideo);
+					//comment end
 					*/
 					const OpVideo = document.createElement("video");
 					OpVideo.classList.add("ss21--op-banner");
@@ -1727,6 +1786,50 @@ boxes.forEach(el => {
 			OPAsBanner();
 		}
 
+		/*
+		async function OPAsBanner() {
+  // Wait for the ".op .fileThumb" element to be ready
+  ready(".op .fileThumb", async (element) => {
+    const banner = document.querySelector(".boardBanner");
+    const OpFullFile = element.href;
+
+    // If the file is a video
+    if (OpFullFile.endsWith("m")) {
+      const OpVideo = document.createElement("video");
+      OpVideo.classList.add("ss21--op-banner");
+      OpVideo.loop = true;
+      OpVideo.src = OpFullFile;
+      OpVideo.muted = true;
+      banner.appendChild(OpVideo);
+
+      try {
+        await OpVideo.play(); // Wait for the video to start playing
+        console.log("Video is playing");
+      } catch (error) {
+        console.error("Error playing video:", error);
+      }
+
+    } else { // If the file is an image
+      const OpImage = new Image();
+      OpImage.classList.add("ss21--op-banner");
+      OpImage.src = OpFullFile;
+
+      // Create a promise that resolves when the image has loaded
+      await new Promise((resolve, reject) => {
+        OpImage.onload = resolve;
+        OpImage.onerror = reject;
+      });
+
+      banner.appendChild(OpImage);
+      console.log("Image loaded and appended to banner");
+    }
+  });
+}
+
+if (config === "thread") {
+  OPAsBanner();
+}
+		*/
 		/**
  * Wrap the contents of the specified node inside a new div.
  * @param {string} selector - The CSS selector of the node to wrap.
