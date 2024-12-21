@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.6
+@version        2.4.7
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -37,6 +37,7 @@
 @var select     ss21flatness         "Materialness" ["0:Flat", "1:Elevated", "2:Bordered*"]
 @var select     ss21openThread       "Open Thread style" ["0:Traditional", "1:FAB*"]
 @var checkbox   ss21allowContest     "If unblocked, show contest banners" 0
+@var checkbox   ss21allowAds         "If unblocked, show ads (yuck)" 0
 @var select     ss21iconFont         "Icon font" ["1:Bootstrap", "2:Material Symbols*"]
 @var checkbox   ss21navRail          "Display settings as navigation rail" 1
 @var select     ss21watchButton      "Watch thread button" ["1:Always displayed*", "2:On hover"]
@@ -322,7 +323,7 @@
 		background-color var(--background-secondary)
 		-webkit-font-smoothing antialiased
 		-moz-osx-font-smoothing grayscale
-		//scroll-behavior smooth
+		scroll-behavior smooth
 		text-rendering optimizeLegibility // XXX: despite https://marco.org/2012/11/15/text-rendering-optimize-legibility - inter ui needs it for ligatures
 		overflow-y scroll
 		overflow-wrap anywhere
@@ -1149,7 +1150,7 @@
 			font-variation-settings 'FILL' 0
 	.file--gif:not(.expanded-image) > .post > .file > .fileThumb::after // gif icon for gif thumbnails
 		if ss21iconFont == 1
-			content '\F366'
+			content '\F747'
 		else if ss21iconFont == 2
 			content 'gif_box'
 			font-variation-settings 'FILL' 0
@@ -1509,7 +1510,7 @@
 			justify-content center
 			//position relative
 			height 3rem
-			min-width 2rem
+			min-width 1.5rem
 			padding 0 .5rem
 			transition opacity .25s
 			/*
@@ -1523,7 +1524,7 @@
 				&:hover
 					opacity .85
 		.current
-			box-shadow inset 0 -2px 0 invert(ss21primary)
+			box-shadow inset 0 -.125rem 0 invert(ss21primary)
 			opacity 1
 	
 	#custom-board-list
@@ -1615,6 +1616,15 @@
 		padding 0
 		margin-right .25rem
 	
+	@css {
+		#shortcuts:not(:has(#shortcut-stats)) #shortcut-updater {
+			grid-row: span 2;
+		}
+		#shortcuts:not(:has(#shortcut-updater)) #shortcut-stats {
+			grid-row: span 2;
+		}
+	}
+	
 	// XXX: 2023-03: changed to grid just to have stats/updater on new lines
 	/*
 	#shortcuts
@@ -1704,6 +1714,7 @@
 		:root {
 			scroll-timeline: --page-scroll-progress block, --page-text-shadow block, --page-parallax block;
 		}
+		/*
 		#scroll-progress {
 			position: absolute;
 			top: 100%;
@@ -1721,6 +1732,29 @@
 			}
 			to {
 				transform: scaleX(1);
+			}
+		}*/
+		@property --scroll-progress {
+			syntax: "<percentage>";
+			initial-value: 0%;
+			inherits: false;
+		}
+		#scroll-progress {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			height: .25rem;
+			background-image: linear-gradient(to right, var(--bar-colour) var(--scroll-progress), var(--grey-500) var(--scroll-progress));
+			animation: grow-progress auto linear;
+			animation-timeline: --page-scroll-progress;
+		}
+		@keyframes grow-progress {
+			from {
+				--scroll-progress: 0%;
+			}
+			to {
+				--scroll-progress: 100%;
 			}
 		}
 		.boardTitle {
@@ -2181,6 +2215,7 @@
 		select
 			background-color ss21BackgroundElevated
 			tc(@background-color, high)
+			field-sizing content
 	
 	@media (max-width: 77rem)
 		.navLinks.json-index
@@ -2614,6 +2649,12 @@
 		background-color var(--background-primary)
 		borderRadius()
 		z-depth(8)
+		transform translateZ(1px)
+		will-change top, left
+		pointer-events none
+		contain content
+		margin 0 1rem
+	
 	#qp
 		& > .postContainer
 			margin 0
@@ -3293,7 +3334,7 @@
 	
 	// when in catalogue mode, give threads a red glow to show they are highlighted
 	// XXX: probably can be simplified in our version of the catalogue
-	:root:not(.werkTyme) .catalog-thread.filter-highlight .catalog-thumb,
+	:root:not(.werkTyme) .catalog-thread.filter-highlight .catalog-post,
 	:root.werkTyme .catalog-thread.filter-highlight:not(:hover),
 	:root.werkTyme:not(.catalog-hover-expand) .catalog-thread.filter-highlight,
 	:root.werkTyme.catalog-hover-expand .catalog-thread.filter-highlight > .catalog-container:hover > .catalog-post,
@@ -3302,11 +3343,11 @@
 	
 	// when in catalogue mode, give watched threads a red outline
 	// XXX: same here
-	:root:not(.werkTyme) .catalog-thread.watched .catalog-thumb,
+	:root:not(.werkTyme) .catalog-thread.watched .catalog-post,
 	:root:root.werkTyme .catalog-thread.watched:not(:hover),
 	:root:root.werkTyme:not(.catalog-hover-expand) .catalog-thread.watched,
 	:root.werkTyme.catalog-hover-expand .catalog-thread.watched > .catalog-container:hover > .catalog-post
-		border 2px solid rgba(255, 0, 0, .75)
+		box-shadow 0 0 3px 3px rgba(255, 0, 0, .5)
 	
 	// XXX: needs to be coincided with normal .fileText
 	.file--huge > .post > .file > .fileText > .file-info > a:first-child
@@ -3366,21 +3407,23 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				color ss21posterVerified
 	
 	:root:not(.anonymize) .postContainer.poster--pass
-		--post-bg mix(ss21posterPass, ss21BackgroundColour, 10%)
+		--post-bg mix(ss21posterPass, ss21BackgroundColour, 5%)
 		> .stub
 			background-color var(--post-bg)
 		> .post
-			background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
+			background-color var(--post-bg)
 			> .postInfo > .nameBlock
 				color ss21posterPass
 		if ss21openThread == 0
 			+ .summary
-				background-color mix(ss21posterPass, ss21BackgroundColour, 10%)
+				background-color var(--post-bg)
 	
 	.postContainer.post--aus
 		> .post
 			background-color mix(blue, ss21BackgroundColour, 3%)
-	
+	/*
+	<span class="nameBlock"><span class="name">Anonymous</span> <span title="Pass user since 2014" class="n-pu"></span></span>
+	*/
 	.n-pu
 		display inline-flex
 		&::after
@@ -3396,14 +3439,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			position relative
 		&:not(.expanded-image) > .post > .file
 			& > .fileThumb::after
-				font-size 3rem
+				font-size 200%
 				position absolute
 				inset 0
+				inline-size 100%
+				block-size 100%
+				justify-content center
+				align-items center
 				background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))
 				color #fff
 				opacity .8
 				borderRadius()
-				//will-change opacity
 				transition opacity .25s
 				pointer-events none
 				overflow hidden
@@ -3556,11 +3602,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		display inline-flex
 		flex-direction column
 		justify-content center
+		.next
+			margin-top -2px
 		.prev,
 		.next
-			width .75rem
+			width .625rem
 			&::after
-				font-size .75rem
+				font-size .625rem
 				transition opacity .25s
 				opacity .54
 			&:hover::after
@@ -3869,6 +3917,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.catalog-post .subject:not(:empty)
 		display block
 		text-shadow 0 1px 2px rgba(0 0 0 .3)
+		color #fff
 		background-image linear-gradient(to top, black, transparent)
 		padding .5rem
 		width calc(100% - 1rem)
@@ -4051,22 +4100,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			letter-spacing 0.03em
 			text-transform uppercase
 			color var(--grey-300)
-			text-decoration none i
-			display inline-block i
 		ul
 			list-style none
 			padding 0
-			margin 0 0 1rem 0
+			margin .25rem 0 1rem
 		li
 			margin-bottom .25rem
 		sup
 			color ss21red
-			vertical-align baseline i
 		a:hover,
 		.current
 			color var(--grey-300)
-		.clear-bug
-			display none
 	
 	// copyright information in the footer
 	:root.hide-bottom-board-list .absBotDisclaimer
@@ -4367,11 +4411,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		}
 	}
 	
-	// anti spam styling added to /biz/ first, then /v/ and now all of 4chan
+	// anti-spam styling added to /biz/ first, then /v/, and now all of 4chan
 	#t-msg
 		top 0 i
 		a
-			color primary
+			color var(--primary)
 	
 	// oekaki support for /i/ and /ic/ mainly, but also for any board
 	// XXX: find a better way to present the width/height input
@@ -4687,7 +4731,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		&.over
 			transform scale(1.05)
 			z-index 1
-			border 1px dashed rgba(255,255,255,0.87)
+			border 1px dashed rgba(255, 255, 255, .87)
 		& > .remove
 			display inline-flex
 			cursor pointer
@@ -5353,21 +5397,22 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		align-items center
 		justify-content center
 		cursor pointer // sometimes it's a `span`, so we need this
-		anchor-name none
+		//anchor-name none
 	
 	/*
 		XXX24: holy moley, so in a 500+ post thread, using anchor positioning seems to add
 		2-3+ _SECONDS_ of lag on nearly every reaction. most likely because the menu
 		is rendered on click, but still, this affects quote preview and other hover
 		interactions...
+		NOVEMBER: actually this was :has() being expensive, i need to revisit using anchor here
 	*/
 	
 	.menu-button.active
-		anchor-name --anchor-el
+		anchor-name --menu-button
 	
 	#menu
 		//position absolute//fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
-		position fixed
+		position fixed//fixed
 		z-index 10
 		z-depth(8)
 		color ss21TextPrimary
@@ -5377,16 +5422,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		white-space nowrap
 		outline none // XXX: doesn't need a focus style
 		user-select none
-		/*
 		inset auto i
-		position-anchor --anchor-el
-		position-area block-end inline-start // XXX: chrome 129 this will be `position-area`
-		position-try flip-inline
-		*/
-		//inset-area bottom//bottom right
-		//position-try-options left//bottom left
-	
-	#menu
+		position-anchor --menu-button
+		position-area end
+		position-try-fallbacks --menu-button-fallback1, --menu-button-fallback2, --menu-button-fallback3
+		// XXX: don't know why, using flip-block crashes chrome
 		display block
 		opacity 1
 		transform scale(1)
@@ -5401,30 +5441,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				transform: scale(.75);
 			}
 		}
-	}
-	/*
-	#thread-watcher
-		display block
-		opacity 1
-		transform scale(1)
-		transition display .25s, opacity .25s, transform .25s
-		transition-behavior allow-discrete
-	
-	@css {
-		@starting-style {
-			#thread-watcher {
-				display: block;
-				opacity: 0;
-				transform: scale(.75);
-			}
+		@position-try --menu-button-fallback1 {
+			position-area: block-end inline-start;
+		}
+		@position-try --menu-button-fallback2 {
+			position-area: block-start inline-end;
+		}
+		@position-try --menu-button-fallback3 {
+			position-area: start;
 		}
 	}
 	
-	#thread-watcher[hidden]
-		display none
-		opacity 0
-		transform scale(.75)
-	*/
 	.entry
 		font-size .875rem
 		display flex
@@ -5455,6 +5482,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			margin 0
 			block-size 1em
 			inline-size 1em
+			position relative
+			top 1px
 		input[type="range"] // volume slider on sound-enabled boards
 			order 1
 		& > label
@@ -5462,67 +5491,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		input[type="number"] // 'show last 1000 posts'
 			padding 0 0 0 .25rem
 			width 6.5ch
-	/*
-	.entry
-		display flex
-		//justify-content space-between
-		align-items center
-		position relative
-		min-width 10ch
-		cursor pointer
-		//padding 0 2.5rem 0 1rem
-		padding 0 1rem
-		line-height 2
-		transition background-color .25s
-		&:hover
-			background-color ss21BackgroundColour
-		&::after
-			// XXX: icons are added to some menu entries to look fancy
-			//position absolute
-			//right .75rem
-			order -1
-			font-size 18px
-			margin-right 1rem
-			//height 2.5rem
-			color var(--text-hint-on-background)
-		&.has-shortcut-text
-			display flex
-			justify-content space-between
-			align-items center
-		&[title*="volume"]
-			display inline-flex
-			align-items center
-			justify-content center
-			input
-				order 1
-				margin-left .5rem
-		&.disabled
-			opacity .3
-			cursor not-allowed
-		.shortcut-text
-			color var(--text-hint-on-background)
-			font-size 75%
-			position absolute
-			right .75rem
-			line-height 2.5rem
-		.field
-			width auto
-		input[type="number"]
-			min-width 3.5rem
-			width 3rem
-			padding 0 0 0 .5rem
-			margin-left 1rem
-		input[type="checkbox"]
-			margin-right 1rem
-			height 1em
-			width 1em
 	
-	.left .has-submenu
-		padding 0 1rem
-		&::after
-			right auto
-			left .75rem
-	*/
 	.submenu
 		display none
 		position absolute
@@ -5544,12 +5513,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// moves the menu button of posts to the top right. reset for catalogue posts
 	.post .menu-button
 		position absolute
-		top 2px
+		top 2px // XXX: ew, hard coded pixels?
 		right 1rem
 	
 	.post > .postInfo > .menu-button
 		opacity 0
-		//will-change opacity
+		will-change opacity
 		transition opacity .25s
 		&:focus
 			opacity .6
@@ -5589,6 +5558,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.catalog-thread.thread-chip--{thread} .catalog-post::before
 			content tag
 	
+	if ss21postInfoFont == 1
+		:root.fourchan-xt .is_thread .postContainer
+			.hide-reply-button
+				height auto
+				top 2px
+				right 2.25rem
+			.hide-reply-button::after
+			.menu-button::after
+				font-size 1.25rem
+	
 	/**
 	 * `#navlinks` is used to navigate to the next thread on the index, and to the
 	 * top and bottom of the page within threads. not needed in catalogue mode, so it
@@ -5615,6 +5594,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		a:hover::after
 			background-color darken(ss21primary, 15%)
 			transition background-color .25s
+	
+	:root.bottom-header.fixed #navlinks
+		top 1rem
+		bottom auto
 	
 	// 4CHANX: embedding
 	// if media is embedded, remove the un prefix from inside the post
@@ -5757,157 +5740,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			}
 		}
 	}
-	/*
-.fxt-stats_meta {
-		padding-top: 8px;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-evenly;
-		gap: 8px;
-	}
-	.fxt-stats_meta span {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-	}
-	:root {
-		--xt-fxt-bg: var(--xt-background);
-		--xt-fxt-border: var(--xt-border);
-	}
-
-	.fxt-card {
-		color: var(--xt-fxt-fg, #000);
-		background-color: var(--xt-fxt-bg, #000);
-		padding: 16px;
-		border: 1px solid var(--xt-fxt-border);
-		border-radius: 12px;
-		width: 400px;
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-
-		white-space: pre-line;
-		word-break: break-word;
-	}
-	.fxt-meta {
-		display: flex;
-		flex-direction: row;
-		gap: 8px;
-	}
-	.fxt-meta_profile {
-		display: flex;
-		flex-direction: row;
-		gap: 8px;
-	}
-	.fxt-meta_profile img {
-		height: 48px;
-		width: 48px;
-		aspect-ratio: 1;
-		border-radius: 100%;
-		overflow: hidden;
-	}
-	.fxt-meta_author {
-		display: flex;
-		flex-direction: column;
-	}
-	.fxt-meta_author_username {
-		font-weight: bold;
-	}
-	.fxt-stats_meta {
-		padding-top: 8px;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-evenly;
-		gap: 8px;
-	}
-	.fxt-stats_meta span {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-	}
-
-	.fxt-poll {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-	.fxt-choice {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		font-size: 75%;
-		height: 24px;
-	}
-	.fxt-choice.highlight {
-		font-weight: bold;
-	}
-
-	.fxt-choice_label {
-		margin-left: 6px;
-		z-index: 1;
-	}
-	.fxt-choice_percentage {
-		margin-right: 6px;
-		z-index: 1;
-	}
-	.fxt-choice .bar {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 24px;
-		border-radius: 4px;
-		background-color: currentColor;
-		opacity: .3;
-		z-index: 0;
-	}
-
-	.fxt-total-votes {
-		font-size: 75%;
-		opacity: .5;
-	}
-	.fxt-media {
-		width: 100%;
-		height: 100%;
-		border-radius: 4px;
-		overflow: hidden;
-	}
-	.fxt-media :is(img,
-	video) {
-		display: block;
-		max-width: 100%;
-		height: 100%;
-		object-fit: contain;
-		object-position: center;
-	}
-	.fxt-media_container {
-		display: grid;
-		gap: 0;
-		grid-template-columns: 1fr;
-	}
-	.fxt-media_container.fxt-media-multiple {
-		gap: 4px;
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.fxt-quote {
-		border: 1px solid var(--xt-fxt-border);
-		border-radius: 12px;
-		overflow: hidden;
-	}
-	.fxt-quote .fxt-meta_profile img {
-		height: 24px;
-		width: 24px;
-	}
-
-	.fxt-quote .fxt-meta {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 8px;
-		padding: 4px;
-	}
-	*/
+	
+	// XXX: when using a quick reply persona, a `datalist` is generated. for
+	// whatever reason, it uses this pseudo element
+	#qr input[name="name"]::-webkit-calendar-picker-indicator
+		padding 0
+		opacity .87
+		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cpath fill='" + hsl(ss21OppColour) + "' d='m12 16.175l3.9-3.875q.275-.275.688-.288t.712.288q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062t-.375-.062t-.325-.213l-4.6-4.6q-.275-.275-.288-.687T6.7 12.3q.275-.275.7-.275t.7.275zm0-6L15.9 6.3q.275-.275.688-.287t.712.287q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062t-.375-.062t-.325-.213L6.7 7.7q-.275-.275-.288-.687T6.7 6.3q.275-.275.7-.275t.7.275z'/%3E%3C/svg%3E")
+		display inline-block i
+		inline-size 1em i
+		vertical-align -.125em
 	
 	// 4CHANX: appchan's gallery mode, baked right into 4chan x
 	// TODO: when you work out text colour, make the '/' in the counter lighter
@@ -6780,12 +6622,43 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		block-size 100vh
 		z-index 12
 		background-color rgba(33 33 33 .87)
+		.panelHeader
+			text-transform lowercase
+			background-color var(--primary)
+			block-size 3rem
+			position relative
+			display flex
+			align-items center
+			justify-content center
+			.panelCtrl
+				cursor pointer
+				position absolute
+				inset-inline-end 0
+		.center
+			display initial i
 	
 	.extPanel
 		background-color var(--background-primary)
-		max-height 80vh
-		max-width 75vw
+		max-inline-size 75vw
+		max-block-size 80vh
 		overflow-y scroll
+		ul
+			padding 0
+			list-style none
+			margin 0
+		label
+			font-weight bold
+	
+	if ss21allowAds == 1
+		.danbo-slot, .adl
+			display block i
+			text-align center
+			margin-block 1rem
+		.danbo-slot a
+			display inline-block
+			margin auto
+		.adl a
+			color var(--primary)
 	
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog')
 	.is_catalog #content::before
