@@ -19,6 +19,27 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
 | **web fonts** | using `@import`, we can load fonts from the web, no longer requiring downloaded and locally installed fonts |
 | **rebase** | utilising code from well-established web projects such as bootstrap, carbon, and the material design guidelines, elements are rendered consistently and correctly across browsers |
 
+### another userscript? a.k.a. why you need `sidedish` too
+`sidedish` adds those few extra ricing options:
+ - removes the `:` from the settings' option labels and their descriptions
+ - adds a scrolling progress indicator to the header
+ - posts that have 8 or more backlinks have an additional class added to them indicating 'hotness' for styling
+ - wraps the numbers in thread summaries in `b` to make them stand out
+ - swaps the post info and file elements in OPs for consistent styling across
+ - strips the brackets around the page number in the post info on the index
+ - gives 'tall' posts a discernible class for styling
+ - approximates aspect ratio of files and adds a `data-aspect-ratio` attribute for styling
+ - adds a shortcut to crudely download all files within a thread
+ - adds an off-canvas navigation menu/drawer of all the boards
+ - changes the text of the QR buttons so they can become icons
+ - adds a `captcha-loaded` discernible class to the captcha for styling
+ - resizes large quote previews to fix the viewport
+ - stylises the bottom board list to match the footer aesthetic, including moving the pass link
+ - adds a discernible class for index sorting mode
+ - if enabled in `ss21`, provides a polyfill for `display: masonry`
+ - adds a weight and length unit converter for /fit/
+ - adds OPs image/video to the banner for aesthetics
+
 it should be noted that `ss21` **does not** function with the default 4chan extension or App/OneeChan
 
 it is **highly** recommended you play with the settings within the userstyle
