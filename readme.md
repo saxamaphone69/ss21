@@ -3,7 +3,7 @@ a self-centered, fresh attempt at (user)styling 4chan
 
 ![screenshot of ss21 applied](img/browser-2023-03-04.png)
 
-following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with either [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) or [tuxedotako's typescript fork](https://github.com/TuxedoTako/4chan-xt) in ~~2019, 2020, 2021, 2022, 2023~~, 2024!
+following the success (or lack of) from curabitr and xl, ss21 provides a fresh and clean userstyle for use with either [ccd0's 4chan x](https://ccd0.github.io/4chan-x/) or [tuxedotako's typescript fork](https://github.com/TuxedoTako/4chan-xt) in ~~2019, 2020, 2021, 2022, 2023, 2024~~, 2025!
 
 created by **saxamaphone** "sax" `!3.saxN0DHY`, who has been making userstyles for 4chan since 2009 with styles such as 3 Shades of 4chan (which only exists as Midnight Caek in App/OneeChan now), curabitr, and xl
 
@@ -25,7 +25,7 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
  - adds a scrolling progress indicator to the header
  - posts that have 8 or more backlinks have an additional class added to them indicating 'hotness' for styling
  - wraps the numbers in thread summaries in `b` to make them stand out
- - swaps the post info and file elements in OPs for consistent styling across
+ - swaps the post info and file elements in OPs for consistent styling across posts
  - strips the brackets around the page number in the post info on the index
  - gives 'tall' posts a discernible class for styling
  - approximates aspect ratio of files and adds a `data-aspect-ratio` attribute for styling
@@ -37,10 +37,10 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
  - stylises the bottom board list to match the footer aesthetic, including moving the pass link
  - adds a discernible class for index sorting mode
  - if enabled in `ss21`, provides a polyfill for `display: masonry`
- - adds a weight and length unit converter for /fit/
+ - adds a imperial/metric weight and length unit converter for /fit/
  - adds OPs image/video to the banner for aesthetics
 
-it should be noted that `ss21` **does not** function with the default 4chan extension or App/OneeChan
+it should be noted that `ss21` **does not** function properly with the default 4chan extension or App/OneeChan
 
 it is **highly** recommended you play with the settings within the userstyle
 
