@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.4.7
+@version        2.5.0
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -270,11 +270,11 @@
 		interpolate-size allow-keywords
 	
 	@css {
-		@keyframes loading {
-			to {
-				transform: rotate(359deg);
-			}
+	@keyframes loading {
+		to {
+			transform: rotate(359deg);
 		}
+	}
 	}
 	// let's hide stuff we don't need: ads!
 	// first, let's keep `!important` away as to not pollute scope
@@ -334,13 +334,13 @@
 		if ss21readingMode == ss21dark
 			color-scheme dark
 	@css {
-		:root .navLinks {
-			--is-nws: brown;
-			background-color: var(--is-nws, var(--primary)) !important;
-		}
-		:root.ws .navLinks {
-			--is-nws: initial;
-		}
+	:root .navLinks {
+		--is-nws: brown;
+		background-color: var(--is-nws, var(--primary)) !important;
+	}
+	:root.ws .navLinks {
+		--is-nws: initial;
+	}
 	}
 	// XXX: https://css-tricks.com/fixing-smooth-scrolling-with-find-on-page/
 	:root:focus-within
@@ -355,6 +355,9 @@
 		min-height 100vh
 		//font-size ss21fontSize
 	*/
+	:root
+		-webkit-text-size-adjust none
+		text-size-adjust none
 	// let's reset `box-sizing` so that when we say `1rem`, we mean it
 	// http://www.paulirish.com/2012/box-sizing-border-box-ftw/ along with
 	// https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
@@ -376,12 +379,12 @@
 		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
 	// XXX: should only apply when using keyboard
-	:root.keyboard-focus .postContainer:focus-within .post
+	// :focus-within is any type of focus
+	/*
+	.postContainer:focus-within .post
 		background-color mix(ss21primary, ss21BackgroundElevated, 7%)
 		box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
-	
-	// 4CHANX: adds `.keyboard-focus` to `html`
-	// :root:not(.keyboard-focus) a { outline: none; }
+	*/
 	
 	// https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
 	// https://developer.paciellogroup.com/blog/2018/03/focus-visible-and-backwards-compatibility/
@@ -537,66 +540,79 @@
 		font-family var(--font-monospace)
 		font-size 1em
 	
-	.prettyprint
+	pre.prettyprint
 		font-size .875rem
 		-webkit-font-smoothing subpixel-antialiased
 		white-space pre-wrap
 		word-wrap normal
 		word-spacing normal
 		word-break normal
-		-moz-tab-size 4
 		tab-size 4
 		hyphens none
 		overflow auto // don't allow content to break outside
-		padding .125rem .25rem
+		padding .125rem .25rem // override prettify.css default if not blocked
+		border 0 // remove prettify.css default if not blocked
 		margin 0 // remove browser default
 		display inline-block
 		vertical-align middle
 		max-width 100%
-		transition color .25s, background-color .25s
 	
 	// 4chan uses google prettify to format [code] tags on /g/
 	// MIT License; github.com/jmblog/color-themes-for-google-code-prettify
+	// Tomorrow on light theme, Tomorrow Night Eighties for all others
 	// XXX: this can be cleaned up, and should apply to `kbd` and other `pre` too
-	if ss21readingMode == ss21dark
-		.prettyprint
-			color #f5f7ff
-			background-color #202746
-			.kwd
-			.typ
-				color #6679cc
-			.com
-				color #6b7394
-			.tag
-				color #c94922
-			.atn
-				color #c76b29
+	if ss21readingMode == ss21light
+		pre.prettyprint
+			background-color #fff
+			.pln,
+			.pun,
+			.opn,
+			.clo
+				color #4d4d4c
 			.str
-			.atv
-				color #ac9739
-			.lit
-			.dec
-				color #c76b29
-	else if ss21readingMode == ss21light
-		.prettyprint
-			color #202746
-			background-color #f5f7ff
+				color #718c00
 			.kwd
-			.typ
-				color #6679cc
-				font-style italic
+				color #8959a8
 			.com
-				color #202746
-			.tag
-				color #c94922
-			.atn
-				color #c76b29
-			.str
-			.atv
-				color #22a2c9
-			.lit
+				color #8e908c
+			.typ,
+			.fun
+				color #4271ae
+			.lit,
+			.atn,
 			.dec
-				color #c76b29
+				color #f5871f
+			.tag,
+			.var
+				color #c82829
+			.atv
+				color #3e999f
+	else
+		pre.prettyprint
+			background-color #2d2d2d
+			.pln,
+			.pun,
+			.opn,
+			.clo
+				color #ccc
+			.str
+				color #99cc99
+			.kwd
+				color #cc99cc
+			.com
+				color #999999
+			.typ,
+			.fun
+				color #6699cc
+			.lit,
+			.atn,
+			.dec
+				color #f99157
+			.tag,
+			.var
+				color #f2777a
+			.atv
+				color #66cccc
 	
 	// fix spacing of media objects, and make them responsive by default
 	// XXX: `video` controls will appear slightly off the bottom of the video
@@ -1593,7 +1609,8 @@
 	*/
 	#shortcuts
 		display grid
-		grid-template-columns 1fr repeat(6, 2rem)
+		//grid-template-columns 1fr repeat(6, 2rem)
+		//grid-template-columns 1fr repeat(auto-fill, 2rem)
 		grid-auto-rows 1fr
 		grid-auto-flow column
 	
@@ -1827,6 +1844,40 @@
 		.shortcut
 			min-width 1.5rem
 			padding 0 .25rem
+	
+	@css {
+		.ss21--moved-select {
+			display: none;
+		}
+		#header-bar {
+			container: header / inline-size;
+		}
+		#board-list {
+			container: boardlist / inline-size;
+		}
+		@container header (width < 60rem) {
+			.ss21--board-drawer-toggle {
+				display: none;
+			}
+			#board-list {
+				/*background: red;*/
+			}
+			#shortcuts {
+				/*background: blue;*/
+			}
+		}
+		@container boardlist (width < 25rem) {
+			#custom-board-list,
+			#full-board-list {
+				display: none;
+			}
+			.ss21--moved-select {
+				display: block;
+				field-sizing: content;
+				margin-block: .25rem;
+			}
+		}
+	}
 	
 	// notifications
 	// styled half-way between an alert and a snackbar
@@ -2177,13 +2228,13 @@
 		.closed
 			position fixed
 			z-index 3
-			background-color ss21red
+			background-color alpha(ss21red, .69)
 			inset auto auto 1rem 50%
 			transform translateX(-50%)
-			inline-size 80rem
+			inline-size calc(100% - 1rem)
+			max-inline-size 80rem
 			padding 1rem
 			borderRadius()
-			opacity .69
 	
 	// index sorting and what not. only enabled with json mode in 4chan x
 	// first up, only some elements are shown, depending on which mode is enabled
@@ -2401,6 +2452,10 @@
 	.board .thread:last-of-type
 		margin-bottom 0
 	
+	@media (max-width: 77rem)
+		.thread
+			padding 0
+	
 	// XXX: if there are no search results from index
 	:root.ss21--index-searching .board:empty::after
 		content 'no results; try another search term'
@@ -2453,6 +2508,7 @@
 	
 	// XXX: when fappe tyme enabled, this won't work due to the elements retaining
 	// their odd or even-ness in the dom tree
+	// XXX: this should be odd not even, duh
 	if ss21evenPosts
 		.postContainer:nth-of-type(even) > .post
 			if ss21readingMode == ss21light
@@ -2548,6 +2604,7 @@
 		text-align center
 		background-color var(--background-primary)
 		line-height 3
+		padding 0 .5rem
 		margin-top 1px
 		z-index 1
 		position relative
@@ -2884,13 +2941,15 @@
 			flex-wrap wrap
 		.stub-subject
 			font-weight 700
-			margin-right 1ch
+			margin-right .5ch
+			min-width 0
+		.stub-name
+			min-width 0
 		.stub-replies
-			margin-left 1ch
+			margin-left .5ch
 			color var(--text-hint-on-background)
 		.stub-reasons
-			flex-basis 100%
-			margin-left 2rem
+			margin-left 1rem
 			color var(--text-hint-on-background)
 			.stub-reason:not(:only-of-type, :last-child)::after
 				content ', '
@@ -3211,8 +3270,38 @@
 		display none
 	
 	// XXX: when xt restores posts from the archive
-	.from-archive
-		opacity .5
+	@css {
+		@property --gradient-angle {
+			syntax: "<angle>";
+			initial-value: 0deg;
+			inherits: false;
+		}
+		@keyframes rotation {
+			0% {
+				--gradient-angle: 0deg;
+			}
+			100% {
+				--gradient-angle: 360deg;
+			}
+		}
+		.from-archive::before {
+			content: '';
+			position: absolute;
+			inset: -1px;
+			z-index: -1;
+			border-radius: 4px;
+			background-image: conic-gradient(
+				from var(--gradient-angle),
+				rgba(255 255 255 / 0),
+				rgba(255 255 255 / .5),
+				rgba(255 255 255 / .8),
+				rgba(255 255 255 / .5),
+				rgba(255 255 255 / .1)
+			);
+			
+			animation: rotation 2s linear infinite;
+		}
+	}
 	
 	// XXX: make special kinds of quotelinks appear `sup`-scripted
 	+prefix-classes('qmark-')
@@ -3407,16 +3496,15 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				color ss21posterVerified
 	
 	:root:not(.anonymize) .postContainer.poster--pass
-		--post-bg mix(ss21posterPass, ss21BackgroundColour, 5%)
 		> .stub
-			background-color var(--post-bg)
+			background-color mix(ss21posterPass, ss21BackgroundColour, 5%)
 		> .post
-			background-color var(--post-bg)
+			background-color mix(ss21posterPass, ss21BackgroundColour, 5%)
 			> .postInfo > .nameBlock
 				color ss21posterPass
 		if ss21openThread == 0
 			+ .summary
-				background-color var(--post-bg)
+				background-color mix(ss21posterPass, ss21BackgroundColour, 5%)
 	
 	.postContainer.post--aus
 		> .post
@@ -4035,7 +4123,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.prev,
 		.next
 			display contents
-			&:has(button[disabled]) a
+			// XXX: $$$: the below CSS causes #qp to take incredibly long to render
+			&:has(button[disabled])// a
 				pointer-events none
 				opacity .42
 	@media (max-width: 75rem)
@@ -4092,6 +4181,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			display grid
 			grid-gap 1rem
 			grid-template-columns repeat(5, 1fr)
+			@media (max-width: 60rem)
+				grid-template-columns repeat(3, 1fr)
+			@media (max-width: 40rem)
+				grid-template-columns repeat(2, 1fr)
 			max-width 75rem
 			margin auto
 			overflow-x auto
@@ -4111,6 +4204,34 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		a:hover,
 		.current
 			color var(--grey-300)
+	
+	#boardNavDesktopFoot:not(.ss21--footer-enhanced)
+		&::before
+			content 'Full 4chan Board List'
+			font-size 1.25rem
+			letter-spacing 0.03em
+			font-weight 700
+			text-transform uppercase
+			color var(--grey-300)
+			display block
+			max-width 75rem
+			margin auto
+		.boardList
+			font-size 0
+			display flex
+			flex-wrap wrap
+			flex-direction column
+			align-items baseline
+			height calc(1rlh * 20)
+			gap 0 1rem
+			a
+				font-size 1rem
+				display inline-block
+				block-size 1.25rlh
+				&::before
+					content '/'
+				&::after
+					content '/ ' attr(title)
 	
 	// copyright information in the footer
 	:root.hide-bottom-board-list .absBotDisclaimer
@@ -4140,6 +4261,11 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		padding-bottom 3rem
 		margin auto
 		position relative
+		display flex
+		@media (max-width: 40rem)
+			flex-direction column
+			gap .25rem
+			align-items baseline
 		&::after
 			content url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAAAAAABmzDMXpqcGAAAAAXRSTlMAQObYZgAAADxJREFUCNdjYIADVgfGAAapCWxLGNiWSE1gkFoitYSBNYA1gAEJBLAyMDAukXKAKIEQKZITGBgFWBzACgCbuwrJhJgswAAAAABJRU5ErkJggg==')
 			display block
@@ -4152,6 +4278,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			font-size .875rem
 			display inline-block
 			margin-right 3rem
+			@media (max-width: 40rem)
+				padding .25rem 0
+				margin-right 0
 			&:hover
 				color var(--grey-300)
 	
@@ -4164,6 +4293,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		right 50px
 		animation spinningText 40s infinite
 		transform-origin 50% 50%
+		opacity .3
 		svg
 			font-size 63px
 			letter-spacing 22px
@@ -4214,8 +4344,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position fixed
 		z-index 10
 		background-color var(--background-primary)
-		width 35rem
-		max-height 90vh
+		inline-size 35rem
+		max-inline-size 100%
+		max-block-size 90vh
 		z-depth(8)
 		borderRadius()
 		contain paint
@@ -4788,7 +4919,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			// this `p` element is used to spit out the import/export results of 4chan x
 			// settings. we conveniently use it to space out the settings nav links
 			.imp-exp-result
-				flex 1
+				flex 1 0 2rem
 				margin 0 // unset the margin given in the reboot
 			& a:not([download])
 				font-size 1rem
@@ -4888,7 +5019,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		#fourchanx-settings
 			flex-direction row
 			margin initial
-			height 100vh
+			block-size 100dvh
 			border-radius 0
 			transition all .25s
 			animation slideIn .25s;
@@ -4897,18 +5028,19 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			nav
 				flex-direction column
 				padding .5rem .125rem
+				overflow-y auto
 				.sections-list,
 				.credits
 					flex-direction inherit
+					gap .25rem
 					a
 						display inline-flex
 						flex-direction column
 						align-items center
 						justify-content center
 						font-size .75rem
-						min-height 4rem
 						min-width 4rem
-						height auto
+						min-height 3rem
 				a::before
 					@extends $icons
 					// added to make it m3
@@ -4943,11 +5075,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				content ss21iconFont == 1 ? '\F30A' : 'file_download'
 			.reset::before
 				content ss21iconFont == 1 ? '\F292' : 'history'
-			a[href*="blob"]::before
+			a[href$="CHANGELOG.md"]::before
 				content ss21iconFont == 1 ? '\F2C6' : 'commit'
-			a[href*="issues"]::before
+			a[href$="issues"]::before
 				content ss21iconFont == 1 ? '\F3CC' : 'report'
-			.fa-times::before
+			.fa-times::before,
+			.close::after
 				content ss21iconFont == 1 ? '\F659' : 'menu_open'
 			.fa-times::after
 				display none
@@ -4983,7 +5116,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			borderRadius()
 			transition background-color .25s
 			&:hover
-				background-color alpha(shade(ss21BackgroundElevated, 50%), .33)
+				background-color alpha(shade(ss21BackgroundElevated, 10%), .33)
 		input[type="checkbox"]
 			float left
 			margin-top 12px
@@ -5074,6 +5207,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// advanced section
 	// XXX: needs a lot of small tweaks to improve visual/grid consistency + vertical rhythm
 	.section-advanced
+		.note
+			font-size .875rem
 		textarea
 			min-height 7.5rem
 		fieldset:first-child
@@ -5178,6 +5313,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		opacity .54
 		//will-change opacity
 		transition opacity .25s
+		cursor pointer
 	
 	.watch-thread-link
 		display inline-flex
@@ -5407,12 +5543,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		NOVEMBER: actually this was :has() being expensive, i need to revisit using anchor here
 	*/
 	
-	.menu-button.active
-		anchor-name --menu-button
-	
 	#menu
-		//position absolute//fixed // fixed instead of absolute because the menu is inserted adjacent as opposed to as a child
-		position fixed//fixed
+		position fixed
 		z-index 10
 		z-depth(8)
 		color ss21TextPrimary
@@ -5422,10 +5554,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		white-space nowrap
 		outline none // XXX: doesn't need a focus style
 		user-select none
-		inset auto i
-		position-anchor --menu-button
-		position-area end
-		position-try-fallbacks --menu-button-fallback1, --menu-button-fallback2, --menu-button-fallback3
 		// XXX: don't know why, using flip-block crashes chrome
 		display block
 		opacity 1
@@ -5439,6 +5567,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				display: block;
 				opacity: 0;
 				transform: scale(.75);
+			}
+		}
+		@supports (position-anchor: --name) {
+			.menu-button.active {
+				anchor-name: --menu-button;
+			}
+			#menu {
+				inset: auto !important;
+				position-anchor: --menu-button;
+				position-area: end;
+				position-try-fallbacks: --menu-button-fallback1, --menu-button-fallback2, --menu-button-fallback3;
 			}
 		}
 		@position-try --menu-button-fallback1 {
@@ -5482,8 +5621,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			margin 0
 			block-size 1em
 			inline-size 1em
-			position relative
-			top 1px
 		input[type="range"] // volume slider on sound-enabled boards
 			order 1
 		& > label
@@ -5528,6 +5665,31 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		opacity .6
 		&:hover
 			opacity .87
+	
+	@css {
+		@scope (#menu) {
+			.shortcut {
+				display: contents;
+				color: var(--text-primary-on-background);
+				a {
+					font-size: .875rem !important;
+					display: flex;
+					gap: .75rem;
+					min-inline-size: 10rem;
+					padding: .25rem .75rem;
+					color: inherit;
+					&::after {
+						order: -1;
+						color: var(--text-hint-on-background) !important;
+						font-size: 1em !important;
+					}
+				}
+			}
+			.icon--alt-text {
+				display: block !important;
+			}
+		}
+	}
 	
 	.catalog-thread[class*="thread-chip"] .catalog-post::before
 		content ''
@@ -5879,8 +6041,26 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		max-width 10rem
 		padding .25rem
 		transition background-color .25s
+		position relative
 		&:hover
 			background-color alpha(invert(ss21primary), .25)
+	
+	.gal-thumb::after
+		position absolute
+		font-size .75rem
+		text-shadow 0 0 2px #000
+		inset-inline-start 6px
+		inset-block-end 1px
+	.gal-thumb[href$="gif"]::after
+		content 'gif'
+	.gal-thumb[href$="webm"]::after
+		content 'webm'
+	.gal-thumb[href$="mp4"]::after
+		content 'mp4'
+	.gal-thumb[href$="png"]::after
+		content 'png'
+	.gal-thumb[href$="jpg"]::after
+		content 'jpg'
 	
 	.gal-highlight
 		background-color alpha(invert(ss21primary), .5)
@@ -6211,9 +6391,16 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			color #c5c8c6
 			background-color #1d1f21
 	
+	// please turn off stylechan...
+	#StyleChanLink::after
+		content ss21iconFont == 1 ? '\F4B1' : 'palette'
+	is(a)    {s(":is(%s)",    c(a))}
 	// please turn off oneechan...
-	:root.oneechan .fa-gears::after
-		content ss21iconFont == 1 ? '\F31D' : 'sentiment_dissatisfied'
+	:root.oneechan
+		.fa-gears,
+		#OneeChanLink .settings-link
+			&::after
+				content ss21iconFont == 1 ? '\F31D' : 'sentiment_dissatisfied'
 	:root.oneechan .tab-select:not(:checked) + .options-section
 		display none i
 	#oneechan-options
@@ -6532,8 +6719,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		overflow auto
 	
 	@css {
-		@view-transition {
-			navigation: auto;
+		@supports (view-transition-name: none) {
+			@view-transition {
+				navigation: auto;
+			}
 		}
 	}
 	
@@ -6609,6 +6798,111 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			width 1.25rem
 		dialog
 			top 5rem
+	
+	#shortcut-trending
+		all unset
+		display inline-flex
+		align-items center
+		justify-content center
+		padding 0 .25rem
+		grid-row span 2
+		margin 0
+		.icon
+			display block
+			height 1.25rem
+			width 1.25rem
+	/*
+<div class="c-thread">
+<div class="c-board">/vg/ - Video Game Generals</div>
+<a href="//boards.4chan.org/vg/thread/508602586" class="boardlink">
+	<img alt="" class="c-thumb" src="//i.4cdn.org/vg/1735787388158089s.jpg" width="118" height="150">
+</a>
+<div class="c-teaser">
+<b>/lisg/ - Life is Strange General #1231</b>
+New Year edition
+&gt;Previous Thread &gt;&gt;507584047
+Life is Strange (LiS) is an episodic narrativ...</div>
+<div class="thread-info">
+<span class="ss21-chip"><span class="ss21-chip--icon material-symbols-rounded">today</span><span class="ss21-chip--text">2 days ago</span></span>
+<span class="ss21-chip"><span class="ss21-chip--icon material-symbols-rounded">forum</span><span class="ss21-chip--text">277</span></span>
+<span class="ss21-chip"><span class="ss21-chip--icon material-symbols-rounded">attach_file</span><span class="ss21-chip--text">35</span></span>
+</div>
+</div>
+				*/
+	#ss21--popular-threads
+		position fixed
+		contain strict
+		overflow-y scroll
+		height 100dvh
+		max-width 50vw
+		width 50rem
+		inset-block-start 0
+		inset-inline-end 0
+		transform translateX(120%)
+		z-index 55
+		background-color var(--background-primary)
+		transition all .25s
+		padding 1.5rem
+	h3
+		font-size 1.25rem
+		text-wrap pretty
+		margin-bottom .5rem
+	#c-threads
+		display grid
+		grid-template-columns 1fr 1fr
+		gap .5rem
+		.c-board
+			font-weight 700
+			text-align center
+			margin-bottom .25rem
+		.c-teaser
+			padding: .5rem 0
+		.c-teaser b
+			display block
+			text-align center
+		.boardlink
+			display inline-flex
+			justify-content center
+		.c-thread
+			display flex
+			flex-direction column
+	.thread-info
+		display inline-flex
+		flex-wrap wrap
+		flex-direction row
+		gap .25rem
+		justify-content center
+	.ss21-chip
+		display inline-flex
+		align-items center
+		justify-content center
+		gap .25rem
+		font-size .75rem
+		line-height 16px
+		color var(--mdc-onSecondaryContainer)
+		background-color var(--mdc-secondaryContainer)
+		padding .125rem .25rem
+		borderRadius()
+		user-select none
+		.material-symbols-rounded
+			font-family: 'Material Symbols Outlined';
+			font-weight: normal;
+			font-style: normal;
+			font-size: 16px;
+			font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20
+			line-height: 1;
+			letter-spacing: normal;
+			text-transform: none;
+			display: inline-block;
+			white-space: nowrap;
+			word-wrap: normal;
+			direction: ltr;
+			-webkit-font-feature-settings: 'liga';
+			-webkit-font-smoothing: antialiased;
+	
+	:root.trending-open #ss21--popular-threads
+		transform translateX(0)
+		z-depth(24)
 	
 	// 4CHAN EXT - if you don't enable the 'disable native extension' option
 	// in 4chan x, it still shows up as an header shortcut
