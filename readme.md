@@ -54,37 +54,46 @@ this userstyle is currently being actively developed for chrome first, with fire
 
 ### blocker filters
 a blocker is used to not only hide ads, but also block some other stuff to save on network requests.
+`danbo` and `pubfuture` ads are blocked via easylist. if you're not using that, you'll need to zap them on your own.
 go to your blocker-of-choice options, and locate where you can add your own filters. add the following:
 
 ```
-4chan.org##script:inject(abort-current-inline-script.js, String.fromCharCode)
+! ss21 Blocking Suggestions
+! REQUIRED: Block all external stylesheets (Yostuba, Tomorrow, etc.)
+*//s.4cdn.org/css^$domain=boards.4chan.org
+*//s.4cdn.org/js/prettify/prettify.*.css
+
+! REQUIRED: Block potentially harmful scripts inserted into 4chan
 @@||4chan.org^*$csp=default-src 'self' * data: 'unsafe-inline' 'unsafe-eval'
 
-4channel.org##script:inject(abort-current-inline-script.js, String.fromCharCode)
-@@||4channel.org^*$csp=default-src 'self' * data: 'unsafe-inline' 'unsafe-eval'
+! This one used to work, or was needed for something, but I don't remember. Here for archives sake:
+! 4chan.org##script:inject(abort-current-inline-script.js, String.fromCharCode)
 
-*//s.4cdn.org/js/prettify/prettify.*.css
-*//s.4cdn.org/css^$domain=boards.4chan.org
-*//s.4cdn.org/css^$domain=boards.4channel.org
-*//s.4cdn.org/image/title/*
-*//s.4cdn.org/image/contest_banners/*
-!*//s.4cdn.org/js/core.min.*.js
-*//s.4cdn.org/js/extension.min.*.js
-
+! Add exceptions to certain stylesheets (flags, tegaki, etc.)
 @@||s.4cdn.org/css/flags.*.css
 @@||s.4cdn.org/css/painter.*.css
+@@||s.4cdn.org/css/tegaki.*.css
 @@||s.4cdn.org/css/yui.css
 @@||s.4cdn.org/css/global.*.css
 @@||s.4cdn.org/css/error.css
-@@||4cdn.org$xmlhttprequest,domain=4chan.org
-@@||4cdn.org$xmlhttprequest,domain=4channel.org
+
+! RECOMMENDED: Block board banners (above /g/ - Technology)
+*//s.4cdn.org/image/title/*^$domain=boards.4chan.org,important
+
+! RECOMMENDED: Block contest banners (advertisements to other boards)
+*//s.4cdn.org/image/contest_banners/*^$domain=boards.4chan.org,important
+
+! OPTIONAL: Block snow.js, which adds snowflakes at Christmas
+*//s.4cdn.org/js/snow.js$script,important
+
+! OPTIONAL: Block the Google Analytics script
+*//www.google-analytics.com/analytics.js^$domain=boards.4chan.org
 ```
 
 essentially:
  - block those bitcoin mining ads hiroshimoot uses
- - all 4chan css, with a few exceptions listed at the end
+ - all 4chan css, with a few exceptions
  - title and contest banners (technically skippable)
- - 4chan-JS code that isn't needed, as we use 4chan x
  
 ### 4chan x filters
 ss21 makes use of the highlighting feature in 4chan x to give certain posts extra styling. if you'd like to experience ss21 as intended, add these filters:
