@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.4.5
+// @version     2.5.0
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -11,8 +11,6 @@
 // @connect     a.4cdn.org
 // @connect     4cdn.org
 // @grant       GM.xmlHttpRequest
-// @grant       GM.setValue
-// @grant       GM.getValue
 // @run-at      document-start
 // @icon        data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 96 960 960'%3E%3Cpath d='M70 622q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 590q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 590q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 606q-37 0-63.5 28.5T617 663q-48 0-74-28.5T481 606q-36 0-63.5 28.5T342 663q-47 0-72-28.5T208 606q-31 0-51.5 18T101 650q-13 2-22-6.5T70 622Zm0 185q0-14 10.5-28.5T110 756q22-9 44-23t54-14q47 0 72 28.5t63 28.5q37 0 64-28.5t74-28.5q47 0 72.5 28.5T617 776q36 0 62.5-28.5T753 719q32 0 54 14t45 23q18 8 28.5 22t10.5 29q0 14-9 22t-21 6q-36-8-56.5-25.5T753 792q-37 0-63.5 28.5T617 849q-48 0-74-28.5T481 792q-36 0-63.5 28.5T343 849q-47 0-73-28.5T208 792q-31 0-51.5 17.5T100 835q-12 2-21-6t-9-22Zm0-371q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 404q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 404q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 420q-37 0-63.5 28.5T617 477q-48 0-74-28.5T481 420q-36 0-64 28.5T342 477q-47 0-72-28.5T208 420q-31 0-51.5 18T101 464q-13 2-22-6.5T70 436Z'/%3E%3C/svg%3E
 // @noframes
@@ -42,103 +40,42 @@
 					}
 				})();
 
-	// add `.site-loading` to `html` so css can hide the page loading
-	doc.classList.add("site-loading");
-
-	if (window.location.host.split('.')[0] === 'find') {
-		doc.classList.remove("site-loading");
-		doc.classList.add("is-search");
-	}
-
-	const ss21Settings = {
-		scrollProgress: {
-			value: true,
-			name: 'Scrolling Progress Bar',
-			desc: 'Adds a fixed scrolling progress bar to the Header to indicate how much of the page has been scrolled.'
-		},
-		resizeQuotePreviews:  {
-			value: false,
-			name: 'Resize Quote Previews',
-			desc: 'When hovering over a quote, if the post is larger than the viewport height, resizes it all to fit.'
-		},
-		removeStyles:  {
-			value: false,
-			name: 'Remove 4chan X CSS',
-			desc: 'Remove the default 4chan X CSS inserted into the page for styling.'
-		},
-		reorganiseElements:  {
-			value: false,
-			name: 'Reorganise Elements',
-			desc: 'Change the original location of HTML elements on the page to suit a Material layout.'
-		},
-	};
-
-	async function get(option) {
-		return await GM.getValue(option);
-	}
-
-	async function set(option, value) {
-		// val = items[key];
-		// results.push(GM.setValue(g.NAMESPACE + key, JSON.stringify(val)));
-		//
-		//if (typeof GM.setValue !== "undefined") {
-		//
-		// await GM.setValue("data", JSON.stringify(reset ? defaults : data));
-		GM.setValue(option, JSON.stringify(value));
-		//}
-	}
-	/*
-	async function showOff() {
-		for (let setting in ss21Settings) {
-			await set('ss21' + setting, ss21Settings[setting]);
-		}
-	}
-
-	showOff();
-
-	async function grabEm() {
-		let values = await GM.listValues();
-		for (let item in values) {
-			let setting = values[item];
-			let details = await get(setting);
-			//console.log(setting, JSON.parse(details).value);
-			//console.log(values[item], await JSON.parse(get(values[item])));
-			//console.log(await get(values[item]));
-		}
-	}
-
-	grabEm();
-*/
-	//console.log(await get('ss21resizeQuotePreviews'));
-	//console.log(get('ss21resizeQuotePreviews'));
-	/*
-	  async function getStoredValues(init) {
-    data = await GM.getValue("data", defaults);
-    try {
-      data = JSON.parse(data);
-      if (!Object.keys(data).length || ({}).toString.call(data) !== "[object Object]") {
-        throw new Error();
-      }
-    } catch (err) { // compat
-      data = await GM.getValue("data", defaults);
-    }
-  }
-
-  async function setStoredValues(reset) {
-    data.processedCss = $style.textContent;
-    await GM.setValue("data", JSON.stringify(reset ? defaults : data));
-  }
-	for(let key in settings){
-      GM_setValue(key, settings[key]);
-    }
-	*/
-
 	function $(sel, root) {
 		return (root || d).querySelector(sel);
 	}
 
 	function $$(sel, root) {
 		return [...(root || d).querySelectorAll(sel)];
+	}
+
+	// add `.site-loading` to `html` so css can hide the page loading
+	doc.classList.add("site-loading");
+
+	if (window.location.host.split('.')[0] === 'find') {
+		doc.classList.remove("site-loading");
+		doc.classList.add("sidedish-enabled");
+		doc.classList.add("is-search");
+		let currentSearch = window.location.search;
+		let firstPage = doc.querySelector('.pages a');
+		if (firstPage) {
+			firstPage.parentNode.classList.add('current-page');
+		} else {
+			return false;
+		}
+		let pagelists = $$('.pages a');
+		for (let pagelist of pagelists) {
+			if (pagelist.href === currentSearch) {
+				pagelist.parentNode.classList.add('current-page');
+			} else {
+				return false;
+			}
+		}
+	}
+
+	if (location.pathname.split("/")[1] === 'search') {
+		doc.classList.remove("site-loading");
+		doc.classList.add("is-search");
+		$('link[title]', d.head).disabled = true;
 	}
 
 	function on(sel, events, cb) {
@@ -217,12 +154,132 @@
 	}
 
 	function removeStyles() {
-		//removeStyle($("link[rel='stylesheet']", d.head));
+		removeStyle($("link[rel='stylesheet']", d.head));
 		removeStyle($("style[type]", d.head)); // this removes the inline mobile css
 		removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
 		removeStyle($("#custom-css", d.head)); // this removes extra, custom css by 4chan x
 		//removeStyle($("#sound-player-css", d.head)); // sounds player
 	}
+
+			function replace4chanFooterList() {
+			// Okay, so this used to work fine. Then Cloudflare has added some CDN protection thingy to 4chan.org, which makes any attempts to read the HTML not work.
+			// I had this as a request so that if any boards were added, it would auto update. I'll stick to hard coding it instead.
+			let footer = $("#boardNavDesktopFoot");
+			let boardList = `<div class="column">
+<h3>Japanese Culture</h3>
+<ul>
+<li><a href="//boards.4chan.org/a/" class="boardlink">Anime &amp; Manga</a></li>
+<li><a href="//boards.4chan.org/c/" class="boardlink">Anime/Cute</a></li>
+<li><a href="//boards.4chan.org/w/" class="boardlink">Anime/Wallpapers</a></li>
+<li><a href="//boards.4chan.org/m/" class="boardlink">Mecha</a></li>
+<li><a href="//boards.4chan.org/cgl/" class="boardlink">Cosplay &amp; EGL</a></li>
+<li><a href="//boards.4chan.org/cm/" class="boardlink">Cute/Male</a></li>
+<li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
+<li><a href="//boards.4chan.org/n/" class="boardlink">Transportation</a></li>
+<li><a href="//boards.4chan.org/jp/" class="boardlink">Otaku Culture</a></li>
+<li><a href="//boards.4chan.org/vt/" class="boardlink">Virtual YouTubers</a></li>
+</ul>
+<h3>Video Games</h3>
+<ul>
+<li><a href="//boards.4chan.org/v/" class="boardlink">Video Games</a></li>
+<li><a href="//boards.4chan.org/vg/" class="boardlink">Video Game Generals</a></li>
+<li><a href="//boards.4chan.org/vm/" class="boardlink">Video Games/Multiplayer</a></li>
+<li><a href="//boards.4chan.org/vmg/" class="boardlink">Video Games/Mobile</a></li>
+<li><a href="//boards.4chan.org/vp/" class="boardlink">Pokémon</a></li>
+<li><a href="//boards.4chan.org/vr/" class="boardlink">Retro Games</a></li>
+<li><a href="//boards.4chan.org/vrpg/" class="boardlink">Video Games/RPG</a></li>
+<li><a href="//boards.4chan.org/vst/" class="boardlink">Video Games/Strategy</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Interests</h3>
+<ul>
+<li><a href="//boards.4chan.org/co/" class="boardlink">Comics &amp; Cartoons</a></li>
+<li><a href="//boards.4chan.org/g/" class="boardlink">Technology</a></li>
+<li><a href="//boards.4chan.org/tv/" class="boardlink">Television &amp; Film</a></li>
+<li><a href="//boards.4chan.org/k/" class="boardlink">Weapons</a></li>
+<li><a href="//boards.4chan.org/o/" class="boardlink">Auto</a></li>
+<li><a href="//boards.4chan.org/an/" class="boardlink">Animals &amp; Nature</a></li>
+<li><a href="//boards.4chan.org/tg/" class="boardlink">Traditional Games</a></li>
+<li><a href="//boards.4chan.org/sp/" class="boardlink">Sports</a></li>
+<li><a href="//boards.4chan.org/xs/" class="boardlink">Extreme Sports</a></li>
+<li><a href="//boards.4chan.org/pw/" class="boardlink">Professional Wrestling</a></li>
+<li><a href="//boards.4chan.org/sci/" class="boardlink">Science &amp; Math</a></li>
+<li><a href="//boards.4chan.org/his/" class="boardlink">History &amp; Humanities</a></li>
+<li><a href="//boards.4chan.org/int/" class="boardlink">International</a></li>
+<li><a href="//boards.4chan.org/out/" class="boardlink">Outdoors</a></li>
+<li><a href="//boards.4chan.org/toy/" class="boardlink">Toys</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Creative</h3>
+<ul>
+<li><a href="//boards.4chan.org/i/" class="boardlink">Oekaki</a></li>
+<li><a href="//boards.4chan.org/po/" class="boardlink">Papercraft &amp; Origami</a></li>
+<li><a href="//boards.4chan.org/p/" class="boardlink">Photography</a></li>
+<li><a href="//boards.4chan.org/ck/" class="boardlink">Food &amp; Cooking</a></li>
+<li><a href="//boards.4chan.org/ic/" class="boardlink">Artwork/Critique</a></li>
+<li><a href="//boards.4chan.org/wg/" class="boardlink">Wallpapers/General</a></li>
+<li><a href="//boards.4chan.org/lit/" class="boardlink">Literature</a></li>
+<li><a href="//boards.4chan.org/mu/" class="boardlink">Music</a></li>
+<li><a href="//boards.4chan.org/fa/" class="boardlink">Fashion</a></li>
+<li><a href="//boards.4chan.org/3/" class="boardlink">3DCG</a></li>
+<li><a href="//boards.4chan.org/gd/" class="boardlink">Graphic Design</a></li>
+<li><a href="//boards.4chan.org/diy/" class="boardlink">Do-It-Yourself</a></li>
+<li><a href="//boards.4chan.org/wsg/" class="boardlink">Worksafe GIF</a></li>
+<li><a href="//boards.4chan.org/qst/" class="boardlink">Quests</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Other</h3>
+<ul>
+<li><a href="//boards.4chan.org/biz/" class="boardlink">Business &amp; Finance</a></li>
+<li><a href="//boards.4chan.org/trv/" class="boardlink">Travel</a></li>
+<li><a href="//boards.4chan.org/fit/" class="boardlink">Fitness</a></li>
+<li><a href="//boards.4chan.org/x/" class="boardlink">Paranormal</a></li>
+<li><a href="//boards.4chan.org/adv/" class="boardlink">Advice</a></li>
+<li><a href="//boards.4chan.org/lgbt/" class="boardlink">LGBT</a></li>
+<li><a href="//boards.4chan.org/mlp/" class="boardlink">Pony</a></li>
+<li><a href="//boards.4chan.org/news/" class="boardlink">Current News</a></li>
+<li><a href="//boards.4chan.org/wsr/" class="boardlink">Worksafe Requests</a></li>
+<li><a href="//boards.4chan.org/vip/" class="boardlink">Very Important Posts</a></li>
+</ul>
+<h3>Misc.<span class="warning" title="Not Safe For Work"><sup>(NSFW)</sup></span></h3>
+<ul>
+<li><a href="//boards.4chan.org/b/" class="boardlink">Random</a></li>
+<li><a href="//boards.4chan.org/r9k/" class="boardlink">ROBOT9001</a></li>
+<li><a href="//boards.4chan.org/pol/" class="boardlink">Politically Incorrect</a></li>
+<li><a href="//boards.4chan.org/bant/" class="boardlink">International/Random</a></li>
+<li><a href="//boards.4chan.org/soc/" class="boardlink">Cams &amp; Meetups</a></li>
+<li><a href="//boards.4chan.org/s4s/" class="boardlink">Shit 4chan Says</a></li>
+</ul>
+</div>
+<div class="column">
+<h3>Adult<span class="warning" title="Not Safe For Work"><sup>(NSFW)</sup></span></h3>
+<ul>
+<li><a href="//boards.4chan.org/s/" class="boardlink">Sexy Beautiful Women</a></li>
+<li><a href="//boards.4chan.org/hc/" class="boardlink">Hardcore</a></li>
+<li><a href="//boards.4chan.org/hm/" class="boardlink">Handsome Men</a></li>
+<li><a href="//boards.4chan.org/h/" class="boardlink">Hentai</a></li>
+<li><a href="//boards.4chan.org/e/" class="boardlink">Ecchi</a></li>
+<li><a href="//boards.4chan.org/u/" class="boardlink">Yuri</a></li>
+<li><a href="//boards.4chan.org/d/" class="boardlink">Hentai/Alternative</a></li>
+<li><a href="//boards.4chan.org/y/" class="boardlink">Yaoi</a></li>
+<li><a href="//boards.4chan.org/t/" class="boardlink">Torrents</a></li>
+<li><a href="//boards.4chan.org/hr/" class="boardlink">High Resolution</a></li>
+<li><a href="//boards.4chan.org/gif/" class="boardlink">Adult GIF</a></li>
+<li><a href="//boards.4chan.org/aco/" class="boardlink">Adult Cartoons</a></li>
+<li><a href="//boards.4chan.org/r/" class="boardlink">Adult Requests</a></li>
+</ul>
+</div>`;
+			if (footer) {
+				footer.innerHTML = `<div class="boardList">${boardList}</div>`;
+				footer.classList.add('ss21--footer-enhanced');
+				if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
+					$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add('current');
+				}
+			}
+		}
 
 	function init() {
 		on(d, "IndexBuild", doc.classList.remove("site-loading"));
@@ -244,25 +301,6 @@
 
 		removeStyles();
 
-		function getBoardType() {
-			let type = style_group;
-			type = type.slice(0, -6);
-			doc.classList.add(type);
-		}
-
-		getBoardType();
-
-		function toggleFooter() {
-			const navBot = $("#boardNavDesktopFoot");
-			on(navBot, "click", function (e) {
-				if (e.target === this) {
-					this.classList.toggle("is-active");
-				}
-			});
-		}
-
-		toggleFooter();
-
 		// this should return the `#header-bar` element
 		const headerBar = $("#header-bar") || $('#boardNavDesktop');
 
@@ -276,7 +314,7 @@
 			},
 			appendTo: headerBar,
 		});
-/*
+		/*
 		const hero = $(".boardBanner"),
 					heroHeight = 480,
 					boardTitle = $(".boardTitle"),
@@ -388,21 +426,6 @@
 				//summary.innerHTML = `<a class="material-symbols-outlined" target="blank" href="` + summary.getAttribute('href') + `">open_in_new</a>` + newText + `<span hidden>` + oldText + `</span>`;
 			}
 		}
-
-		async function checkSetting(setting) {
-			let val = await GM.getValue(setting);
-			return JSON.parse(val).value;
-		}
-
-		async function progressScrollOrNot() {
-			if (await checkSetting("ss21scrollProgress")) {
-				doc.classList.add('ss21-scrollprogress--on');
-			} else {
-				doc.classList.add('ss21-scrollprogress--off');
-			}
-		}
-
-		progressScrollOrNot();
 
 		function checkers() {
 			let obs = $$('.thread');
@@ -658,6 +681,118 @@
 			swapInfo();
 		}
 
+		function moveSelectBoards() {
+			let select = $('#boardSelectMobile');
+			let boardlist = $('#board-list');
+			boardlist.appendChild(select);
+			$('#boardSelectMobile', boardlist).classList.add('ss21--moved-select');
+		}
+
+		moveSelectBoards();
+
+		function moveShortcuts() {
+			const shortcuts = document.getElementById('shortcuts');
+			const shortcutMenu = document.getElementById('shortcut-menu');
+
+			const itemsToMove = ['shortcut-gallery', 'shortcut-expand-all']; // IDs of items to move below 600px
+			const originalPositions = new Map();
+			//const eventListeners = new Map(); // Map to store event listeners for each shortcut
+
+			// Create #shortcut-placeholder
+			let shortcutPlaceholder = document.createElement('div');
+			shortcutPlaceholder.id = 'shortcut-placeholder';
+			shortcutPlaceholder.hidden = true;
+			shortcutMenu.appendChild(shortcutPlaceholder);
+
+  // Record the original position and clone elements
+  itemsToMove.forEach(id => {
+    const item = document.getElementById(id);
+    if (item) {
+      // Save original position
+      originalPositions.set(id, { parent: item.parentElement, nextSibling: item.nextElementSibling });
+
+      // Clone and append to placeholder
+      const clone = item.cloneNode(true);
+      clone.id = `${id}-clone`; // Ensure unique ID for the clone
+      shortcutPlaceholder.appendChild(clone);
+
+      // Initially hide the clone
+      clone.hidden = true;
+    }
+  });
+
+  const moveItemsToMenu = () => {
+    const menu = document.querySelector('#shortcut-menu #menu');
+    if (menu) {
+      itemsToMove.forEach(id => {
+        const clone = document.getElementById(`${id}-clone`);
+        if (clone && clone.parentElement !== menu) {
+          menu.appendChild(clone);
+          clone.hidden = false; // Show the clone when added to the menu
+        }
+      });
+    }
+  };
+
+  const handleResize = (width) => {
+    if (width < 600) {
+      const menu = document.querySelector('#shortcut-menu #menu');
+      if (!menu) {
+        // Hide originals and show clones in the placeholder
+        itemsToMove.forEach(id => {
+          const original = document.getElementById(id);
+          const clone = document.getElementById(`${id}-clone`);
+          if (original) original.hidden = true;
+          if (clone) clone.hidden = false;
+        });
+      }
+
+      // Observe for menu creation and move clones to it
+      const menuObserver = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+          if (mutation.type === 'childList') {
+            const menu = document.querySelector('#shortcut-menu #menu');
+            if (menu) {
+              moveItemsToMenu();
+              menuObserver.disconnect(); // Stop observing once #menu is created
+            }
+          }
+        });
+      });
+
+      menuObserver.observe(shortcutMenu, { childList: true, subtree: true });
+    } else {
+      // Restore originals and hide clones when width >= 600px
+      itemsToMove.forEach(id => {
+        const original = document.getElementById(id);
+        const clone = document.getElementById(`${id}-clone`);
+        if (original) original.hidden = false;
+        if (clone) clone.hidden = true;
+
+        // Restore original position if it's not already in place
+        const originalPosition = originalPositions.get(id);
+        if (originalPosition && original.parentElement !== originalPosition.parent) {
+          const { parent, nextSibling } = originalPosition;
+          parent.insertBefore(original, nextSibling || null);
+        }
+      });
+    }
+  };
+
+  const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      if (entry.target === document.body) {
+        const width = entry.contentRect.width;
+        handleResize(width);
+      }
+    }
+  });
+
+			resizeObserver.observe(document.body);
+		}
+
+		moveShortcuts();
+
 		// two from https://github.com/duanemoody
 		// javascript:let p=$$("a.download-button"), i=0, v=setInterval(() => {p[i++].click(); (i>p.length) && clearInterval(v);}, 1000);
 		// javascript:var pics=document.querySelectorAll("a.download-button"), counter=0, interval=setInterval(function() {pics[counter].click(); counter++; if (counter > pics.length) {clearInterval(interval);}}, 1000);
@@ -695,182 +830,9 @@
 				}
 			});
 		}
-
-		downloadMedia();
-		/*
-		function addTransition() {
-			ready('#fourchanx-settings', (element) => {
-				//console.log('hey im here');
-				let _this = element;
-				//function $(sel, root) {
-				//function on(sel, events, cb) {
-
-				//el.classList.add("lol");
-        //el.addEventListener("transitionend", function () {
-        //return el.remove();
-        //},true)
-
-				let close = $('.close', _this);
-				console.log(close);
-				close.addEventListener('click', function(e) {
-					console.log('closing it');
-					e.preventDefault();
-					//d.addEventListener("animationend", function () {
-					//	_this.classList.add('active');
-					//	_this.parentNode.remove();
-					//}, true);
-				}, { passive: false });
-				on(close, 'click', (e) => {
-					e.preventDefault();
-					_this.addEventListener("transitionend", function () {
-						_this.parentNode.remove();
-					}, true);
-				});
-			//});
+		if (config === "thread") {
+			downloadMedia();
 		}
-		on(d, "OpenSettings", function () {
-			addTransition();
-		});
-			*/
-		function addTransition() {
-			ready('#fourchanx-settings', (element) => {
-				let _this = element;
-				_this.style.viewTransitionName = 'settings';
-				function handleClick(event) {
-					console.log('Button clicked!');
-				}
-				_this.querySelector('.close').removeEventListener('click', handleClick);
-			});
-		}
-		on(d, "OpenSettings", function () {
-			d.startViewTransition(() => addTransition());
-		});
-
-
-		function addSettings() {
-			ready('#fourchanx-settings', (element) => {
-				let _this = element;
-				let tabs = $('.sections-list');
-				let sections = $('.section-container section');
-				let ss21Tab = make({
-					el: 'a',
-					cl4ss: 'tab-ss21',
-					attr: {
-						href: 'javascript:;'
-					},
-					appendTo: tabs
-				});
-				ss21Tab.textContent = 'ss21';
-				let ss21Section = `<fieldset><legend>ss21</legend>`;
-				for (let setting in ss21Settings) {
-					/*
-					let getVal = async () => {
-						let val = await get(`ss21${setting}`);
-						return val;
-					};
-					console.log(getVal);
-					get(`ss21${setting}`)
-						.then((response) => response);
-					ss21Section += `<div class="ss21-option">` +
-					get(`ss21${setting}`)
-						.then((response) => response) +
-					`</div>`;
-					*/
-					/*
-					const printAddress = async () => {
-  const a = await address;
-  console.log(a);
-};
-
-printAddress();
-*//*
-					let getVal = async () => {
-						let val = await get(`ss21${setting}`);
-					};
-					console.log(getVal());
-					console.log(`ss21${setting} is ${getVal()}`);
-
-					Promise.all([promise1, promise2, promise3]).then((values) => {
-  console.log(values);
-});
-
-					// below is original
-					*/
-
-					//let valy = true;
-					/*
-					let val2 = (async () => {
-						console.log(await GM.listValues());
-						console.log(ss21Settings[setting]);
-						console.log('inside poo', await get(ss21Settings[setting]));
-						await get(ss21Settings[setting]).then((value) => {
-							console.log('then: ', value);
-						});
-					})();
-					//valy = poo();
-					console.log('val2: ', val2);
-					get(ss21Settings[setting]).then((loo) => {
-						console.log('loo: ', loo);
-					});
-					*/
-					//(async => valy = get(ss21Settings[setting]))();
-					//console.log(valy);
-					(async () => {
-						let valy = await GM.getValue('ss21' + setting);
-						valy = JSON.parse(valy).value;
-						//console.log(setting, JSON.parse(valy).value);
-						ss21Section += `<div class="ss21-option">
-					<input type="checkbox" id="ss21-option--${setting}" ${valy ? "checked" : ""} data-settingname="ss21${setting}" data-val="${valy}">
-					<label class="ss21-label" for="ss21-option--${setting}">${ss21Settings[setting].name}</label>
-					<span class="ss21-description">${ss21Settings[setting].desc}</span>
-					</div>`;
-					})();
-					/*
-					ss21Section += `<div class="ss21-option">
-					<input type="checkbox" id="ss21-option--${setting}" ${valy ? "checked" : ""} data-settingname="ss21${setting}" data-val="${valy}">
-					<label class="ss21-label" for="ss21-option--${setting}">${ss21Settings[setting].name}</label>
-					<span class="ss21-description">${ss21Settings[setting].desc}</span>
-					</div>`;
-					*/
-				}
-				ss21Section += `</fieldset>`;
-				on(ss21Tab, 'click', function() {
-					let tabLinks = $$('.sections-list a');
-					for (let tab of tabLinks) {
-						tab.classList.remove('tab-selected');
-					}
-					ss21Tab.classList.add('tab-selected');
-					sections.className = '';
-					sections.classList.add('section-ss21');
-					sections.innerHTML = ss21Section;
-				});
-				ready('.section-ss21', (element) => {
-					let _this = element;
-					let checkboxes = $$('.ss21-option input');
-					for (let checkbox of checkboxes) {
-						checkbox.addEventListener('click', async function(e) {
-							//console.log(checkbox.checked);//, JSON.parse(checkbox.getAttribute('data-val').toLowerCase()), !checkbox.getAttribute('data-val'));
-							let setting = checkbox.getAttribute('data-settingname');
-							let checkSetting = checkbox.checked;
-							let key = await GM.getValue(setting);
-							//console.log(key);
-							let keyParse = JSON.parse(key);
-							//console.log('parse: ', keyParse);
-							keyParse.value = checkSetting;
-							keyParse = JSON.stringify(keyParse);
-
-
-							checkbox.toggleAttribute('checked');
-							checkbox.setAttribute('data-val', checkSetting);
-							//console.log(`setting ${setting} to ${checkSetting}`);
-							await GM.setValue(setting, keyParse);
-						}, false);
-					}
-				});
-
-			});
-		}
-		//on(d, "OpenSettings", addSettings);
 
 		function boardDrawer() {
 			let boardDrawer = make({
@@ -932,7 +894,7 @@ printAddress();
 		}
 
 		boardDrawer();
-/*
+		/*
 		function getBoardInfo() {
 			let cbBoard, cbTitle, cbMetad;
 			fetch("https://a.4cdn.org/boards.json")
@@ -965,56 +927,56 @@ printAddress();
 		}
 
 		on(d, 'QRDialogCreation', function() {
-const captchaContainer = document.querySelector(".captcha-root");
+			const captchaContainer = document.querySelector(".captcha-root");
 
-  let tBgObserver = null;
+			let tBgObserver = null;
 
-  const observeTBgStyle = (tBg) => {
-    // Disconnect any existing observer to avoid duplicate listeners
-    if (tBgObserver) {
-      tBgObserver.disconnect();
-      tBgObserver = null;
-    }
+			const observeTBgStyle = (tBg) => {
+				// Disconnect any existing observer to avoid duplicate listeners
+				if (tBgObserver) {
+					tBgObserver.disconnect();
+					tBgObserver = null;
+				}
 
-    // If tBg exists, observe its style attribute
-    if (tBg) {
-      tBgObserver = new MutationObserver(() => {
-        const bgImage = window.getComputedStyle(tBg).backgroundImage;
+				// If tBg exists, observe its style attribute
+				if (tBg) {
+					tBgObserver = new MutationObserver(() => {
+						const bgImage = window.getComputedStyle(tBg).backgroundImage;
 
-        if (bgImage && bgImage !== "none") {
-          captchaContainer.classList.add("captcha-loaded");
-        } else {
-          captchaContainer.classList.remove("captcha-loaded");
-        }
-      });
+						if (bgImage && bgImage !== "none") {
+							captchaContainer.classList.add("captcha-loaded");
+						} else {
+							captchaContainer.classList.remove("captcha-loaded");
+						}
+					});
 
-      tBgObserver.observe(tBg, {
-        attributes: true,
-        attributeFilter: ["style"], // Only watch the style attribute
-      });
+					tBgObserver.observe(tBg, {
+						attributes: true,
+						attributeFilter: ["style"], // Only watch the style attribute
+					});
 
-      // Run the check immediately to handle cases where the background-image is already set
-      const bgImage = window.getComputedStyle(tBg).backgroundImage;
-      if (bgImage && bgImage !== "none") {
-        captchaContainer.classList.add("captcha-loaded");
-      } else {
-        captchaContainer.classList.remove("captcha-loaded");
-      }
-    } else {
-      // If tBg is not present, ensure the class is removed
-      captchaContainer.classList.remove("captcha-loaded");
-    }
-  };
+					// Run the check immediately to handle cases where the background-image is already set
+					const bgImage = window.getComputedStyle(tBg).backgroundImage;
+					if (bgImage && bgImage !== "none") {
+						captchaContainer.classList.add("captcha-loaded");
+					} else {
+						captchaContainer.classList.remove("captcha-loaded");
+					}
+				} else {
+					// If tBg is not present, ensure the class is removed
+					captchaContainer.classList.remove("captcha-loaded");
+				}
+			};
 
-  const observer = new MutationObserver(() => {
-    const tBg = captchaContainer.querySelector("#t-bg");
-    observeTBgStyle(tBg); // Attach a new observer to the re-added #t-bg element
-  });
+			const observer = new MutationObserver(() => {
+				const tBg = captchaContainer.querySelector("#t-bg");
+				observeTBgStyle(tBg); // Attach a new observer to the re-added #t-bg element
+			});
 
-  observer.observe(captchaContainer, {
-    childList: true, // Monitor direct child changes
-    subtree: true, // Monitor all descendant changes
-  });
+			observer.observe(captchaContainer, {
+				childList: true, // Monitor direct child changes
+				subtree: true, // Monitor all descendant changes
+			});
 
 		});
 
@@ -1051,174 +1013,7 @@ const captchaContainer = document.querySelector(".captcha-root");
 
 		resizeQuotePreviews();
 
-		function fetch4chanBoardList() {
-			// Okay, so this used to work fine. Then Cloudflare has added some CDN protection thingy to 4chan.org, which makes any attempts to read the HTML not work.
-			// I had this as a request so that if any boards were added, it would auto update. I'll stick to hard coding it instead.
-			let footer = $("#boardNavDesktopFoot");
-			//let currentBoard = location.pathname.split("/")[1];
-			let boardList = `<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Japanese Culture</h3>
-<ul>
-<li><a href="//boards.4chan.org/a/" class="boardlink">Anime &amp; Manga</a></li>
-<li><a href="//boards.4chan.org/c/" class="boardlink">Anime/Cute</a></li>
-<li><a href="//boards.4chan.org/w/" class="boardlink">Anime/Wallpapers</a></li>
-<li><a href="//boards.4chan.org/m/" class="boardlink">Mecha</a></li>
-<li><a href="//boards.4chan.org/cgl/" class="boardlink">Cosplay &amp; EGL</a></li>
-<li><a href="//boards.4chan.org/cm/" class="boardlink">Cute/Male</a></li>
-<li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
-<li><a href="//boards.4chan.org/n/" class="boardlink">Transportation</a></li>
-<li><a href="//boards.4chan.org/jp/" class="boardlink">Otaku Culture</a></li>
-<li><a href="//boards.4chan.org/vt/" class="boardlink">Virtual YouTubers</a></li>
-</ul>
-<h3 style="text-decoration: underline; display: inline;">Video Games</h3>
-<ul>
-<li><a href="//boards.4chan.org/v/" class="boardlink">Video Games</a></li>
-<li><a href="//boards.4chan.org/vg/" class="boardlink">Video Game Generals</a></li>
-<li><a href="//boards.4chan.org/vm/" class="boardlink">Video Games/Multiplayer</a></li>
-<li><a href="//boards.4chan.org/vmg/" class="boardlink">Video Games/Mobile</a></li>
-<li><a href="//boards.4chan.org/vp/" class="boardlink">Pokémon</a></li>
-<li><a href="//boards.4chan.org/vr/" class="boardlink">Retro Games</a></li>
-<li><a href="//boards.4chan.org/vrpg/" class="boardlink">Video Games/RPG</a></li>
-<li><a href="//boards.4chan.org/vst/" class="boardlink">Video Games/Strategy</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Interests</h3>
-<ul>
-<li><a href="//boards.4chan.org/co/" class="boardlink">Comics &amp; Cartoons</a></li>
-<li><a href="//boards.4chan.org/g/" class="boardlink">Technology</a></li>
-<li><a href="//boards.4chan.org/tv/" class="boardlink">Television &amp; Film</a></li>
-<li><a href="//boards.4chan.org/k/" class="boardlink">Weapons</a></li>
-<li><a href="//boards.4chan.org/o/" class="boardlink">Auto</a></li>
-<li><a href="//boards.4chan.org/an/" class="boardlink">Animals &amp; Nature</a></li>
-<li><a href="//boards.4chan.org/tg/" class="boardlink">Traditional Games</a></li>
-<li><a href="//boards.4chan.org/sp/" class="boardlink">Sports</a></li>
-<li><a href="//boards.4chan.org/xs/" class="boardlink">Extreme Sports</a></li>
-<li><a href="//boards.4chan.org/pw/" class="boardlink">Professional Wrestling</a></li>
-<li><a href="//boards.4chan.org/sci/" class="boardlink">Science &amp; Math</a></li>
-<li><a href="//boards.4chan.org/his/" class="boardlink">History &amp; Humanities</a></li>
-<li><a href="//boards.4chan.org/int/" class="boardlink">International</a></li>
-<li><a href="//boards.4chan.org/out/" class="boardlink">Outdoors</a></li>
-<li><a href="//boards.4chan.org/toy/" class="boardlink">Toys</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Creative</h3>
-<ul>
-<li><a href="//boards.4chan.org/i/" class="boardlink">Oekaki</a></li>
-<li><a href="//boards.4chan.org/po/" class="boardlink">Papercraft &amp; Origami</a></li>
-<li><a href="//boards.4chan.org/p/" class="boardlink">Photography</a></li>
-<li><a href="//boards.4chan.org/ck/" class="boardlink">Food &amp; Cooking</a></li>
-<li><a href="//boards.4chan.org/ic/" class="boardlink">Artwork/Critique</a></li>
-<li><a href="//boards.4chan.org/wg/" class="boardlink">Wallpapers/General</a></li>
-<li><a href="//boards.4chan.org/lit/" class="boardlink">Literature</a></li>
-<li><a href="//boards.4chan.org/mu/" class="boardlink">Music</a></li>
-<li><a href="//boards.4chan.org/fa/" class="boardlink">Fashion</a></li>
-<li><a href="//boards.4chan.org/3/" class="boardlink">3DCG</a></li>
-<li><a href="//boards.4chan.org/gd/" class="boardlink">Graphic Design</a></li>
-<li><a href="//boards.4chan.org/diy/" class="boardlink">Do-It-Yourself</a></li>
-<li><a href="//boards.4chan.org/wsg/" class="boardlink">Worksafe GIF</a></li>
-<li><a href="//boards.4chan.org/qst/" class="boardlink">Quests</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Other</h3>
-<ul>
-<li><a href="//boards.4chan.org/biz/" class="boardlink">Business &amp; Finance</a></li>
-<li><a href="//boards.4chan.org/trv/" class="boardlink">Travel</a></li>
-<li><a href="//boards.4chan.org/fit/" class="boardlink">Fitness</a></li>
-<li><a href="//boards.4chan.org/x/" class="boardlink">Paranormal</a></li>
-<li><a href="//boards.4chan.org/adv/" class="boardlink">Advice</a></li>
-<li><a href="//boards.4chan.org/lgbt/" class="boardlink">LGBT</a></li>
-<li><a href="//boards.4chan.org/mlp/" class="boardlink">Pony</a></li>
-<li><a href="//boards.4chan.org/news/" class="boardlink">Current News</a></li>
-<li><a href="//boards.4chan.org/wsr/" class="boardlink">Worksafe Requests</a></li>
-<li><a href="//boards.4chan.org/vip/" class="boardlink">Very Important Posts</a></li>
-</ul>
-<h3 style="text-decoration: underline; display: inline;">Misc.</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
-<ul>
-<li><a href="//boards.4chan.org/b/" class="boardlink">Random</a></li>
-<li><a href="//boards.4chan.org/r9k/" class="boardlink">ROBOT9001</a></li>
-<li><a href="//boards.4chan.org/pol/" class="boardlink">Politically Incorrect</a></li>
-<li><a href="//boards.4chan.org/bant/" class="boardlink">International/Random</a></li>
-<li><a href="//boards.4chan.org/soc/" class="boardlink">Cams &amp; Meetups</a></li>
-<li><a href="//boards.4chan.org/s4s/" class="boardlink">Shit 4chan Says</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Adult</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
-<ul>
-<li><a href="//boards.4chan.org/s/" class="boardlink">Sexy Beautiful Women</a></li>
-<li><a href="//boards.4chan.org/hc/" class="boardlink">Hardcore</a></li>
-<li><a href="//boards.4chan.org/hm/" class="boardlink">Handsome Men</a></li>
-<li><a href="//boards.4chan.org/h/" class="boardlink">Hentai</a></li>
-<li><a href="//boards.4chan.org/e/" class="boardlink">Ecchi</a></li>
-<li><a href="//boards.4chan.org/u/" class="boardlink">Yuri</a></li>
-<li><a href="//boards.4chan.org/d/" class="boardlink">Hentai/Alternative</a></li>
-<li><a href="//boards.4chan.org/y/" class="boardlink">Yaoi</a></li>
-<li><a href="//boards.4chan.org/t/" class="boardlink">Torrents</a></li>
-<li><a href="//boards.4chan.org/hr/" class="boardlink">High Resolution</a></li>
-<li><a href="//boards.4chan.org/gif/" class="boardlink">Adult GIF</a></li>
-<li><a href="//boards.4chan.org/aco/" class="boardlink">Adult Cartoons</a></li>
-<li><a href="//boards.4chan.org/r/" class="boardlink">Adult Requests</a></li>
-</ul>
-</div>`;
-			footer.innerHTML = `<div class="boardList">${boardList}</div>`;
-			if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
-				$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add("current");
-			}
-			/*
-			console.log('%cGrabbing current 4chan board list from 4chan.org', 'color:black;background-color:cornflowerBlue');
-			GM.xmlHttpRequest({
-				method: "GET",
-				url: "https://4chan.org",
-				responseType: 'text',
-				onload: response => {
-					let parser = new DOMParser();
-					let doc = parser.parseFromString(response.responseText, 'text/html');
-					console.log(doc);
-					let img = doc.querySelector('#boards .boxcontent');
-					footer.innerHTML = `<div class="boardList">` + img.innerHTML + `</div>`;
-					if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
-						$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add(
-							"current"
-						);
-					}
-				},
-				onerror: response => console.warn('Failed grabbing 4chan board list:', response)
-			});
-			*/
-			/*
-			fetch('/about').then(function (response) {
-	// The API call was successful!
-	return response.text();
-}).then(function (html) {
-
-	// Convert the HTML string into a document object
-	var parser = new DOMParser();
-	var doc = parser.parseFromString(html, 'text/html');
-
-	// Get the image file
-	var img = doc.querySelector('img');
-	console.log(img);
-
-}).catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});
-//, { mode: 'no-cors'}
-*/
-			/*
-			const url = 'https://4chan.org';
-			fetch(url, {mode: 'no-cors'}).then(function(response) {
-				console.log('hey', response.ok);
-			}).catch(function(error) {
-				console.warn('Something went wrong.', error);
-			});
-			*/
-		}
-
-		fetch4chanBoardList();
+		replace4chanFooterList();
 
 		function getSortMode() {
 			//console.log('sorting mode');
@@ -1249,54 +1044,7 @@ const captchaContainer = document.querySelector(".captcha-root");
 		}
 
 		passLinker();
-		/*
-		function masonry() {
-			let grids = [...document.querySelectorAll('.board')];
-			if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry') {
-				console.log('masonry not supported, running masonry function');
-				grids = grids.map(grid => ({
-					_el: grid,
-					gap: parseFloat(getComputedStyle(grid).rowGap),
-					items: [...grid.childNodes].filter(c => c.nodeType === 1),
-					ncol: 0 })); // was 0
-console.log(grids);
-				function layout() {
-					console.log('running layout');
-					grids.forEach(grid => {
-						// get the post relayout number of columns
-						let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
-						console.log(getComputedStyle(grid._el).gridTemplateColumns.split(' ').length);
 
-						// if the number of columns has changed
-						if (grid.ncol !== ncol) {
-							// update number of columns
-							grid.ncol = ncol;
-							console.log('rearrange grid items');
-
-							// revert to initial positioning, no margin
-							grid.items.forEach(c => c.style.removeProperty('margin-top'));
-
-							// if we have more than one column
-							if (grid.ncol > 1) {
-								grid.items.slice(ncol).forEach((c, i) => {
-									let prev_fin = grid.items[i].getBoundingClientRect().bottom, // bottom edge of item above
-											curr_ini = c.getBoundingClientRect().top; // top edge of current item
-									c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
-								});
-							}
-						}
-					});
-				}
-
-				addEventListener('load', e => {
-					layout(); // initial load
-					addEventListener('resize', layout, false); // on resize
-				}, false);
-			}
-		}
-
-		masonry();
-*/
 		function masonry() {
 			if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
 				return false;
@@ -1539,52 +1287,7 @@ boxes.forEach(el => {
 
 			heightConverter();
 		}
-		/*
-// When we were blocking `core.js`, we needed to add this functionality back. Not anymore!
-    function exifToggle() {
-      let exifs = $$(".abbr a");
-      for (let exif of exifs) {
-        let toggleExif = exif.getAttribute("onclick");
-        exif.removeAttribute("onclick");
-        on(exif, "click", function () {
-          let newtoggleExif = toggleExif.match(/'(.*)(.*)'/g);
-          newtoggleExif = String(newtoggleExif);
-          newtoggleExif = newtoggleExif.slice(1, -1);
-          let el = $("#" + newtoggleExif);
-          el.style.display = "table" != el.style.display ? "table" : "none";
-        });
-      }
-    }
 
-    exifToggle();
-    on(d, "IndexRefresh", exifToggle);
-*/
-		// this only works when the global message is already there. ideally, we'd have to observe the element for children changes and wrap the new children
-		// it also means the toggle doesn't hide the element because it is looking for the parent
-		/*
-      function wrapGlobalMessage() {
-       ready('.globalMessage', (element) => {
-    	let _this = element;
-    	let newHTML = d.createElement('div');
-    	newHTML.classList.add('globalMessage--outer-wrapper');
-    	var el = document.querySelector('div');
-    	// append p as a new child to el
-    	//let originalMessage = _this.innerHTML;
-    	let original = $('.globalMessage');
-    	//let newHTML = `<div class="globalMessage--inner-wrapper">${originalMessage}</div>`;
-    	let appender = $('#globalToggle');
-    	//_this.innerHTML = newHTML;
-    	appender.parentNode.insertBefore(newHTML, appender.nextSibling);
-    	appender.appendChild(original);
-    	//let button = $('.hide-announcement-button', _this);
-    	//on(button, 'click', function() {
-    	// this.parentNode.parentNode.setAttribute('hidden', 'hidden');
-    	//});
-       });
-      }
-
-      wrapGlobalMessage();
-    */
 		function searchCurtain() {
 			ready("#index-search", (element) => {
 				let _this = element;
@@ -1739,11 +1442,11 @@ boxes.forEach(el => {
 		//cloneAndPrepend('.boardBanner', '#delform');
 
 		function OPAsBanner() {
-			ready(".op .fileThumb", (element) => {
+			ready(".thread > .opContainer > .op > .file .fileThumb", (element) => {
 				let _this = element,
 						banner = $(".boardBanner");
 				let OpFullFile = _this.href;
-				if (OpFullFile.endsWith("m")) {
+				if (OpFullFile.endsWith("m") || OpFullFile.endsWith("4")) {
 					//comment start
 					/*
           let OpVideo = document.createElement("video");
@@ -1864,84 +1567,53 @@ if (config === "thread") {
 
 		// Function to extract the initial number and update the data attribute
 		if (config === "index") {
-		function updateHiddenCount(element) {
-			if (!element) {
-				return false;
-			}
-			const text = element.textContent;
-			const match = text.match(/(\d+)/);
-			if (match) {
-				const count = parseInt(match[1], 10);
-				document.querySelector('#hidden-toggle > a').dataset.hiddenCount = count;
-			} else {
-				document.querySelector('#hidden-toggle > a').dataset.hiddenCount = 0; // Default to 0 if no match
-			}
-		}
-
-		// Initial setup
-		const hiddenCountElement = document.getElementById('hidden-count');
-		updateHiddenCount(hiddenCountElement);
-
-		// Create a MutationObserver to watch for changes to the element's text content
-		const observer = new MutationObserver((mutationsList) => {
-			for (const mutation of mutationsList) {
-				if (mutation.type === 'childList' || mutation.type === 'characterData') {
-					updateHiddenCount(hiddenCountElement);
+			function updateHiddenCount(element) {
+				if (!element) {
+					return false;
+				}
+				const text = element.textContent;
+				const match = text.match(/(\d+)/);
+				if (match) {
+					const count = parseInt(match[1], 10);
+					document.querySelector('#hidden-toggle > a').dataset.hiddenCount = count;
+				} else {
+					document.querySelector('#hidden-toggle > a').dataset.hiddenCount = 0; // Default to 0 if no match
 				}
 			}
-		});
 
-		document.querySelector('#hidden-toggle > a').onclick = function(e) {
-			e.target.classList.toggle('hidden-view-toggle');
-		};
-		document.querySelector('#hidden-toggle > a').title = "Toggle hidden threads";
+			// Initial setup
+			const hiddenCountElement = document.getElementById('hidden-count');
+			updateHiddenCount(hiddenCountElement);
 
-		// Observe changes to the element's text content
-		observer.observe(hiddenCountElement, { childList: true, characterData: true, subtree: true });
+			// Create a MutationObserver to watch for changes to the element's text content
+			const observer = new MutationObserver((mutationsList) => {
+				for (const mutation of mutationsList) {
+					if (mutation.type === 'childList' || mutation.type === 'characterData') {
+						updateHiddenCount(hiddenCountElement);
+					}
+				}
+			});
+
+			document.querySelector('#hidden-toggle > a').onclick = function(e) {
+				e.target.classList.toggle('hidden-view-toggle');
+			};
+			document.querySelector('#hidden-toggle > a').title = "Toggle hidden threads";
+
+			// Observe changes to the element's text content
+			observer.observe(hiddenCountElement, { childList: true, characterData: true, subtree: true });
 		}
-
-		/*
-// simple version of psa hiding: https://github.com/ccd0/4chan-x/blob/f0150afd69268f173cb618b5af70e0bdf0b37273/src/Miscellaneous/AnnouncementHiding.coffee
-		function blotterHiding() {
-			const blotter = $('#blotter');
-			const blotterMsgs = $('#blotter-msgs');
-			const blotterToggle = $('#toggleBlotter');
-			console.log(blotter, blotterMsgs, blotterToggle);
-			let UTC = blotterToggle.dataset.utc;
-			blotter.dataset.hidden =
-		}
-
-		blotterHiding();
-*/
-		/*
-// https://css-tricks.com/userainbow/
-function useEffect() {
-  const cb = () => {
-    const viewportHeight = window.innerHeight
-    const contentHeight = document.body.getBoundingClientRect().height
-    const viewportsPerRotation = Math.min(
-      3,
-      contentHeight / viewportHeight
-    )
-    const from = 51
-    const progress =
-      window.scrollY / (viewportHeight * viewportsPerRotation)
-    const h = (from + 360 * progress) % 360
-
-    document.body.style.backgroundColor = `hsl(${h}deg, 100%, 50%)`
-  }
-  window.addEventListener('scroll', cb, { passive: true })
-  return () => window.removeEventListener('scroll', cb)
-}
-
-		useEffect();
-		*/
 
 		doc.classList.add("sidedish-enabled");
 
 		// Adds a discernable class to `html` when 4chan sounds player is enabled
 		ready("#sound-player-css", (element) => {
 			doc.classList.add('fcsp-enabled');
+		});
+
+		ready("#StyleChanLink", (element) => {
+			doc.classList.add('stylechan-enabled');
+			$("#ch4SS", document.head).remove();
+			$("#fourchanx-bgcolor-css", document.head).remove();
 		});
 
 		ready("#mascot", (element) => {
@@ -2033,121 +1705,7 @@ function useEffect() {
 			}
 		}
 		removeStyle($("style[type]", d.head)); // this removes the inline mobile css
-		function fetch4chanBoardList() {
-			let footer = $("#boardNavDesktopFoot");
-			let boardList = `<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Japanese Culture</h3>
-<ul>
-<li><a href="//boards.4chan.org/a/" class="boardlink">Anime &amp; Manga</a></li>
-<li><a href="//boards.4chan.org/c/" class="boardlink">Anime/Cute</a></li>
-<li><a href="//boards.4chan.org/w/" class="boardlink">Anime/Wallpapers</a></li>
-<li><a href="//boards.4chan.org/m/" class="boardlink">Mecha</a></li>
-<li><a href="//boards.4chan.org/cgl/" class="boardlink">Cosplay &amp; EGL</a></li>
-<li><a href="//boards.4chan.org/cm/" class="boardlink">Cute/Male</a></li>
-<li><a href="//boards.4chan.org/f/" class="boardlink">Flash</a></li>
-<li><a href="//boards.4chan.org/n/" class="boardlink">Transportation</a></li>
-<li><a href="//boards.4chan.org/jp/" class="boardlink">Otaku Culture</a></li>
-<li><a href="//boards.4chan.org/vt/" class="boardlink">Virtual YouTubers</a></li>
-</ul>
-<h3 style="text-decoration: underline; display: inline;">Video Games</h3>
-<ul>
-<li><a href="//boards.4chan.org/v/" class="boardlink">Video Games</a></li>
-<li><a href="//boards.4chan.org/vg/" class="boardlink">Video Game Generals</a></li>
-<li><a href="//boards.4chan.org/vm/" class="boardlink">Video Games/Multiplayer</a></li>
-<li><a href="//boards.4chan.org/vmg/" class="boardlink">Video Games/Mobile</a></li>
-<li><a href="//boards.4chan.org/vp/" class="boardlink">Pokémon</a></li>
-<li><a href="//boards.4chan.org/vr/" class="boardlink">Retro Games</a></li>
-<li><a href="//boards.4chan.org/vrpg/" class="boardlink">Video Games/RPG</a></li>
-<li><a href="//boards.4chan.org/vst/" class="boardlink">Video Games/Strategy</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Interests</h3>
-<ul>
-<li><a href="//boards.4chan.org/co/" class="boardlink">Comics &amp; Cartoons</a></li>
-<li><a href="//boards.4chan.org/g/" class="boardlink">Technology</a></li>
-<li><a href="//boards.4chan.org/tv/" class="boardlink">Television &amp; Film</a></li>
-<li><a href="//boards.4chan.org/k/" class="boardlink">Weapons</a></li>
-<li><a href="//boards.4chan.org/o/" class="boardlink">Auto</a></li>
-<li><a href="//boards.4chan.org/an/" class="boardlink">Animals &amp; Nature</a></li>
-<li><a href="//boards.4chan.org/tg/" class="boardlink">Traditional Games</a></li>
-<li><a href="//boards.4chan.org/sp/" class="boardlink">Sports</a></li>
-<li><a href="//boards.4chan.org/xs/" class="boardlink">Extreme Sports</a></li>
-<li><a href="//boards.4chan.org/pw/" class="boardlink">Professional Wrestling</a></li>
-<li><a href="//boards.4chan.org/sci/" class="boardlink">Science &amp; Math</a></li>
-<li><a href="//boards.4chan.org/his/" class="boardlink">History &amp; Humanities</a></li>
-<li><a href="//boards.4chan.org/int/" class="boardlink">International</a></li>
-<li><a href="//boards.4chan.org/out/" class="boardlink">Outdoors</a></li>
-<li><a href="//boards.4chan.org/toy/" class="boardlink">Toys</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Creative</h3>
-<ul>
-<li><a href="//boards.4chan.org/i/" class="boardlink">Oekaki</a></li>
-<li><a href="//boards.4chan.org/po/" class="boardlink">Papercraft &amp; Origami</a></li>
-<li><a href="//boards.4chan.org/p/" class="boardlink">Photography</a></li>
-<li><a href="//boards.4chan.org/ck/" class="boardlink">Food &amp; Cooking</a></li>
-<li><a href="//boards.4chan.org/ic/" class="boardlink">Artwork/Critique</a></li>
-<li><a href="//boards.4chan.org/wg/" class="boardlink">Wallpapers/General</a></li>
-<li><a href="//boards.4chan.org/lit/" class="boardlink">Literature</a></li>
-<li><a href="//boards.4chan.org/mu/" class="boardlink">Music</a></li>
-<li><a href="//boards.4chan.org/fa/" class="boardlink">Fashion</a></li>
-<li><a href="//boards.4chan.org/3/" class="boardlink">3DCG</a></li>
-<li><a href="//boards.4chan.org/gd/" class="boardlink">Graphic Design</a></li>
-<li><a href="//boards.4chan.org/diy/" class="boardlink">Do-It-Yourself</a></li>
-<li><a href="//boards.4chan.org/wsg/" class="boardlink">Worksafe GIF</a></li>
-<li><a href="//boards.4chan.org/qst/" class="boardlink">Quests</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Other</h3>
-<ul>
-<li><a href="//boards.4chan.org/biz/" class="boardlink">Business &amp; Finance</a></li>
-<li><a href="//boards.4chan.org/trv/" class="boardlink">Travel</a></li>
-<li><a href="//boards.4chan.org/fit/" class="boardlink">Fitness</a></li>
-<li><a href="//boards.4chan.org/x/" class="boardlink">Paranormal</a></li>
-<li><a href="//boards.4chan.org/adv/" class="boardlink">Advice</a></li>
-<li><a href="//boards.4chan.org/lgbt/" class="boardlink">LGBT</a></li>
-<li><a href="//boards.4chan.org/mlp/" class="boardlink">Pony</a></li>
-<li><a href="//boards.4chan.org/news/" class="boardlink">Current News</a></li>
-<li><a href="//boards.4chan.org/wsr/" class="boardlink">Worksafe Requests</a></li>
-<li><a href="//boards.4chan.org/vip/" class="boardlink">Very Important Posts</a></li>
-</ul>
-<h3 style="text-decoration: underline; display: inline;">Misc.</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
-<ul>
-<li><a href="//boards.4chan.org/b/" class="boardlink">Random</a></li>
-<li><a href="//boards.4chan.org/r9k/" class="boardlink">ROBOT9001</a></li>
-<li><a href="//boards.4chan.org/pol/" class="boardlink">Politically Incorrect</a></li>
-<li><a href="//boards.4chan.org/bant/" class="boardlink">International/Random</a></li>
-<li><a href="//boards.4chan.org/soc/" class="boardlink">Cams &amp; Meetups</a></li>
-<li><a href="//boards.4chan.org/s4s/" class="boardlink">Shit 4chan Says</a></li>
-</ul>
-</div>
-<div class="column">
-<h3 style="text-decoration: underline; display: inline;">Adult</h3> <h3 style="display: inline;"><span class="warning" title="Not Safe For Work"><sup style="vertical-align: text-bottom;">(NSFW)</sup></span></h3>
-<ul>
-<li><a href="//boards.4chan.org/s/" class="boardlink">Sexy Beautiful Women</a></li>
-<li><a href="//boards.4chan.org/hc/" class="boardlink">Hardcore</a></li>
-<li><a href="//boards.4chan.org/hm/" class="boardlink">Handsome Men</a></li>
-<li><a href="//boards.4chan.org/h/" class="boardlink">Hentai</a></li>
-<li><a href="//boards.4chan.org/e/" class="boardlink">Ecchi</a></li>
-<li><a href="//boards.4chan.org/u/" class="boardlink">Yuri</a></li>
-<li><a href="//boards.4chan.org/d/" class="boardlink">Hentai/Alternative</a></li>
-<li><a href="//boards.4chan.org/y/" class="boardlink">Yaoi</a></li>
-<li><a href="//boards.4chan.org/t/" class="boardlink">Torrents</a></li>
-<li><a href="//boards.4chan.org/hr/" class="boardlink">High Resolution</a></li>
-<li><a href="//boards.4chan.org/gif/" class="boardlink">Adult GIF</a></li>
-<li><a href="//boards.4chan.org/aco/" class="boardlink">Adult Cartoons</a></li>
-<li><a href="//boards.4chan.org/r/" class="boardlink">Adult Requests</a></li>
-</ul>
-</div>`;
-			footer.innerHTML = `<div class="boardList">` + boardList + `</div>`;
-			if ($(`#boardNavDesktopFoot a[href$="/${currentBoard}/`)) {
-				$(`#boardNavDesktopFoot a[href$="/${currentBoard}/`).classList.add("current");
-			}
-		}
-		on(d, 'DOMContentLoaded', fetch4chanBoardList);
+		on(d, 'DOMContentLoaded', replace4chanFooterList);
 		function swapInfo() {
 			let ops = $$(".op");
 			for (let op of ops) {
@@ -2158,56 +1716,4 @@ function useEffect() {
 		}
 		on(d, 'DOMContentLoaded', swapInfo);
 	});
-	/*
-   function backup() {
-    doc.classList.remove('site-loading');
-    function removeStyleBackup(sels) {
-
-     //let sels;
-     //console.log('%c ss16 sidedish found this stylesheet and will remove it: ', 'color:orange;', sels);
-     //for (let sel in sels) {
-     //    sel.remove();
-     //}
-    }
-
-    function removeStylesBackup(sell) {
-     for (let sel of sell) {
-  	console.log('%c ss16 sidedish found this stylesheet and will remove it: ', 'color:orange;', sel);
-  	sel.remove();
-     }
-     //removeStyleBackup(); // this removes inline stylesheets
-    }
-
-    on(d, '4chanMainInit', function() {
-     d.classList.add('fourchan-extension');
-    });
-
-    removeStylesBackup($$('style', d.head));
-    //removeStylesBackup($$('link', d.head));
-
-    if (!doc.classList.contains('fourchan-x')) {
-     doc.classList.remove('site-loading');
-     doc.classList.add('no-fourchan-x');
-     if (getValue('noFourchanX') === true) {
-  	make({
-  	 el: 'aside',
-  	 cl4ss: 'ss16--dialog',
-  	 appendTo: 'body',
-  	 html: `<div class="ss16--dialog-window">
-  <header class="ss16--dialog-header">Slight Problem...</header>
-  <section class="ss16--dialog-description">It doesn't seem like you've got 4chan X running. Double check your userscripts/extensions and try again.</section>
-  <footer class="ss16--dialog-footer">
-  <button class="ss16--dialog-button">Continue anyway</button>
-  </div>`
-  	});
-  	on($('.ss16--dialog-button'), 'click', function() {
-  	 setValue('noFourchanX', false);
-  	 $('.ss16--dialog').remove();
-  	});
-     }
-    }
-   }
-
-   on(d, 'DOMContentLoaded', backup);
-  */
 })();
