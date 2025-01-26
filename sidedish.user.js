@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.5.0
+// @version     2.5.1
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -50,27 +50,6 @@
 
 	// add `.site-loading` to `html` so css can hide the page loading
 	doc.classList.add("site-loading");
-
-	if (window.location.host.split('.')[0] === 'find') {
-		doc.classList.remove("site-loading");
-		doc.classList.add("sidedish-enabled");
-		doc.classList.add("is-search");
-		let currentSearch = window.location.search;
-		let firstPage = doc.querySelector('.pages a');
-		if (firstPage) {
-			firstPage.parentNode.classList.add('current-page');
-		} else {
-			return false;
-		}
-		let pagelists = $$('.pages a');
-		for (let pagelist of pagelists) {
-			if (pagelist.href === currentSearch) {
-				pagelist.parentNode.classList.add('current-page');
-			} else {
-				return false;
-			}
-		}
-	}
 
 	if (location.pathname.split("/")[1] === 'search') {
 		doc.classList.remove("site-loading");
@@ -303,6 +282,11 @@
 
 		// this should return the `#header-bar` element
 		const headerBar = $("#header-bar") || $('#boardNavDesktop');
+		// set the header height as its own variable for reference in css
+		const updateHeight = () =>
+		doc.style.setProperty('--headerBar-height', `${headerBar.offsetHeight}px`);
+		new ResizeObserver(updateHeight).observe(headerBar);
+		updateHeight();
 
 		const scrollProgress = make({
 			//el: "progress",
@@ -1110,9 +1094,10 @@
 			};
 
 			function subscriber(mutations) {
-				if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
-					masonry();
-				}
+				masonry();
+				//if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
+				//	masonry();
+				//}
 			}
 			const observer = new MutationObserver(subscriber);
 			observer.observe(target, config);
@@ -1646,6 +1631,10 @@ if (config === "thread") {
 	on(d, "4chanXInitFinished", init);
 
 	if (window.location.host.split('.')[0] === 'find') {
+		doc.classList.remove("site-loading");
+		doc.classList.add("sidedish-enabled");
+		doc.classList.add("is-search");
+		let currentSearch = window.location.href;//window.location.search;
 		document.addEventListener('DOMContentLoaded', (event) => {
 			function swapInfo() {
 				let ops = $$(".op");
@@ -1669,6 +1658,27 @@ if (config === "thread") {
 				html: `4chan X doesn't work on the <code>find</code> subdomain, though ss21 tries to style it.`,
 				appendTo: "body",
 			});
+			function pageCurrent() {
+				let pagelists = $$('.pagelist.desktop .pages a');
+				let firstPageStrong = null;
+				let matched = false;
+				pagelists.forEach((pagelist, index) => {
+					let parentStrong = pagelist.parentNode;
+					parentStrong.classList.remove('current-page');
+					pagelist.textContent = pagelist.textContent.trim();
+					if (index === 0) {
+						firstPageStrong = parentStrong;
+					}
+					if (pagelist.href === currentSearch) {
+						parentStrong.classList.add('current-page');
+						matched = true;
+					}
+				});
+				if (!matched && firstPageStrong) {
+					firstPageStrong.classList.add('current-page');
+				}
+			}
+			pageCurrent();
 		})
 	}
 	//on(d, "PlayerEvent", removeStyle($("#sound-player-css", d.head)));
