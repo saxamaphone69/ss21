@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.5.0
+@version        2.5.1
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -28,6 +28,7 @@
 @var select     ss21headerHeight     "Header height" ["1:Tall", "2:Short"]
 @var checkbox   ss21opacityHeader    "Make header slightly transparent" 0
 @var checkbox   ss21forcedAnon       "Hide all names/tripcodes/IDs" 0
+@var checkbox   ss21onlyNames        "Only show names/tripcodes/IDs" 0
 @var checkbox   ss21postInfoBg       "Give post information a background" 0
 @var checkbox   ss21postInfoFont     "Shrink post information font size" 1
 @var checkbox   ss21postInfoDisplay  "Show post information on hover" 1
@@ -270,6 +271,37 @@
 		interpolate-size allow-keywords
 	
 	@css {
+		@supports (view-transition-name: none) {
+			@view-transition {
+				navigation: auto;
+			}
+			::view-transition-group(root) {
+				animation-duration: 2s;
+			}
+			::view-transition-old(root) {
+				animation-name: slide-out;
+			}
+			::view-transition-new(root) {
+				animation-name: slide-in;
+			}
+			@keyframes slide-in {
+				from {
+					translate: 100vw 0;
+				}
+			}
+			@keyframes slide-out {
+				to {
+					translate: -100vw 0;
+				}
+			}
+			.op .fileThumb,
+			.boardBanner {
+				view-transition-name: heroimg;
+			}
+		}
+	}
+	
+	@css {
 	@keyframes loading {
 		to {
 			transform: rotate(359deg);
@@ -489,8 +521,10 @@
 	// the exception being linkified links
 	.linkify,
 	//:where(.globalMessage) :where(a):not(.fa), // XXX until theres another global announcement, there is no way this shit is good
-	.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]),
-	.postMessage a[href*="boards.4chan.org"]:not(.quotelink):not(.hashlink)
+	// 2025XXX: For whatever reason, I had this complex selector to underline external links.
+	// Just let `Linkify` do it.
+	//.postMessage > a[href*="//"]:not([href*="boards.4chan.org"]),
+	//.postMessage a[href*="boards.4chan.org"]:not(.quotelink):not(.hashlink)
 		text-decoration solid underline
 		text-underline-offset 2px // XXX: 1px suddenly stopped looking good?
 		unless ss21underlineLink
@@ -529,6 +563,8 @@
 			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23FF5700' d='M0 256C0 114.6 114.6 0 256 0S512 114.6 512 256s-114.6 256-256 256L37.1 512c-13.7 0-20.5-16.5-10.9-26.2L75 437C28.7 390.7 0 326.7 0 256zM349.6 153.6c23.6 0 42.7-19.1 42.7-42.7s-19.1-42.7-42.7-42.7c-20.6 0-37.8 14.6-41.8 34c-34.5 3.7-61.4 33-61.4 68.4l0 .2c-37.5 1.6-71.8 12.3-99 29.1c-10.1-7.8-22.8-12.5-36.5-12.5c-33 0-59.8 26.8-59.8 59.8c0 24 14.1 44.6 34.4 54.1c2 69.4 77.6 125.2 170.6 125.2s168.7-55.9 170.6-125.3c20.2-9.6 34.1-30.2 34.1-54c0-33-26.8-59.8-59.8-59.8c-13.7 0-26.3 4.6-36.4 12.4c-27.4-17-62.1-27.7-100-29.1l0-.2c0-25.4 18.9-46.5 43.4-49.9l0 0c4.4 18.8 21.3 32.8 41.5 32.8zM177.1 246.9c16.7 0 29.5 17.6 28.5 39.3s-13.5 29.6-30.3 29.6s-31.4-8.8-30.4-30.5s15.4-38.3 32.1-38.3zm190.1 38.3c1 21.7-13.7 30.5-30.4 30.5s-29.3-7.9-30.3-29.6c-1-21.7 11.8-39.3 28.5-39.3s31.2 16.6 32.1 38.3zm-48.1 56.7c-10.3 24.6-34.6 41.9-63 41.9s-52.7-17.3-63-41.9c-1.2-2.9 .8-6.2 3.9-6.5c18.4-1.9 38.3-2.9 59.1-2.9s40.7 1 59.1 2.9c3.1 .3 5.1 3.6 3.9 6.5z'/%3E%3C/svg%3E"), radial-gradient(white .45em, transparent .45em))
 		&.twitchtv::before
 			linkify-icons(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23a970ff' d='M391.2 103.5H352.5v109.7h38.6zM285 103H246.4V212.8H285zM120.8 0 24.3 91.4V420.6H140.1V512l96.5-91.4h77.3L487.7 256V0zM449.1 237.8l-77.2 73.1H294.6l-67.6 64v-64H140.1V36.6H449.1z'/%3E%3C/svg%3E"))
+		&.pastebin::before
+			linkify-icons(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAAqUExURf///1ZZXHN7hfX29+7v8Gt1f2FrdvLz9I2UnHmAiYOJkc3MzHF5g////woBzAAAAAABdFJOUwBA5thmAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAAd0SU1FB+kBEAAlFGLPml8AAABRSURBVAjXY2AQBAMFBkZjY2djY2NTIEMYBM0YGA1BAMYwRmGAVBgKghhggMwohmsXBkGoYouZKyGM2bsTgFKChoKztzFAdM2ewMAAdsZJBgYAfJgWEYVsGdgAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjUtMDEtMTZUMDA6Mzc6MDArMDA6MDA//s61AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI1LTAxLTE2VDAwOjM3OjAwKzAwOjAwTqN2CQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNS0wMS0xNlQwMDozNzoyMCswMDowMFuTUKsAAAAASUVORK5CYII="))
 	
 	// correct some weird browser inconsistencies in font inheritance, and while
 	// we're here, set tripcodes and user ids to also use a monospace font
@@ -957,8 +993,7 @@
 		.menu-button,
 		.hide-thread-button,
 		.hide-reply-button,
-		.show-thread-button .stub-icon,
-		.show-reply-button .stub-icon,
+		.show-post-button .stub-icon,
 		.download-button,
 		#qr-oekaki-button
 		#qr-filerm,
@@ -1005,6 +1040,7 @@
 	.native-settings::after,
 	.post--dubs .postNum a:nth-child(2n)::after,
 	span.fileThumb::before,
+	.qr-preview .remove::after,
 	.summary::before,
 	.ss21--board-drawer-toggle,
 	.ss21--download-all,
@@ -1070,8 +1106,7 @@
 	.fa-minus-square::after,
 	.fa-minus-square-o::after // hide post
 		content ss21iconFont == 1 ? '\F27D' : 'unfold_less'
-	:root.fourchan-xt .show-thread-button .stub-icon::after,
-	:root.fourchan-xt .show-reply-button .stub-icon:after,
+	:root.fourchan-xt .show-post-button .stub-icon::after,
 	.fa-plus-square::after,
 	.fa-plus-square-o::after // show post
 		content ss21iconFont == 1 ? '\F283' : 'unfold_more'
@@ -1135,6 +1170,7 @@
 		content ss21iconFont == 1 ? '\F4FC' : 'add_box'
 	:root.fourchan-xt #qr-filerm::after,
 	#index-search-clear::after,
+	.qr-preview .remove::after
 	.fa-times-circle::after // remove/clear
 		if ss21iconFont == 1
 			content '\F622'
@@ -2124,7 +2160,8 @@
 		display grid
 		grid-template-columns 1fr auto 1fr
 		z-depth(6)
-		z-index 10
+		z-index 2
+		text-align center
 		transition top .25s
 		&::before,
 		&::after
@@ -2134,6 +2171,10 @@
 			grid-column 1
 		&::after
 			grid-column 3
+		:where(*):not(.hide-announcement-button)
+			grid-column 2
+			justify-self center
+			color ss21red
 		.hide-announcement-button
 			position absolute
 			display block
@@ -2146,12 +2187,14 @@
 				opacity .84
 	
 	:root.top-header
+		#header-bar:not(.autohide):not(.scrolled) ~ .globalMessage
+			top calc(var(--headerBar-height) + .25rem)
 		#header-bar.autohide ~ .globalMessage
 			top 0
 		#header-bar.scrolled ~ .globalMessage
 			top .25rem
 		#header-bar.scrolled:not(.autohide) ~ .globalMessage
-			top 3.25rem
+			top 3.5rem
 		//#header-bar.autohide.scrolled ~ .globalMessage
 		//	top .5rem
 	:root.bottom-header,
@@ -2473,7 +2516,7 @@
 				max-width none
 				display grid
 				grid-gap 0
-				grid-template-columns repeat(3, 33%)
+				grid-template-columns repeat(3, 1fr)
 	
 	.postContainer
 		position relative
@@ -2542,6 +2585,13 @@
 			box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
 	
 	.subject
+		min-inline-size 0
+		max-inline-size 25ch
+		text-overflow ellipsis
+		white-space nowrap
+		overflow hidden
+		&:hover
+			white-space initial
 		&:empty
 			display none
 	
@@ -2556,8 +2606,12 @@
 			display none
 		.subject:not(:empty)::after
 			display none i
-		.subject
-			//margin-right .25rem
+	
+	if ss21onlyNames == 1
+		.postContainer:not(.poster--named)
+			.nameBlock,
+			.subject:not(:empty)::after
+				display none i
 	
 	// if a post from a new ip is added to a thread, 4chan x makes a guess that
 	// the recent posts are of that new ip and adds an indicator
@@ -2686,6 +2740,14 @@
 	.exif
 		display none
 		font-size .75rem
+	
+	// I found <span class="oldpost">Marked for deletion (old).</span>
+	// in a thread on /f/!
+	.oldpost
+		color ss21red
+		display block
+		text-align center
+		margin-bottom 1rem
 	
 	// on october 1st, we celebrate 4chan's birthday (est. 2003)
 	.party-hat
@@ -2916,15 +2978,13 @@
 		//height 3rem
 		background-color var(--background-primary)
 		borderRadius()
-		.show-thread-button,
-		.show-reply-button
+		.show-post-button
 			flex 1
 			display flex
 			align-items center
 			> .fa,
 			> .stub-icon
 				display inline-flex
-				margin-right .5rem
 				&::after
 					opacity .54
 					transition opacity .25s
@@ -2937,19 +2997,21 @@
 	 */
 	
 	:root.fourchan-xt
-		.stub .show-thread-button
-			flex-wrap wrap
+		.show-post-button
+			flex-wrap nowrap
+			gap .25rem
 		.stub-subject
 			font-weight 700
-			margin-right .5ch
-			min-width 0
+			min-inline-size 0
+			max-inline-size 30ch
+			text-overflow ellipsis
+			white-space nowrap
+			overflow hidden
 		.stub-name
 			min-width 0
 		.stub-replies
-			margin-left .5ch
 			color var(--text-hint-on-background)
 		.stub-reasons
-			margin-left 1rem
 			color var(--text-hint-on-background)
 			.stub-reason:not(:only-of-type, :last-child)::after
 				content ', '
@@ -3043,7 +3105,7 @@
 		max-height 100vh
 	
 	:root.fit-height.fixed .full-image
-		max-height calc(100vh - 4rem)
+		max-height calc(100vh - 4.5rem)
 	
 	// XXX: these might not be needed since we make media responsive
 	:root.fit-width .full-image
@@ -3228,6 +3290,14 @@
 				cursor pointer
 				&:hover
 					color shade(ss21primary, 10%)
+	
+	// not gonna style this properly... right?
+	if ss21fileInfo
+		:root .board_f .file
+			.fileText
+				all revert
+			a
+				color ss21primary
 	
 	/**
 	 * fancy underline animation, courtesy of https://theoutline.com
@@ -3463,7 +3533,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='" + type + "' d='M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z'/%3E%3C/svg%3E")
 	
 	.postContainer.poster--admin,
-	.postContainer:has(.capcodeAdmin)
+	.postContainer:has(> .postInfo > .capcodeAdmin)
 		> .post
 			background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 			.identityIcon
@@ -3476,7 +3546,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		background-color mix(ss21posterAdmin, ss21BackgroundColour, 10%)
 	
 	.postContainer.poster--mod,
-	.postContainer:has(.capcodeMod)
+	.postContainer:has(> .postInfo > .capcodeMod)
 		> .post
 			background-color mix(ss21poster(mod), ss21BackgroundColour, 10%)
 			.identityIcon
@@ -3537,7 +3607,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				background-image linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1))
 				color #fff
 				opacity .8
-				borderRadius()
+				border-radius 3px
 				transition opacity .25s
 				pointer-events none
 				overflow hidden
@@ -4741,11 +4811,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				&:hover::after
 					tc(rgba(ss21BackgroundElevated), medium)
 	
-	#qr-filename-container #qr-filerm .fa-times-circle
-		&::after
-			color rgba(ss21red, .54)
-		&:hover::after
-			color rgba(ss21red, .89)
+	#qr-filename-container #qr-filerm
+		.fa-times-circle,
+		.remove
+			&::after
+				color rgba(ss21red, .54)
+			&:hover::after
+				color rgba(ss21red, .89)
 	
 	#custom-cooldown-button:not(.disabled) .fa-clock-o::after,
 	#qr.dump #dump-button .fa-plus-square::after,
@@ -4778,8 +4850,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		font-size .75rem
 		position absolute
 		pointer-events none
-		right .75rem
-		bottom 0
+		right 1.5rem
+		bottom .25rem
 	
 	// qr dump list ui
 	// XXX: holy smokes this looks like ASS
@@ -4820,6 +4892,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		padding .25rem
 	*/
 	.qr-preview
+		font-size .75rem
 		counter-increment thumbnails
 		cursor move // grab?
 		//display block
@@ -4869,6 +4942,22 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			color ss21red
 		span
 			text-shadow 0 0 5px #000
+	
+	c(a) {s(replace(",", "\,", a))}
+	has(a)   {s(":has(%s)",   c(a))}
+	
+	.qr-preview-spoiler
+		font-size 0
+		display inline
+		&::after
+			tc(#000, medium)
+			transition color .25s
+		&:hover::after
+			tc(#000, high)
+		&{has("input:checked")}::after
+			color var(--secondary)
+		input
+			display none
 	
 	#add-post
 		font-size 0
@@ -5623,6 +5712,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			inline-size 1em
 		input[type="range"] // volume slider on sound-enabled boards
 			order 1
+			max-width 5rem
 		& > label
 			display contents
 		input[type="number"] // 'show last 1000 posts'
@@ -5760,6 +5850,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	:root.bottom-header.fixed #navlinks
 		top 1rem
 		bottom auto
+	
+	.ss21--fit,
+	#qr
+		&:not(:hover)
+			opacity .5
+			transition opacity 10s
 	
 	// 4CHANX: embedding
 	// if media is embedded, remove the un prefix from inside the post
@@ -5927,7 +6023,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.gal-viewport
 		display flex
 		flex-direction row
-		align-items stretch
+		align-items center
+		justify-content center
 		flex 1
 		overflow hidden
 		position relative
@@ -5980,13 +6077,14 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.gal-image
 		flex 1
 		display flex
-		align-items flex-start
-		justify-content space-around
+		align-items center
+		justify-content center
 		overflow hidden
 		margin 1rem
+		position relative
 		& > a
 			display block
-			margin auto
+			z-index 1
 	
 	// make sure it takes up the whole viewport
 	:root.gal-pdf .gal-image a,
@@ -6002,23 +6100,23 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		max-height 85vh
 	
 	// previous and next buttons for gallery
-	// XXX: this can look misaligned, and hovering prev/next is weird with overlapping of actual media
 	.gal-prev
 		position absolute
-		z-index 1
+		z-index 0
+		left 0
 		width 25%
 		height 100%
-		cursor url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(255, 255, 255, .87)' d='M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z'/%3E%3C/svg%3E"), pointer
+		cursor url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(255, 255, 255, .87)' d='M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z'/%3E%3C/svg%3E") 12 24, pointer
 		&:hover
 			background-image linear-gradient(to right, rgba(33, 33, 33, 1), rgba(0, 0, 0, 0))
 	
 	.gal-next
 		position absolute
-		z-index 1
+		z-index 0
 		right 0
 		width 25%
 		height 100%
-		cursor url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(255, 255, 255, .87)' d='M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z'/%3E%3C/svg%3E") 48 0, pointer
+		cursor url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(255, 255, 255, .87)' d='M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z'/%3E%3C/svg%3E") 36 24, pointer
 		&:hover
 			background-image linear-gradient(to left, rgba(33, 33, 33, 1), rgba(0, 0, 0, 0))
 	
@@ -6063,7 +6161,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		content 'jpg'
 	
 	.gal-highlight
-		background-color alpha(invert(ss21primary), .5)
+		background-color alpha(invert(ss21primary), .75)
 	
 	/*
 	 * 4CHANXT 2.15.0 support
@@ -6394,7 +6492,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// please turn off stylechan...
 	#StyleChanLink::after
 		content ss21iconFont == 1 ? '\F4B1' : 'palette'
-	is(a)    {s(":is(%s)",    c(a))}
+	
 	// please turn off oneechan...
 	:root.oneechan
 		.fa-gears,
@@ -6569,8 +6667,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// XXX: oneechan hides checkboxes
 	:root.oneechan .riceCheck
 		display none
-	:root.oneechan input[type="checkbox"]
-		display initial i
+	:root.oneechan
+		#fourchanx-settings,
+		#qr,
+		#menu
+			input[type="checkbox"]
+				display initial i
 	
 	/*
 	// scroll snapping?
@@ -6717,14 +6819,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	#ss21-frog-list
 		max-height 75vh
 		overflow auto
-	
-	@css {
-		@supports (view-transition-name: none) {
-			@view-transition {
-				navigation: auto;
-			}
-		}
-	}
 	
 	:root.is-search
 		.boardTitle
@@ -6954,6 +7048,16 @@ Life is Strange (LiS) is an episodic narrativ...</div>
 		.adl a
 			color var(--primary)
 	
+@-moz-document regexp('https://find\\.4chan(?:nel)?\\.org.*')
+	body
+		padding-top 50px
+	.subject::after
+		display none
+	.postNum > a:first-child
+		font-size revert
+		&::after
+			display none
+
 @-moz-document regexp('https://boards\\.4chan(?:nel)?\\.org\\/(.){1,}\\/catalog')
 	.is_catalog #content::before
 		content "This won't work because we block the native 4chan JS code. You should be using the 4chan X catalog anyway, so update your URLs."
