@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.5.1
+@version        2.5.2
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -1021,6 +1021,7 @@
 	.pagelist :is(.prev, .next) a::after,
 	//.pagelist .next a::after,
 	.watch-thread-link::after,
+	#watched-threads > div > a::after,
 	#index-search-clear::after,
 	.has-submenu::after,
 	.show-announcement::after,
@@ -1112,6 +1113,7 @@
 		content ss21iconFont == 1 ? '\F283' : 'unfold_more'
 	.fa-times::after,
 	.close::after,
+	#watched-threads > div > a:first-of-type::after,
 	.gal-close::after // close
 		content ss21iconFont == 1 ? '\F659' : 'close'
 	:root.fourchan-xt #shortcut-prefetch > a::after,
@@ -1170,7 +1172,7 @@
 		content ss21iconFont == 1 ? '\F4FC' : 'add_box'
 	:root.fourchan-xt #qr-filerm::after,
 	#index-search-clear::after,
-	.qr-preview .remove::after
+	.qr-preview .remove::after,
 	.fa-times-circle::after // remove/clear
 		if ss21iconFont == 1
 			content '\F622'
@@ -1234,7 +1236,8 @@
 	.post--dubs .postNum a:nth-child(2n)::after // dubs if filtered
 		content ss21iconFont == 1 ? '\F26F' : 'check'
 	span.fileThumb::before,
-	.dead-thread .fa-times::after // dead thread and remove from thread watcher
+	.dead-thread .fa-times::after,
+	#watched-threads .dead-thread > a:first-of-type::after // dead thread and remove from thread watcher
 		content ss21iconFont == 1 ? '\F5DD' : 'delete_forever'
 	.fa-play-circle::after // https://github.com/rcc11/4chan-sounds-player support
 		content ss21iconFont == 1 ? '\F4A0' : 'music_note'
@@ -2397,14 +2400,34 @@
 		&:hover::after
 			opacity .87
 	
+	/* 2025 style? */
+	#index-search
+		padding-left 32px
+		padding-right 32px
+		background-image url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='20px' viewBox='0 -960 960 960' width='20px' fill='" + alpha(hsl(ss21OppColour), .54) + "'%3E%3Cpath d='M381.03-314Q271-314 194-391t-77-187q0-110 77-187t187-77q110 0 187 77t77 187.03q0 41.39-11 79.18Q623-461 601-429l208 208q15 15 15 34t-15 34q-15 15-34.5 15T740-153L533-359q-30 21-70.29 33-40.29 12-81.68 12Zm-.03-98q70 0 118-48t48-118q0-70-48-118t-118-48q-70 0-118 48t-48 118q0 70 48 118t118 48Z'/%3E%3C/svg%3E")
+		background-repeat no-repeat
+		background-size 1.25rem auto
+		background-position center left 8px
+		border-radius 90px
+		width 8rem
+		transition width .25s
+		&:focus
+			width 15rem
+	#index-search-clear::after
+		font-size 20px
+		font-variation-settings 'FILL' 0, 'wght' 400, 'GRAD' 200, 'opsz' 20
+	
 	// since `a` has `color: inherit`, a lot of the linked elements within
 	// posts need to be recoloured
 	// XXX: can still sometimes be too/under specific
 	.postNum a:not(.replylink),
+	.postMessage > a,
+	.container > a
+	/*
 	.quotelink,
 	.backlink,
 	.embedder,
-	.hashlink
+	.hashlink*/
 		color ss21primary
 		&:hover
 			color shade(ss21primary, 15%)
@@ -4158,6 +4181,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.catalog-thread:not(:hover):not(:focus-within) .menu-button
 		opacity 0
 	
+	.is_index .thread--extra-new-lines
+		max-height 25rlh
+		overflow-y scroll
+	
 	// pagelist styling
 	.pagelist
 		display flex
@@ -4601,6 +4628,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				width: calc(33% - 0.5rem) !important;
 			}
 			*/
+			/*
 			:scope:not(.captcha-loaded) {
 				#t-load {
 					width: 100% !important;
@@ -4608,7 +4636,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				#t-resp, #t-cnt {
 					display: none !important;
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -5853,7 +5881,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	.ss21--fit,
 	#qr
-		&:not(:hover)
+		&:not(:hover, :focus-within)
 			opacity .5
 			transition opacity 10s
 	
@@ -5934,6 +5962,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	@css {
 		@scope (.fxt-card) {
 			:scope {
+				color: var(--text-primary-on-background);
+				background-color: var(--background-primary);
 				display: flex;
 				flex-direction: column;
 				gap: .25rem;
@@ -5965,7 +5995,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 				.fxt-meta_author_username { font-weight: bold }
 				.fxt-meta_author_account { font-size: .75rem; }
 			}
-			.fxt-text a { color: var(--primary) }
+			a { color: var(--primary) }
 			.fxt-media_container:empty { display: none }
 			.fxt-quote {
 				padding: .5rem;
@@ -6433,6 +6463,56 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.highlightPost
 			background-color mix(ss21primary, #1f1f1f, 10%)
 	
+	/*
+	 * 4chan xt 2.24 introduced a scroll marker for (you) posts
+	 */
+	.scroll-marker-container
+		z-index 10
+		position fixed
+		top calc(var(--headerBar-height) + .25rem)
+		right 0
+		width 1rem
+		height 100dvh
+		background-image linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2))
+		pointer-events none
+		user-select none
+		.post-scroll-marker
+			--main-color var(--mdc-tertiary)
+			all unset
+			position absolute
+			background-color var(--main-color)
+			top calc(var(--top) * 1vh)
+			right -.5rem
+			inline-size 1rem
+			border-radius 16px
+			block-size calc(var(--height) * 1vh)
+			pointer-events auto
+			cursor pointer
+			&:hover
+				background-color oklch(from var(--main-color) .7 c h)
+			&.you-scroll-marker
+				--main-color var(--mdc-inversePrimary)
+	/*
+	.post-scroll-marker {
+		all unset
+		border: none;
+		padding: 0;
+		position: fixed;
+		right: -5px;
+		background-color: red;
+		border-radius: 3px;
+		width: 10px;
+		min-height: 5px;
+		top: calc(var(--top) * 1vh);
+		height: calc(var(--height) * 1vh);
+	}
+	.post-scroll-marker.you-scroll-marker {
+		opacity: 50%;
+	}
+	.scroll-marker-container {
+		display: contents;
+	}*/
+	
 	// attempt to get "yotsuba" theme working
 	// since stylus runs after page, it can't retroactively check if the page
 	// is a .ws or .nws page, so we can't really even use variables from stylus
@@ -6872,6 +6952,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		content 'Just checking, have you got sidedish enabled...?'
 		position fixed
 		bottom 0
+		z-index 3
+	
+	:root:not(.fourchan-x) #id_css::after
+		content 'Just checking, do you even have 4chan X/XT...?'
+		position fixed
+		bottom 1.5rem
 		z-index 3
 	
 	:root.fourchan-xt #shortcut-ss21 .icon
