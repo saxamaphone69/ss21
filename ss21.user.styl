@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.5.2
+@version        2.5.3
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -51,6 +51,7 @@
 @var checkbox   ss21nonPrimaryHeader "Makes the header surface-coloured" 0
 @var checkbox   ss21noReplyAllowed   "Make 'You cannot reply anymore' appear as a toast" 1
 @var checkbox   ss21tableView        "'All threads' appear as a table" 1
+@var checkbox   ss21iconifyHeader    "Turn current-board links into icons" 1
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -115,31 +116,31 @@
 		ss21BackgroundColour = #eef2ff
 		ss21BackgroundElevated = #d6daf0
 		:root.ws
-			--4chan-subject #0f0c5d
-			--4chan-name #117743
-			--4chan-trip #117743
-			--4chan-quote #789922
-			--4chan-link #34345c
-			--4chan-link-hover #d00
-			--4chan-board-title #af0a0f
-			--4chan-text #000
-			--4chan-text-link #000
-			--4chan-background #eef2ff
-			--4chan-post-bg #d6daf0 // header and dialogs
-			--4chan-post-border #b7c5d9 // borders and hr
+			--chan-subject #0f0c5d
+			--chan-name #117743
+			--chan-trip #117743
+			--chan-quote #789922
+			--chan-link #34345c
+			--chan-link-hover #d00
+			--chan-board-title #af0a0f
+			--chan-text #000
+			--chan-text-link #000
+			--chan-background #eef2ff
+			--background-primary #d6daf0 // header and dialogs
+			--chan-post-border #b7c5d9 // borders and hr
 		:root.nws
-			--4chan-subject #cc1105
-			--4chan-name #117743
-			--4chan-trip #117743
-			--4chan-quote #789922
-			--4chan-link #00e
-			--4chan-link-hover #f00
-			--4chan-board-title #800
-			--4chan-text #800
-			--4chan-text-link #800
-			--4chan-background #ffe
-			--background-primary #f0e0d6 // header and dialogs
-			--4chan-post-border #d9bfb7 // borders and hr
+			--chan-subject #cc1105
+			--chan-name #117743
+			--chan-trip #117743
+			--chan-quote #789922
+			--chan-link #00e
+			--chan-link-hover #f00
+			--chan-board-title #800
+			--chan-text #800
+			--chan-text-link #800
+			--chan-background #ffe
+			--background-primary#f0e0d6 // header and dialogs
+			--chan-post-border #d9bfb7 // borders and hr
 	else if ss21readingMode == ss21tomorrow
 		ss21OppColour = #212121
 		ss21TextPrimary = alpha(#c5c8c6, .87)
@@ -741,6 +742,7 @@
 				transform translateY(1px)
 		else if ss21buttonStyle == 4
 			background-color ss21primary
+			tc(@background-color, high)
 			text-transform none
 			border-radius 32rem
 			height 40px
@@ -1260,6 +1262,46 @@
 		font-size .75rem
 		position absolute
 		top 1px
+	
+	if ss21iconifyHeader == 1
+		.header-alt
+			font-size 0
+			display inline-flex
+			a
+				font-size 0 i
+				position relative
+				display flex
+				flex-direction column-reverse
+				&[href$="x"]::after,
+				&[href$="g"]::after,
+				&[href$="e"]::after,
+				&:not([href*="4chan.org"])::after
+					icon-style()
+					opacity .7
+				&:not([href*="4chan.org"])::before
+					content 'Archive'
+					font-size .5rem i
+					display inline-block
+				&[href$="x"]::before
+					content 'Index'
+					font-size .5rem i
+					display inline-block
+				&[href$="g"]::before
+					content 'Catalog'
+					font-size .5rem i
+					display inline-block
+				&[href$="e"]::before
+					content 'Expired'
+					font-size .5rem i
+					display inline-block
+				&:not([href*="4chan.org"])::after
+					content ss21iconFont == 1 ? '\F24E' : 'inventory_2'
+				&[href$="x"]::after
+					content ss21iconFont == 1 ? '\F24E' : 'view_list'
+				&[href$="g"]::after
+					content ss21iconFont == 1 ? '\F24E' : 'widget_small'
+				&[href$="e"]::after
+					content ss21iconFont == 1 ? '\F24E' : 'skull_list'
 	
 	if ss21iconFont == 1
 		.shortcut .fa::after,
@@ -2178,6 +2220,7 @@
 			grid-column 2
 			justify-self center
 			color ss21red
+			margin 0
 		.hide-announcement-button
 			position absolute
 			display block
@@ -2207,7 +2250,7 @@
 	
 	// when announcement is shown, don't have it cover the boardBanner
 	:root.top-header:has(#globalMessage:not([hidden])) body
-		padding-top 7.5rem
+		padding-top calc(var(--headerBar-height) + 60px)
 	
 	// blotter support - one day it'd be nice if 4chan x could hide this in a
 	// similar fashion to announcement hiding, where it only shows when its
@@ -2581,6 +2624,8 @@
 				background-color darken(ss21BackgroundElevated, 3%)
 			else if ss21readingMode == ss21dark
 				background-color lighten(ss21BackgroundElevated, 5%)
+			else
+				background-color darken(ss21BackgroundElevated, 3%)
 	
 	// XXX: USE GAP FOR ALL THE POST INFO ELEMENTS
 	:where(.postContainer) > :where(.post) > .postInfo
@@ -2588,6 +2633,8 @@
 			background-color rgba(33, 33, 33, .02)
 		else if ss21readingMode == ss21dark
 			background-color rgba(255, 255, 255, .05)
+		else
+			background-color rgba(0, 0, 0, .05)
 		display flex
 		flex-flow row wrap
 		align-items center
@@ -2606,6 +2653,8 @@
 			box-shadow 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 		else if ss21readingMode == ss21dark
 			box-shadow 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		else
+			box-shadow 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 	
 	.subject
 		min-inline-size 0
@@ -3446,6 +3495,9 @@
 		else if ss21readingMode == ss21dark
 			background-color rgba(255, 255, 255, .05)
 			box-shadow inset 0 1px 0 0 lighten(ss21BackgroundElevated, 15%)
+		else
+			background-color rgba(0, 0, 0, .05)
+			box-shadow inset 0 1px 0 0 darken(ss21BackgroundElevated, 10%)
 	
 	if ss21backlinkStyle == 2
 		:where(.container)
@@ -4571,8 +4623,9 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		font-size .875rem i
 		padding 0 .75rem i
 		margin 0 i
-		width calc(50% - 0.5rem) i
-		height 42px i
+		inline-size calc(50% - 0.5rem) i
+		block-size 42px i
+		tc(ss21primary, high)
 	
 	// 4chan captcha solver support
 	#t-auto-solve
@@ -4605,6 +4658,12 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// keeping here for memory sake. sidedish now adds a class which should improve performance
 	@css {
 		@scope (.captcha-root) {
+			/*** 2025-04 EDIT
+			 - another attempt: use the hidden `input[t-challenge]`
+			***/
+			:is(#t-resp, #t-cnt, #t-slider):has(~ input[name="t-challenge"]:not([value])) {
+				display: none;
+			}
 			/* Hide the captcha container when the captcha hasn't rendered/deloads */
 			/*
 			#t-cnt:has(#t-fg:not([style*="image"])) {
@@ -4702,6 +4761,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			//width 10%
 			margin-left .25rem
 			background-color ss21green
+			tc(@background-color, high)
+			&:hover
+				background-color mix(#fff, @background-color, 10%)
+				tc(@background-color, high)
 			/*
 			&:focus
 				box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
@@ -4741,6 +4804,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		icon-style()
 		//width 10%
 		margin-right .25rem
+		tc(ss21primary, high)
 		&:focus
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
 	
@@ -5240,7 +5304,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			margin-right 12px
 		.description
 			font-size .875rem
-			color var(--text-hint-on-background)
+			color var(--text-secondary-on-background)
 			padding-left 32px
 			display block
 		.suboption-list
@@ -5328,6 +5392,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			font-size .875rem
 		textarea
 			min-height 7.5rem
+			field-sizing content
 		fieldset:first-child
 			position relative
 		#archive-table + br
@@ -5573,6 +5638,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					background-color darken(ss21BackgroundElevated, 3%)
 				else if ss21readingMode == ss21dark
 					background-color lighten(ss21BackgroundElevated, 6%)
+				else
+					background-color darken(ss21BackgroundElevated, 3%)
 		a:first-of-type,
 		.fa-times
 			display inline-flex
@@ -5863,8 +5930,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		bottom 1rem
 		right 1rem
 		font-size 0
-		color var(--text-secondary-on-primary)
 		background-color ss21primary
+		tc(@background-color, high)
 		borderRadius()
 		z-depth(4)
 		overflow hidden
@@ -6539,8 +6606,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					border 1px solid #b7c5d9
 					border-top 0
 					border-left 0
-				.field
+				.navLinks.json-index select, #index-search, .field
 					background #fff
+				#navlinks
+					background-color var(--chan-post-bg)
 			&.nws
 				color #800
 				background-color #ffe
@@ -6561,13 +6630,54 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					border 1px solid #d9bfb7
 					border-top 0
 					border-left 0
-				.field
+				.navLinks.json-index select, #index-search, .field
 					background #fff
+				#navlinks
+					background-color var(--chan-post-bg)
 	
 	if ss21readingMode == ss21tomorrow
 		:root
 			color #c5c8c6
 			background-color #1d1f21
+	
+	// 4CHAN EXT - if you don't enable the 'disable native extension' option
+	// in 4chan x, it still shows up as an header shortcut
+	#settingsMenu
+		position fixed
+		display flex
+		align-items center
+		justify-content center
+		inset 0
+		inline-size 100vw
+		block-size 100vh
+		z-index 12
+		background-color rgba(33 33 33 .87)
+		.panelHeader
+			text-transform lowercase
+			background-color var(--primary)
+			block-size 3rem
+			position relative
+			display flex
+			align-items center
+			justify-content center
+			.panelCtrl
+				cursor pointer
+				position absolute
+				inset-inline-end 0
+		.center
+			display initial i
+	
+	.extPanel
+		background-color var(--background-primary)
+		max-inline-size 75vw
+		max-block-size 80vh
+		overflow-y scroll
+		ul
+			padding 0
+			list-style none
+			margin 0
+		label
+			font-weight bold
 	
 	// please turn off stylechan...
 	#StyleChanLink::after
@@ -6953,12 +7063,14 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position fixed
 		bottom 0
 		z-index 3
+		pointer-events none
 	
 	:root:not(.fourchan-x) #id_css::after
 		content 'Just checking, do you even have 4chan X/XT...?'
 		position fixed
 		bottom 1.5rem
 		z-index 3
+		pointer-events none
 	
 	:root.fourchan-xt #shortcut-ss21 .icon
 		display block
@@ -7014,8 +7126,9 @@ Life is Strange (LiS) is an episodic narrativ...</div>
 		contain strict
 		overflow-y scroll
 		height 100dvh
-		max-width 50vw
-		width 50rem
+		max-width 40dvw
+		width 75rem
+		overscroll-behavior contain
 		inset-block-start 0
 		inset-inline-end 0
 		transform translateX(120%)
@@ -7032,26 +7145,37 @@ Life is Strange (LiS) is an episodic narrativ...</div>
 		grid-template-columns 1fr 1fr
 		gap .5rem
 		.c-board
+			order 2
 			font-weight 700
 			text-align center
-			margin-bottom .25rem
 		.c-teaser
-			padding: .5rem 0
-		.c-teaser b
-			display block
+			order 4
 			text-align center
+			text-wrap balance
+			flex 1
+			b
+				display block
 		.boardlink
+			order 2
 			display inline-flex
 			justify-content center
 		.c-thread
 			display flex
 			flex-direction column
+			border 1px solid transparent
+			border-radius 8px
+			padding .5rem
+			gap .25rem
+			transition border .25s
+			&:hover
+				border-color var(--mdc-outline)
 	.thread-info
 		display inline-flex
 		flex-wrap wrap
 		flex-direction row
 		gap .25rem
 		justify-content center
+		order 3
 	.ss21-chip
 		display inline-flex
 		align-items center
@@ -7084,44 +7208,17 @@ Life is Strange (LiS) is an episodic narrativ...</div>
 		transform translateX(0)
 		z-depth(24)
 	
-	// 4CHAN EXT - if you don't enable the 'disable native extension' option
-	// in 4chan x, it still shows up as an header shortcut
-	#settingsMenu
-		position fixed
-		display flex
-		align-items center
-		justify-content center
-		inset 0
-		inline-size 100vw
-		block-size 100vh
-		z-index 12
-		background-color rgba(33 33 33 .87)
-		.panelHeader
-			text-transform lowercase
-			background-color var(--primary)
-			block-size 3rem
-			position relative
-			display flex
-			align-items center
-			justify-content center
-			.panelCtrl
-				cursor pointer
-				position absolute
-				inset-inline-end 0
-		.center
-			display initial i
-	
-	.extPanel
-		background-color var(--background-primary)
-		max-inline-size 75vw
-		max-block-size 80vh
-		overflow-y scroll
-		ul
-			padding 0
-			list-style none
-			margin 0
-		label
-			font-weight bold
+	@css {
+	.link-parsed {
+		.link-parsed--schema,
+		.link-parsed--path {
+			color: color-mix(in srgb, currentColor, transparent 10%);
+		}
+		.link-parsed--query,
+		.link-parsed--hash {
+			color: color-mix(in srgb, currentColor, transparent 25%);
+		}
+	}
 	
 	if ss21allowAds == 1
 		.danbo-slot, .adl
