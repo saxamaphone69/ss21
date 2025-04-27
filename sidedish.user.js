@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ss21 sidedish
-// @version     2.5.1
+// @version     2.5.3
 // @description A companion userscript for the ss21 userstyle.
 // @author      saxamaphone69
 // @namespace   https://github.com/saxamaphone69/ss21
@@ -17,7 +17,6 @@
 // @updateURL   https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
 // @downloadURL https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
 // ==/UserScript==
-
 (async () => {
 	"use strict";
 	//console.group("Initialising ss21 sidedish...");
@@ -411,6 +410,53 @@
 			}
 		}
 
+		function markExternalLinks() {
+		document.querySelectorAll('.postMessage .linkify').forEach(link => {
+			// If a string is passed, convert it into an anchor element
+			if (typeof link === 'string') {
+				const temp = document.createElement('a');
+				temp.href = link;
+				link = temp;
+			}
+
+			let url;
+			try {
+				url = new URL(link.href);
+			} catch (err) {
+				// Skip this link if it's not a valid URL
+				return link;
+			}
+
+			// Skip internal links
+			if (url.origin === window.location.origin) return link;
+
+			// Clear content and mark the link as parsed
+			link.textContent = '';
+			link.classList.add('link-parsed');
+
+			// Define parts to wrap
+			const parts = [
+				{ name: 'schema', value: url.protocol + '//' },
+				{ name: 'host', value: url.hostname },
+				{ name: 'path', value: url.pathname },
+				{ name: 'query', value: url.search },
+				{ name: 'hash', value: url.hash }
+			];
+
+			// Create and append spans
+			for (const { name, value } of parts) {
+				if (value) {
+					const span = document.createElement('span');
+					span.classList.add(`link-parsed--${name}`);
+					span.textContent = value;
+					link.appendChild(span);
+				}
+			}
+
+			return link;
+		});
+	}
+
 		function checkers() {
 			let obs = $$('.thread');
 			[...obs].forEach((ob) => {
@@ -658,16 +704,19 @@
 			on(d, "IndexRefresh", countThreads);
 			on(d, "IndexRefresh", stripPageBrackets);
 			//on(d, "IndexRefresh", newTabber);
+			on(d, "IndexRefresh", markExternalLinks);
 		}
 
 		if (config === "thread") {
 			countBacks();
 			swapInfo();
 		}
-
+/*
 		function moveSelectBoards() {
 			let select = $('#boardSelectMobile');
 			let boardlist = $('#board-list');
+			if (!select) return;
+			if (!boardlist) return;
 			boardlist.appendChild(select);
 			$('#boardSelectMobile', boardlist).classList.add('ss21--moved-select');
 		}
@@ -776,7 +825,7 @@
 		}
 
 		moveShortcuts();
-
+*/
 		// two from https://github.com/duanemoody
 		// javascript:let p=$$("a.download-button"), i=0, v=setInterval(() => {p[i++].click(); (i>p.length) && clearInterval(v);}, 1000);
 		// javascript:var pics=document.querySelectorAll("a.download-button"), counter=0, interval=setInterval(function() {pics[counter].click(); counter++; if (counter > pics.length) {clearInterval(interval);}}, 1000);
@@ -877,7 +926,7 @@
 			});
 		}
 
-		boardDrawer();
+		//boardDrawer();
 		/*
 		function getBoardInfo() {
 			let cbBoard, cbTitle, cbMetad;
@@ -909,7 +958,7 @@
 				});
 			}
 		}
-
+/*
 		on(d, 'QRDialogCreation', function() {
 			const captchaContainer = document.querySelector(".captcha-root");
 
@@ -963,7 +1012,7 @@
 			});
 
 		});
-
+*/
 		on(d, 'QRDialogCreation', function() {
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
@@ -1312,7 +1361,7 @@ boxes.forEach(el => {
 		on(d, "IndexRefresh", checkBlockedBanner);
 */
 		function checkBlockedBanner() {
-			function rready(selector, callback) {
+			function rrready(selector, callback) {
 				const observer = new MutationObserver((mutations, observer) => {
 					const element = document.querySelector(selector);
 					if (element) {
@@ -1334,13 +1383,15 @@ boxes.forEach(el => {
 				}
 			}
 
-			rready('#bannerCnt > img', (element) => {
+			rrready('#bannerCnt > img', (element) => {
 				function checkImage() {
 					if (element.complete && element.naturalWidth === 0) {
-						rready('img[alt="4chan"]', (element) => {
+						rrready('img[alt="4chan"]', (element) => {
 							if (element.attributes.length === 3) {
 								document.documentElement.classList.add("ss21--banner-blocked");
 								element.parentNode.removeAttribute('title');
+							} else {
+								setTimeout(checkImage, 1000);
 							}
 						});
 					} else if (element.complete) {
