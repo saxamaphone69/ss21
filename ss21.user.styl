@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.5.3
+@version        2.5.4
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -52,6 +52,7 @@
 @var checkbox   ss21noReplyAllowed   "Make 'You cannot reply anymore' appear as a toast" 1
 @var checkbox   ss21tableView        "'All threads' appear as a table" 1
 @var checkbox   ss21iconifyHeader    "Turn current-board links into icons" 1
+@var checkbox   ss21expressivePages  "Turn the pagelist into a Material Expressive looking button group" 0
 ==/UserStyle== */
 
 @-moz-document regexp('https://(boards|find)\\.4chan(?:nel)?\\.org.*')
@@ -59,7 +60,7 @@
 	@import url('https://rsms.me/inter/inter.css');
 	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
 	if ss21iconFont == 1
-		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+		@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.0/font/bootstrap-icons.min.css");
 	else if ss21iconFont == 2
 		@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 	/*
@@ -375,6 +376,11 @@
 		--is-nws: initial;
 	}
 	}
+	
+	:root
+		scrollbar-width thin
+		//scrollbar-color ss21primary transparent
+	
 	// XXX: https://css-tricks.com/fixing-smooth-scrolling-with-find-on-page/
 	:root:focus-within
 		scroll-behavior smooth
@@ -837,6 +843,25 @@
 		&:focus
 			border 1px solid alpha(tint(ss21primary, 33%), .9)
 			box-shadow 0 0 0 .25rem alpha(lighten(ss21primary, 50%), .25)
+	/*
+	@css {
+		@supports (appearance: base-select) {
+			select, ::picker(select) {
+				appearance: base-select;
+				border: 0;
+			}
+			option {
+				padding: .5rem 1rem;
+				&::checkmark {
+					display: none;
+				}
+				&:checked {
+					background-color: var(--secondary);
+				}
+			}
+		}
+	}
+	*/
 	textarea
 		background inherit
 		padding .5rem .75rem
@@ -922,6 +947,8 @@
 	
 	/*
 <blockquote class="postMessage" id="m561357917"><a href="#p561357657" class="quotelink">&gt;&gt;561357657</a><br>Compare pic related to his Dx2 model which looks great<br><s><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://static.wikia.nocookie.net/megamitensei/images/9/95/Metatron_in_DX2.png/revision/latest?cb=20191110121222">https://static.wikia.nocookie.net/m<wbr>egamitensei/images/9/95/Metatron_in<wbr>_DX2.png/revision/latest?cb=2019111<wbr>0121222</a></s></blockquote>
+
+<blockquote class="postMessage" id="m106260818"><a href="#p106257468" class="quotelink">&gt;&gt;106257468</a><a class="hashlink" href="https://boards.4chan.org/g/thread/106256463#p106257468">#</a><br><span class="quote">&gt;<a href="#p106256463" class="quotelink">&gt;&gt;106256463<span class="qmark-op">&nbsp;(OP)</span></a><a class="hashlink" href="https://boards.4chan.org/g/thread/106256463#p106256463">#</a></span><br><a href="#p106257527" class="quotelink">&gt;&gt;106257527</a><a class="hashlink" href="https://boards.4chan.org/g/thread/106256463#p106257527">#</a><br>These can't record for insurance purposes</blockquote>
 
 <blockquote class="postMessage" id="m82226876">/mkg/ - God damn it dude I'm so fucking sick of Cherry MX edition<br><br><span class="quote">&gt;Keyboard recommendation template</span><br><a class="linkify pastebin" rel="noreferrer noopener" target="_blank" href="https://pastebin.com/n220xk9V">https://pastebin.com/n220xk9V</a> <a class="embedder" href="javascript:;" data-key="Pastebin" data-uid="n220xk9V" data-options="undefined" data-href="https://pastebin.com/n220xk9V">(<span>un</span>embed)</a><br><br><span class="quote">&gt;Where to buy keyboards</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://www.alexotos.com/keyboard-vendor-list/">https://www.alexotos.com/keyboard-v<wbr>endor-list/</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://www.mechmap.tech/themap">https://www.mechmap.tech/themap</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://keycaplendar.firebaseapp.com">https://keycaplendar.firebaseapp.co<wbr>m</a><br><br><span class="quote">&gt;Charts!</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://kiibohd.com">https://kiibohd.com</a><br><br><span class="quote">&gt;QMK</span><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://config.qmk.fm/">https://config.qmk.fm/</a><br><a class="linkify" rel="noreferrer noopener" target="_blank" href="https://beta.docs.qmk.fm">https://beta.docs.qmk.fm</a><br><br>Last thread: <a href="https://boards.4channel.org/g/thread/82209582/" target="_blank">https://boards.4channel.org/g/threa<wbr>d/82209582/</a></blockquote>
 
@@ -1262,6 +1289,11 @@
 		font-size .75rem
 		position absolute
 		top 1px
+	
+	.header-span
+		display inline-flex
+		align-items center
+		justify-content center
 	
 	if ss21iconifyHeader == 1
 		.header-alt
@@ -2033,7 +2065,8 @@
 		display none
 	
 	if ss21nonPrimaryHeader
-		#header-bar
+		#header-bar,
+		:root .navLinks.json-index
 			color var(--text-primary-on-background)
 			background-color var(--background-primary)
 		#updater,
@@ -2181,6 +2214,9 @@
 			}
 			a:not(.hide-announcement-button) {
 				color: var(--primary);
+				text-decoration: underline;
+				text-decoration-thickness: 2px;
+				text-underline-offset: 2px;
 			}
 		}
 	}
@@ -2205,7 +2241,7 @@
 		display grid
 		grid-template-columns 1fr auto 1fr
 		z-depth(6)
-		z-index 2
+		z-index 20
 		text-align center
 		transition top .25s
 		&::before,
@@ -2221,6 +2257,7 @@
 			justify-self center
 			color ss21red
 			margin 0
+			max-inline-size 60ch
 		.hide-announcement-button
 			position absolute
 			display block
@@ -2337,15 +2374,25 @@
 	#index-search:not([data-searching]) + #index-search-clear // unless searching the index, hide the 'clear search' icon
 		display none
 	
+	:root,
+	#delform,
+	.board
+		scroll-margin-top 500px
+		position relative
+	
 	.navLinks.json-index
 		background-color ss21primary
 		tc(@background-color, high)
 		//width 100%
 		max-width 75rem
 		padding .25rem 1.5rem
-		margin -1.5rem auto 1.5rem
+		margin auto
+		//margin -1.5rem auto 1.5rem
 		position relative
-		z-index 1
+		//transform translateY(-50%)
+		position sticky
+		top var(--headerBar-height)
+		z-index 10
 		display flex
 		flex-wrap wrap
 		align-items center
@@ -2356,7 +2403,7 @@
 			background-color ss21BackgroundElevated
 			tc(@background-color, high)
 			field-sizing content
-	
+	/*
 	@media (max-width: 77rem)
 		.navLinks.json-index
 			font-size .875rem
@@ -2373,7 +2420,7 @@
 			max-width 12ch
 		#index-search
 			max-width 7rem
-	
+	*/
 	#index-search
 		background-color ss21BackgroundElevated
 		tc(@background-color, high)
@@ -2658,7 +2705,6 @@
 	
 	.subject
 		min-inline-size 0
-		max-inline-size 25ch
 		text-overflow ellipsis
 		white-space nowrap
 		overflow hidden
@@ -2666,6 +2712,12 @@
 			white-space initial
 		&:empty
 			display none
+	
+	.is_index .subject
+		max-inline-size 25ch
+	
+	.name:empty
+		display none
 	
 	.nameBlock
 		//margin-right .25rem
@@ -3264,7 +3316,7 @@
 	.quick-filter-md5
 		&::after
 			font-size 1rem
-	
+	*/
 	// XXX: convert sauce links to icons for fun
 	// XXX: on mac + chrome, have to add `white-space: pre` otherwise it still renders
 	// the text
@@ -3280,7 +3332,7 @@
 		transition opacity .25s
 		&:hover
 			opacity .8
-	
+	/*
 	.file--huge > .post > .file .fileText .sauce[href*='google']
 		color transparent
 		background-image url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z' fill='" + hsl(ss21green) + "' /%3E%3C/svg%3E")
@@ -3444,6 +3496,9 @@
 			animation: rotation 2s linear infinite;
 		}
 	}
+	
+	.quotelink.from-archive-link
+		text-shadow 0 0 10px rgba(255, 255, 255, .9)
 	
 	// XXX: make special kinds of quotelinks appear `sup`-scripted
 	+prefix-classes('qmark-')
@@ -3714,6 +3769,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		animation buzz .25s linear infinite
 		z-index 1 // for some reason the menu gets offset when transformed
 		--post--dubs-color ss21green
+	
 	@css {
 		@scope (.post--dubs) {
 			.postNum a:nth-child(2n)::after {
@@ -4233,7 +4289,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.catalog-thread:not(:hover):not(:focus-within) .menu-button
 		opacity 0
 	
-	.is_index .thread--extra-new-lines
+	:root:not(.catalog-mode) .is_index .thread--extra-new-lines
 		max-height 25rlh
 		overflow-y scroll
 	
@@ -4261,6 +4317,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			display inline-flex
 			justify-content center
 			align-items center
+			flex-wrap nowrap
 			background-color transparent
 			border-radius 100%
 			aspect-ratio 1/1
@@ -4276,12 +4333,49 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			&:has(button[disabled])// a
 				pointer-events none
 				opacity .42
-	@media (max-width: 75rem)
+	/*@media (max-width: 75rem)
 		.pagelist
 			overflow-x auto
 			a
 				font-size 1rem
-				width 2rem
+				width 2rem*/
+	
+	if ss21expressivePages == 1
+		@css {
+			.pagelist {
+				gap: 4px;
+				.pages {
+					gap: 4px;
+				}
+				a {
+					border-radius: initial;
+					width: initial;
+					aspect-ratio: initial;
+					color: var(--mdc-onSecondaryContainer);
+					background-color: var(--mdc-secondaryContainer);
+					padding: 1rem;
+					border-radius: 8px;
+					transition: flex .25s;
+					&:hover {
+						flex: .2 0 0 ;
+					}
+				}
+				strong a {
+					flex: 1 0 0;
+					&:hover {
+						flex: 1 0 0;
+					}
+				}
+				:is(.prev, .next) {
+					a {
+						padding: 1rem;
+						color: var(--mdc-onTertiaryContainer);
+						background-color: var(--mdc-tertiaryContainer);
+						border-radius: 8px;
+					}
+				}
+			}
+		}
 	
 	// non json index support
 	.pagelist.desktop
@@ -4704,6 +4798,26 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		top 0 i
 		a
 			color var(--primary)
+	
+	/* Feeling lazy, so keeping the old captcha code and adding the new December 2025 below */
+	.captcha-root
+		& > div:first-child
+			inline-size initial i
+			block-size initial i
+			background unset i
+			box-shadow none i
+			font var(--font-default) i
+		#t-ctrl
+			gap 1rem
+			button
+				flex 1
+				block-size unset i
+		#t-task
+			color ss21TextPrimary
+			a
+				color var(--primary)
+		#t-slider[disabled]
+			display none i
 	
 	// oekaki support for /i/ and /ic/ mainly, but also for any board
 	// XXX: find a better way to present the width/height input
@@ -6543,6 +6657,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		background-image linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2))
 		pointer-events none
 		user-select none
+		&:empty
+			display none
 		.post-scroll-marker
 			--main-color var(--mdc-tertiary)
 			all unset
@@ -6606,8 +6722,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					border 1px solid #b7c5d9
 					border-top 0
 					border-left 0
-				.navLinks.json-index select, #index-search, .field
-					background #fff
+				select, #index-search, .field
+					background-color #fff
 				#navlinks
 					background-color var(--chan-post-bg)
 			&.nws
@@ -6630,8 +6746,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					border 1px solid #d9bfb7
 					border-top 0
 					border-left 0
-				.navLinks.json-index select, #index-search, .field
-					background #fff
+				select, #index-search, .field
+					background-color #fff
 				#navlinks
 					background-color var(--chan-post-bg)
 	
