@@ -63,8 +63,8 @@ go to your blocker-of-choice options, and locate where you can add your own filt
 *//s.4cdn.org/css^$domain=boards.4chan.org
 *//s.4cdn.org/js/prettify/prettify.*.css
 
-! REQUIRED: Block potentially harmful scripts inserted into 4chan
-@@||4chan.org^*$csp=default-src 'self' * data: 'unsafe-inline' 'unsafe-eval'
+! REQUIRED: Block potentially harmful scripts inserted into 4chan, by explicitly allowing only certain 'elements'
+@@||4chan.org^*$csp=default-src 'self' * data: 'unsafe-inline' 'unsafe-eval' blob:
 
 ! This one used to work, or was needed for something, but I don't remember. Here for archives sake:
 ! 4chan.org##script:inject(abort-current-inline-script.js, String.fromCharCode)
