@@ -2064,17 +2064,6 @@
 	:root.tainted .report-error
 		display none
 	
-	if ss21nonPrimaryHeader
-		#header-bar,
-		:root .navLinks.json-index
-			color var(--text-primary-on-background)
-			background-color var(--background-primary)
-		#updater,
-		#thread-stats span,
-		#shortcuts a,
-		#shortcuts span
-			color var(--text-primary-on-background) i
-	
 	// if enabled, show the board title as a customisable hero image
 	if ss21boardBanner
 		.boardBanner
@@ -2725,6 +2714,15 @@
 		align-items center
 		gap 0 .25rem
 	
+	// XXX: idea of a fix for 4chan html update with schema.org stuff
+	// should just get sidedish to fix this
+	/*
+	.postInfoM.mobile
+		display flex i
+		> *:not(.nameBlock)
+			display none i
+	*/
+	
 	if ss21forcedAnon == 1
 		.nameBlock
 			display none
@@ -2873,10 +2871,19 @@
 		text-align center
 		margin-bottom 1rem
 	
+	// supports /qst/ and /tg/
+	.mu-r
+		color ss21red
+	.mu-g
+		color ss21green
+	.mu-b
+		color ss21blue
+	
 	// on october 1st, we celebrate 4chan's birthday (est. 2003)
+	// also used for xmas hats at christmas
 	.party-hat
 		position absolute
-		margin-top -2.5rem
+		margin-top -80px
 		left 0
 		z-index 1
 		opacity .87
@@ -5594,7 +5601,17 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	:root.float #thread-stats > .move > span:not(#page-count)
 		pointer-events none
 	
-	.new
+	if ss21nonPrimaryHeader
+		#header-bar
+			color var(--text-primary-on-background)
+			background-color var(--background-primary)
+		#updater,
+		#thread-stats span,
+		#shortcuts a,
+		#shortcuts span
+			color var(--text-primary-on-background)
+	
+	#shortcuts span.new
 		color ss21green
 		margin-right .5rem
 	
@@ -5732,6 +5749,7 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	
 	#watched-threads
 		overflow hidden auto
+		overflow-behavior contain
 		&:empty::after
 			content 'No threads to display.'
 			display inline-flex
