@@ -12,11 +12,13 @@
 // @connect     4cdn.org
 // @grant       GM.xmlHttpRequest
 // @run-at      document-start
+
 // @icon        data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 96 960 960'%3E%3Cpath d='M70 622q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 590q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 590q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 606q-37 0-63.5 28.5T617 663q-48 0-74-28.5T481 606q-36 0-63.5 28.5T342 663q-47 0-72-28.5T208 606q-31 0-51.5 18T101 650q-13 2-22-6.5T70 622Zm0 185q0-14 10.5-28.5T110 756q22-9 44-23t54-14q47 0 72 28.5t63 28.5q37 0 64-28.5t74-28.5q47 0 72.5 28.5T617 776q36 0 62.5-28.5T753 719q32 0 54 14t45 23q18 8 28.5 22t10.5 29q0 14-9 22t-21 6q-36-8-56.5-25.5T753 792q-37 0-63.5 28.5T617 849q-48 0-74-28.5T481 792q-36 0-63.5 28.5T343 849q-47 0-73-28.5T208 792q-31 0-51.5 17.5T100 835q-12 2-21-6t-9-22Zm0-371q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 404q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 404q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 420q-37 0-63.5 28.5T617 477q-48 0-74-28.5T481 420q-36 0-64 28.5T342 477q-47 0-72-28.5T208 420q-31 0-51.5 18T101 464q-13 2-22-6.5T70 436Z'/%3E%3C/svg%3E
 // @noframes
+// ==/UserScript==
 // @updateURL   https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
 // @downloadURL https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
-// ==/UserScript==
+// @require     https://raw.githubusercontent.com/simonw/tools/refs/heads/main/grid-lanes-polyfill.js
 (async () => {
 	"use strict";
 	//console.group("Initialising ss21 sidedish...");
@@ -51,6 +53,7 @@
 	doc.classList.add("site-loading");
 
 	if (location.pathname.split("/")[1] === 'search') {
+		console.log('removing site loading from checking for search domain');
 		doc.classList.remove("site-loading");
 		doc.classList.add("is-search");
 		$('link[title]', d.head).disabled = true;
@@ -131,8 +134,37 @@
 		);
 	}
 
+	function toggleNotes() {
+		const buttons = make({
+			//el: "progress",
+			el: "div",
+			attr: {
+				id: "notification-maker"//,
+				//value: 0,
+				//max: 100,
+			},
+			appendTo: document.body,
+		});
+		const el = make({
+			el: 'span',
+			html: `4chan X needs your permission to show desktop notifications. ` +
+          `[<a href="#" target="_blank">FAQ</a>]` +
+          `<br><button>Authorize</button> or <button>Disable</button>`
+      });
+		let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus hendrerit egestas nibh. Mauris quis risus pellentesque, congue neque a, fermentum dui. In hac habitasse platea dictumst. Suspendisse potenti. Curabitur eu euismod velit. Duis ultrices eu mauris non gravida. Cras et venenatis leo, sed aliquam justo. Duis consequat arcu sit amet consequat tristique. Etiam sit amet blandit tortor, a posuere metus. Phasellus ac arcu varius, tristique orci et, auctor justo. Ut mauris nisl, finibus nec maximus et, tincidunt id augue. Sed tempus euismod turpis, a viverra mi. Proin nec quam non metus fermentum consequat. Etiam eget lacus ipsum. Duis a nibh iaculis, tincidunt massa tincidunt, fringilla odio. Fusce bibendum elit urna, a pharetra dui finibus quis. Pellentesque ultricies urna vitae rutrum laoreet. Vivamus nec fringilla mi. Suspendisse potenti. Vestibulum lacus tellus, tempus in enim at, faucibus consequat tellus. Nunc quis nulla diam. Vivamus id purus vel nibh accumsan cursus vitae ut ipsum. Praesent rhoncus convallis erat sit amet faucibus. Praesent ultrices sit amet quam quis congue. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat condimentum ipsum vitae tempus. Praesent malesuada vulputate ante, quis euismod velit porttitor nec. Integer nec pulvinar dolor. Suspendisse eget enim tellus. Morbi congue nisl non quam bibendum iaculis. Sed bibendum enim vitae urna ornare, at dapibus enim tristique. Quisque nec tincidunt metus. Curabitur imperdiet, ligula ut eleifend luctus, odio orci venenatis lectus, nec tempus erat sem vitae magna. Curabitur vitae lorem lacinia, pellentesque nibh sit amet, eleifend felis. Phasellus aliquam orci in ullamcorper ultricies. Sed dapibus, quam convallis auctor auctor, leo ligula maximus quam, cursus consectetur ex lectus sed elit. Cras quis egestas tortor, in dictum justo. Ut vitae metus feugiat, gravida neque ac, pulvinar nulla. Aliquam a ligula sed leo eleifend porta non eget nunc. Aenean sollicitudin tempus neque et suscipit. Praesent cursus gravida nulla, nec sollicitudin justo porta in. Suspendisse non pretium ex. Morbi vehicula risus vel turpis bibendum consequat. Praesent facilisis eu erat tincidunt congue. Morbi id velit fringilla, sollicitudin nisl a, auctor sem. Ut rhoncus, eros ut blandit vulputate, quam mi sollicitudin nibh, vitae congue felis elit id leo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam in neque tellus. Praesent feugiat, lacus nec commodo finibus, enim nisi tempor mauris, in maximus ante ligula ut neque. Maecenas vitae malesuada libero. Donec lobortis ipsum vel est convallis venenatis. Ut sit amet orci eu lacus consectetur interdum. Pellentesque id sodales tellus, id consectetur velit. Sed ullamcorper neque in risus interdum, ac tincidunt sapien aliquet. Donec ultrices libero lobortis ante volutpat iaculis. Proin ut justo eros. Sed porttitor ex risus, nec faucibus ligula laoreet quis. Sed a nisi vel velit ultricies cursus. Donec varius ligula sed dui iaculis fringilla. Mauris mollis ullamcorper laoreet. Aliquam tincidunt orci id lorem ultrices posuere. Suspendisse non porta neque. Vivamus bibendum risus ut eros dapibus convallis. Vivamus ac egestas mi, eget convallis purus. Curabitur feugiat, ante id vehicula blandit, leo ex semper magna, ut laoreet felis ligula vehicula nisl.";
+		buttons.innerHTML = `<button>hey</button>`;
+		buttons.onclick = function() {
+			sendNotification('success', text);
+			sendNotification('warning', text);
+			sendNotification('info', el);
+			sendNotification('error', text);
+		}
+	}
+
+	toggleNotes();
+
 	function removeStyles() {
-		removeStyle($("link[rel='stylesheet']", d.head));
+		//removeStyle($("link[rel='stylesheet']", d.head));
 		removeStyle($("style[type]", d.head)); // this removes the inline mobile css
 		removeStyle($("#fourchanx-css", d.head)); // this removes the css required by 4chan x
 		removeStyle($("#custom-css", d.head)); // this removes extra, custom css by 4chan x
@@ -260,12 +292,14 @@
 		}
 
 	function init() {
-		on(d, "IndexBuild", doc.classList.remove("site-loading"));
+		//on(d, "IndexBuild", doc.classList.remove("site-loading"));
 
 		const isChanX = doc && doc.classList.contains('fourchan-x');
 
 		if (!isChanX) {
-			doc.classList.remove("site-loading");
+			doc.classList.remove("ss21-site-loading");
+			console.log('removing site loading from inside !isChanX');
+			//doc.classList.remove("ss21-site-loading");
 			doc.classList.add("is-ext");
 		}
 
@@ -281,9 +315,16 @@
 
 		// this should return the `#header-bar` element
 		const headerBar = $("#header-bar") || $('#boardNavDesktop');
+		let announcementElement;
+		if ($("#globalMessage")) {
+			announcementElement = $("#globalMessage");
+		}
 		// set the header height as its own variable for reference in css
-		const updateHeight = () =>
-		doc.style.setProperty('--headerBar-height', `${headerBar.offsetHeight}px`);
+		const updateHeight = () => {
+			doc.style.setProperty("--headerBar-height", `${headerBar.offsetHeight}px`);
+			if (announcementElement) doc.style.setProperty("--globalMessage-height", `${announcementElement.offsetHeight}px`);
+		};
+
 		new ResizeObserver(updateHeight).observe(headerBar);
 		updateHeight();
 
@@ -409,6 +450,19 @@
 				//summary.innerHTML = `<a class="material-symbols-outlined" target="blank" href="` + summary.getAttribute('href') + `">open_in_new</a>` + newText + `<span hidden>` + oldText + `</span>`;
 			}
 		}
+		/*
+		function animateStuff() {
+			console.log('hi');
+			document.querySelectorAll('.fileThumb').forEach(el => {
+				el.addEventListener('click', () => {
+					//d.startViewTransition(() =>
+					d.startViewTransition(() => el.classList.toggle('something'));
+				});
+			});
+		}
+
+		animateStuff();
+		*/
 
 		function markExternalLinks() {
 		document.querySelectorAll('.postMessage .linkify').forEach(link => {
@@ -662,6 +716,51 @@
 			let threads = $$('.thread');
 			delform.setAttribute('data-thread-count', threads.length);
 		}
+		function swapCatalogStats() {
+			let catalogposts = $$('.catalog-post');
+			for (let catalogpost of catalogposts) {
+				let message = $('.postMessage', catalogpost);
+				let stat = $('.catalog-stats', catalogpost);
+				let file = $('.file', catalogpost);
+				let info = $('.postInfo', catalogpost);
+				message.after(stat);
+				if (file) {
+					info.after(file);
+				}
+			}
+		}
+		function newoldPosts() {
+			const NOW = Date.now() / 1000; // seconds
+			const DAY = 24 * 60 * 60;
+			const THREE_DAYS = 3 * DAY;
+			const WEEK = 7 * DAY;
+
+			d.querySelectorAll('.dateTime').forEach(timeEl => {
+				const utc = Number(timeEl.dataset.utc);
+				if (!utc) return;
+
+				const age = NOW - utc;
+				const parent = timeEl.parentElement.parentElement.parentElement;
+				if (!parent) return;
+
+				parent.classList.remove(
+					'post--time_fresh',
+					'post--time_new',
+					'post--time_old',
+					'post--time_stale'
+				);
+
+				if (age < DAY) {
+					parent.classList.add('post--time_fresh');
+				} else if (age < THREE_DAYS) {
+					parent.classList.add('post--time_new');
+				} else if (age < WEEK) {
+					parent.classList.add('post--time_old');
+				} else {
+					parent.classList.add('post--time_stale');
+				}
+			});
+		}
 		/*
 		function disabledPrevAndNext() {
 			let prevBut = document.querySelector('.pagelist .prev button');
@@ -690,6 +789,7 @@
 				//disabledPrevAndNext();
 				countThreads();
 				stripPageBrackets();
+				swapCatalogStats();
 				//newTabber();
 			}
 			const observer = new MutationObserver(subscriber);
@@ -705,6 +805,7 @@
 			on(d, "IndexRefresh", stripPageBrackets);
 			//on(d, "IndexRefresh", newTabber);
 			on(d, "IndexRefresh", markExternalLinks);
+			on(d, "IndexRefresh", newoldPosts);
 		}
 
 		if (config === "thread") {
@@ -844,28 +945,56 @@
 					prepend: _this,
 					html: `download_for_offline`
 				});
+				let imgToggle = $('.ss21--download-all');
+				imgToggle.addEventListener('click', function() {
+					let allMedia = [].slice.call($$('.download-button'));
+					let i = 0;
+					try {
+						allMedia.forEach(function(media) {
+							downloadThem(media, i++);
+						})
+					} catch(e) {
+						console.log('Something went wrong...', e);
+					}
+					function downloadThem(media) {
+						setTimeout(() => {
+							media.click();
+						}, i * 500)
+					}
+				});
 			});
-			let imgToggle = $('.ss21--download-all');
-			imgToggle.addEventListener('click', function() {
-				let allMedia = [].slice.call($$('.download-button'));
-				let i = 0;
-				try {
-					allMedia.forEach(function(media) {
-						downloadThem(media, i++);
-					})
-				} catch(e) {
-					console.log('Something went wrong...', e);
-				}
-				function downloadThem(media) {
-					setTimeout(() => {
-						media.click();
-					}, i * 500)
-				}
-			});
+
 		}
 		if (config === "thread") {
 			downloadMedia();
 		}
+
+		/*
+		 * In May 2026, 4chan started adding `schema` props to some elements. This broke postertrips:
+		 * <span class="nameBlock"><span class="name" itemprop="author" itemscope="" itemtype="https://schema.org/Person"><span itemprop="name">Install !GentooUpig</span></span> </span>
+		 * as opposed to
+		 * <span class="nameBlock"><span class="name">Install</span> <span class="postertrip">!GentooUpig</span><br></span>
+		 * so this attempts to band-aid fix it.
+		 */
+		function fixPosterTrips() {
+			let i = 0;
+			let trips = $$('.postertrip');
+			for (let trip of trips) {
+				const nameBlock = trip
+				.closest('.post')
+				.querySelector('.postInfo .nameBlock');
+
+				nameBlock.querySelector('[itemprop="name"]').textContent =
+					nameBlock.querySelector('[itemprop="name"]').textContent
+					.replace(` ${trip.textContent}`, '');
+
+				nameBlock.append(' ', trip.cloneNode(true));
+				i++;
+			}
+			console.log(`Fixed ${i} trips`);
+		}
+
+		fixPosterTrips();
 
 		function boardDrawer() {
 			let boardDrawer = make({
@@ -1082,6 +1211,16 @@
 			if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
 				return false;
 			}
+			//GridLanesPolyfill.init();
+			//const container = d.querySelector(':root.catalog-mode .board');
+			//const instance = GridLanesPolyfill.apply(container);
+
+			// Later, to refresh the layout:
+			//instance.refresh();
+
+			// To remove the polyfill:
+			//instance.destroy();
+			/*
 			let grids = [...document.querySelectorAll(':root.catalog-mode .board')];
 
 			if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry' && getComputedStyle(grids[0]).gridAutoRows !== '240px') {
@@ -1096,7 +1235,7 @@
 				function layout() {
 					//console.log('running layout');
 					grids.forEach(grid => {
-						/* get the post relayout number of columns */
+						// get the post relayout number of columns
 						let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
 
 						grid.items.forEach(c => {
@@ -1108,19 +1247,19 @@
 							}
 						});
 
-						/* if the number of columns has changed */
+						// if the number of columns has changed
 						if (grid.ncol !== ncol || grid.mod) {
-							/* update number of columns */
+							// update number of columns
 							grid.ncol = ncol;
 
-							/* revert to initial positioning, no margin */
+							// revert to initial positioning, no margin
 							grid.items.forEach(c => c.style.removeProperty('margin-top'));
 
-							/* if we have more than one column */
+							// if we have more than one column
 							if (grid.ncol > 1) {
 								grid.items.slice(ncol).forEach((c, i) => {
-									let prev_fin = grid.items[i].getBoundingClientRect().bottom /* bottom edge of item above */,
-											curr_ini = c.getBoundingClientRect().top /* top edge of current item */;
+									let prev_fin = grid.items[i].getBoundingClientRect().bottom, // bottom edge of item above
+											curr_ini = c.getBoundingClientRect().top; // top edge of current item
 									c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
 								});
 							}
@@ -1131,10 +1270,11 @@
 				}
 				layout();
 				//addEventListener('load', e => {
-				//  layout(); /* initial load */
-				addEventListener('resize', layout, false); /* on resize */
+				//  layout(); // initial load
+				addEventListener('resize', layout, false); // on resize
 				//}, false);
 			}
+			*/
 		}
 		if (config === "index") {
 			const target = $(".board");
@@ -1344,6 +1484,85 @@ boxes.forEach(el => {
 		if (config === "index") {
 			searchCurtain();
 		}
+
+		function navigationDrawer() {
+			ready('#custom-board-list', (element) => {
+				let _this = element;
+				make({
+					el: "aside",
+					attr: {
+						id: "ss21--navigation-drawer"//,
+						//value: 0,
+						//max: 100,
+					},
+					html: `<nav>
+				<details open>
+					<summary>Main Boards</summary>
+					<ul>
+						<li>
+							<a href="/g" class="fancy">
+								<svg class="board--icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M240 88C240 74.7 229.3 64 216 64C202.7 64 192 74.7 192 88L192 128C156.7 128 128 156.7 128 192L88 192C74.7 192 64 202.7 64 216C64 229.3 74.7 240 88 240L128 240L128 296L88 296C74.7 296 64 306.7 64 320C64 333.3 74.7 344 88 344L128 344L128 400L88 400C74.7 400 64 410.7 64 424C64 437.3 74.7 448 88 448L128 448C128 483.3 156.7 512 192 512L192 552C192 565.3 202.7 576 216 576C229.3 576 240 565.3 240 552L240 512L296 512L296 552C296 565.3 306.7 576 320 576C333.3 576 344 565.3 344 552L344 512L400 512L400 552C400 565.3 410.7 576 424 576C437.3 576 448 565.3 448 552L448 512C483.3 512 512 483.3 512 448L552 448C565.3 448 576 437.3 576 424C576 410.7 565.3 400 552 400L512 400L512 344L552 344C565.3 344 576 333.3 576 320C576 306.7 565.3 296 552 296L512 296L512 240L552 240C565.3 240 576 229.3 576 216C576 202.7 565.3 192 552 192L512 192C512 156.7 483.3 128 448 128L448 88C448 74.7 437.3 64 424 64C410.7 64 400 74.7 400 88L400 128L344 128L344 88C344 74.7 333.3 64 320 64C306.7 64 296 74.7 296 88L296 128L240 128L240 88zM224 192L416 192C433.7 192 448 206.3 448 224L448 416C448 433.7 433.7 448 416 448L224 448C206.3 448 192 433.7 192 416L192 224C192 206.3 206.3 192 224 192zM240 240L240 400L400 400L400 240L240 240z"/></svg>
+								<span class="board--name">
+									<span class="board--letter_container">/<span class="board--letter">g</span>/</span>
+									<span class="board--dash"> - </span>
+									<span class="board--title">Technology</span>
+								</span>
+							</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+					</ul>
+				</details>
+				<details>
+					<summary>Other</summary>
+					<ul>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+						<li>
+							<a href="#">Technology</a>
+						</li>
+					</ul>
+				</details>
+			</nav>`,
+					appendTo: "body",
+				});
+				make({
+					el: "a",
+					cl4ss: "material-icons ss21--board-drawer-toggle",
+					prepend: $('#header-bar'),
+					attr: {
+						title: "Open board list drawer",
+					},
+					html: `menu`,
+				});
+				let boardNav = $('#ss21--navigation-drawer');
+				let boardNavToggle = $(".ss21--board-drawer-toggle");
+				boardNav.addEventListener("click", function (e) {
+					if (e.target === boardNav) {
+						boardNav.classList.remove("ss21--drawer-open");
+					}
+				});
+				on(boardNavToggle, "click", function () {
+					boardNav.classList.add("ss21--drawer-open");
+				});
+			});
+		}
+
+		//navigationDrawer();
 		/*
 		function checkBlockedBanner() {
 			ready('#bannerCnt > img', (element) => {
@@ -1385,14 +1604,15 @@ boxes.forEach(el => {
 
 			rrready('#bannerCnt > img', (element) => {
 				function checkImage() {
-					if (element.complete && element.naturalWidth === 0) {
+					if (element.naturalWidth === 0) {
+					//if (element.complete && element.naturalWidth === 0) {
 						rrready('img[alt="4chan"]', (element) => {
-							if (element.attributes.length === 3) {
+							//if (element.attributes.length === 3) {
 								document.documentElement.classList.add("ss21--banner-blocked");
 								element.parentNode.removeAttribute('title');
-							} else {
-								setTimeout(checkImage, 1000);
-							}
+							//} else {
+							//	setTimeout(checkImage, 1000);
+							//}
 						});
 					} else if (element.complete) {
 						document.documentElement.classList.add("ss21--banner-unblocked");
@@ -1481,6 +1701,9 @@ boxes.forEach(el => {
 			ready(".thread > .opContainer > .op > .file .fileThumb", (element) => {
 				let _this = element,
 						banner = $(".boardBanner");
+				if (_this.tagName.toLowerCase() === 'span') {
+					return;
+				}
 				let OpFullFile = _this.href;
 				if (OpFullFile.endsWith("m") || OpFullFile.endsWith("4")) {
 					//comment start
@@ -1630,13 +1853,17 @@ if (config === "thread") {
 				}
 			});
 
-			document.querySelector('#hidden-toggle > a').onclick = function(e) {
-				e.target.classList.toggle('hidden-view-toggle');
-			};
-			document.querySelector('#hidden-toggle > a').title = "Toggle hidden threads";
+			let hiddenToggle = $('#hidden-toggle > a');
+			if (hiddenToggle) {
+				hiddenToggle.onclick = function(e) {
+					e.target.classList.toggle('hidden-view-toggle');
+				};
+				hiddenToggle.title = "Toggle hidden threads";
 
-			// Observe changes to the element's text content
-			observer.observe(hiddenCountElement, { childList: true, characterData: true, subtree: true });
+				// Observe changes to the element's text content
+				observer.observe(hiddenCountElement, { childList: true, characterData: true, subtree: true });
+			}
+
 		}
 
 		doc.classList.add("sidedish-enabled");
@@ -1677,14 +1904,143 @@ if (config === "thread") {
 			}
 			console.timeLog("Running init() from sidedish");
 		});
-	}
+//console.log('removing site loading from the end of init');
+		//doc.classList.remove("site-loading");
+		/*
+		window.addEventListener('message', (event) => {
+    // Always validate the message shape
+    if (!event.data || !event.data.twister) return;
 
-	on(d, "4chanXInitFinished", init);
+    const tasks = event.data.twister.tasks;
+    if (!Array.isArray(tasks)) {
+        console.error('Expected tasks array, got:', tasks);
+        return;
+    }
+
+    console.log('tasks:', tasks);
+			let taskElement = document.querySelector('#t-task');
+			let responseField = document.querySelector('#t-resp');
+			let allGroupsContainer = document.createElement('div');
+			let form = $('#qr form');
+			$('.captcha-root').append(allGroupsContainer);
+
+			let selectedIndexes = new Array(tasks.length).fill(-1);
+			const renderAllGroups = () => {
+        allGroupsContainer.innerHTML = '';
+
+        tasks.forEach( (task, groupIndex) => {
+            const groupContainer = document.createElement('div');
+            groupContainer.style.cssText = 'width: fit-content;background: rgba(255, 255, 255, 0.3); border-radius: 6px; padding: 2px; margin-bottom: 8px;';
+
+            const imagesRow = document.createElement('div');
+            imagesRow.style.cssText = 'display: flex; justify-content: center; align-items: center; flex-wrap: nowrap; overflow-x: auto;';
+
+            if (task.items && task.items.length > 0) {
+                task.items.forEach( (item, itemIndex) => {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.cssText = 'display: flex; flex-direction: column; align-items: center; cursor: pointer; border: 2px solid transparent; border-radius: 4px; padding: 4px; transition: all 0.2s;';
+
+                    if (selectedIndexes[groupIndex] === itemIndex) {
+                        imgWrapper.style.borderColor = 'white';
+                    }
+
+                    imgWrapper.addEventListener('mouseenter', () => {
+                        if (selectedIndexes[groupIndex] !== itemIndex) {
+                            imgWrapper.style.borderColor = '#FFF';
+                            imgWrapper.style.background = 'rgba(255, 255, 255, 0.1)';
+                        }
+                    }
+                    );
+
+                    imgWrapper.addEventListener('mouseleave', () => {
+                        if (selectedIndexes[groupIndex] !== itemIndex) {
+                            imgWrapper.style.borderColor = 'transparent';
+                            imgWrapper.style.background = 'transparent';
+                        }
+                    }
+                    );
+
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `data:image/png;base64,${item}`;
+                    imgElement.style.cssText = 'max-width: 60px; max-height: 60px; object-fit: contain;';
+                    imgElement.alt = '';
+
+                    imgWrapper.appendChild(imgElement);
+
+                    imgWrapper.addEventListener('click', () => {
+                        handleSelection(groupIndex, itemIndex);
+                    }
+                    );
+
+                    imagesRow.appendChild(imgWrapper);
+                }
+                );
+            }
+
+            groupContainer.appendChild(imagesRow);
+            allGroupsContainer.appendChild(groupContainer);
+        }
+        );
+    };
+			const handleSelection = (groupIndex, selectedIndex) => {
+        if (selectedIndexes[groupIndex] === -1) {
+            selectedIndexes[groupIndex] = selectedIndex;
+
+            renderAllGroups();
+
+            if (selectedIndexes.every(index => index !== -1)) {
+                const responseString = selectedIndexes.join('');
+                responseField.value = responseString;
+							submitForm();
+            }
+        }
+    };
+			// it didnt like this, but it still submitted? no notification from 4chan x either to say post submitted or anything else
+			const submitForm = () => {
+        window._ECK_ws.send(JSON.stringify({
+            t: 'solve',
+            't-response': responseField.value,
+            't-challenge': form.elements['t-challenge'].value
+        }));
+    }
+    ;
+
+    renderAllGroups();
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (selectedIndexes.every(index => index !== -1)) {
+            const responseString = selectedIndexes.join('');
+            responseField.value = responseString;
+            submitForm();
+        }
+    }
+    );
+
+    
+});
+*/
+	}
+//
+	//on(d, "4chanXInitFinished", init);
+	/*
+	on(d, "4chanXInitFinished", () => {
+		init();
+		console.log('removing site loading from after init');
+		doc.classList.remove("site-loading");
+	});*/
+	on(d, "4chanXInitFinished", async () => {
+    await init();
+    console.log('removing site loading after init finished');
+    doc.classList.remove("site-loading");
+});
 
 	if (window.location.host.split('.')[0] === 'find') {
+		console.log('removing site loading from checking for "find" domain');
 		doc.classList.remove("site-loading");
 		doc.classList.add("sidedish-enabled");
 		doc.classList.add("is-search");
+		$('link[href="static/css/additional.css"]', d.head).disabled = true;
 		let currentSearch = window.location.href;//window.location.search;
 		document.addEventListener('DOMContentLoaded', (event) => {
 			function swapInfo() {
@@ -1743,14 +2099,15 @@ if (config === "thread") {
 	on(d, 'DOMContentLoaded', backup);
 */
 	ready(".custom-menu-ctrl", (element) => {
-		//doc.classList.remove('site-loading');
-		//doc.classList.add('fourchan-ext');
+		doc.classList.remove('site-loading');
+		doc.classList.add('fourchan-ext');
 		init();
 	});
 
 	on(d, '4chanMainInit', function() {
-		//doc.classList.remove('site-loading');
-		// doc.classList.add('fourchan-ext');
+		console.log('4chan main init fired!');
+		doc.classList.remove('site-loading');
+		doc.classList.add('fourchan-ext');
 		function removeStyle(sel) {
 			if (sel) {
 				console.log(
