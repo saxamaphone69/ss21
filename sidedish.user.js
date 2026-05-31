@@ -12,13 +12,12 @@
 // @connect     4cdn.org
 // @grant       GM.xmlHttpRequest
 // @run-at      document-start
-
+// @updateURL   https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
+// @downloadURL https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
 // @icon        data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 96 960 960'%3E%3Cpath d='M70 622q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 590q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 590q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 606q-37 0-63.5 28.5T617 663q-48 0-74-28.5T481 606q-36 0-63.5 28.5T342 663q-47 0-72-28.5T208 606q-31 0-51.5 18T101 650q-13 2-22-6.5T70 622Zm0 185q0-14 10.5-28.5T110 756q22-9 44-23t54-14q47 0 72 28.5t63 28.5q37 0 64-28.5t74-28.5q47 0 72.5 28.5T617 776q36 0 62.5-28.5T753 719q32 0 54 14t45 23q18 8 28.5 22t10.5 29q0 14-9 22t-21 6q-36-8-56.5-25.5T753 792q-37 0-63.5 28.5T617 849q-48 0-74-28.5T481 792q-36 0-63.5 28.5T343 849q-47 0-73-28.5T208 792q-31 0-51.5 17.5T100 835q-12 2-21-6t-9-22Zm0-371q0-15 11-29.5t29-23.5q22-9 44-22.5t54-13.5q48 0 72.5 28.5T343 404q37 0 64-28.5t74-28.5q47 0 72.5 28.5T618 404q36 0 62-28.5t73-28.5q33 0 54.5 14t43.5 23q18 9 29 23t11 29q0 13-9 21.5t-21 6.5q-36-8-56.5-26T753 420q-37 0-63.5 28.5T617 477q-48 0-74-28.5T481 420q-36 0-64 28.5T342 477q-47 0-72-28.5T208 420q-31 0-51.5 18T101 464q-13 2-22-6.5T70 436Z'/%3E%3C/svg%3E
 // @noframes
 // ==/UserScript==
-// @updateURL   https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
-// @downloadURL https://github.com/saxamaphone69/ss21/raw/main/sidedish.user.js
-// @require     https://raw.githubusercontent.com/simonw/tools/refs/heads/main/grid-lanes-polyfill.js
+
 (async () => {
 	"use strict";
 	//console.group("Initialising ss21 sidedish...");
@@ -790,7 +789,6 @@
 				countThreads();
 				stripPageBrackets();
 				swapCatalogStats();
-				//newTabber();
 			}
 			const observer = new MutationObserver(subscriber);
 			observer.observe(target, config);
@@ -803,7 +801,6 @@
 			on(d, "IndexRefresh", checkAspect);
 			on(d, "IndexRefresh", countThreads);
 			on(d, "IndexRefresh", stripPageBrackets);
-			//on(d, "IndexRefresh", newTabber);
 			on(d, "IndexRefresh", markExternalLinks);
 			on(d, "IndexRefresh", newoldPosts);
 		}
@@ -983,18 +980,31 @@
 				const nameBlock = trip
 				.closest('.post')
 				.querySelector('.postInfo .nameBlock');
-
-				nameBlock.querySelector('[itemprop="name"]').textContent =
-					nameBlock.querySelector('[itemprop="name"]').textContent
+				const name = nameBlock.querySelector('.name');
+				name.querySelector('[itemprop="name"]').textContent =
+					name.querySelector('[itemprop="name"]').textContent
 					.replace(` ${trip.textContent}`, '');
-
-				nameBlock.append(' ', trip.cloneNode(true));
+				name.after(' ', trip.cloneNode(true));
 				i++;
 			}
-			console.log(`Fixed ${i} trips`);
 		}
 
 		fixPosterTrips();
+
+		/*
+		 * It also added a `nbsp;` immediately after `.dateTime` within `.postInfo`. We use `gap` and `margin` for spacing!
+		 */
+
+		function stripSpaces() {
+			$$('.dateTime').forEach(dt => {
+				const next = dt.nextSibling;
+				if (next && next.nodeType === Node.TEXT_NODE) {
+					next.textContent = next.textContent.replace(/\u00a0/g, '');
+				}
+			});
+		}
+
+		stripSpaces()
 
 		function boardDrawer() {
 			let boardDrawer = make({
@@ -1207,91 +1217,6 @@
 
 		passLinker();
 
-		function masonry() {
-			if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
-				return false;
-			}
-			//GridLanesPolyfill.init();
-			//const container = d.querySelector(':root.catalog-mode .board');
-			//const instance = GridLanesPolyfill.apply(container);
-
-			// Later, to refresh the layout:
-			//instance.refresh();
-
-			// To remove the polyfill:
-			//instance.destroy();
-			/*
-			let grids = [...document.querySelectorAll(':root.catalog-mode .board')];
-
-			if (grids.length && getComputedStyle(grids[0]).gridTemplateRows !== 'masonry' && getComputedStyle(grids[0]).gridAutoRows !== '240px') {
-				//console.log('got a grid, going to masonry it', grids);
-				grids = grids.map(grid => ({
-					_el: grid,
-					gap: parseFloat(getComputedStyle(grid).gridRowGap),
-					items: [...grid.childNodes].filter(c => c.nodeType === 1 && +getComputedStyle(c).gridColumnEnd !== -1),
-					ncol: 0,
-					mod: 0 }));
-
-				function layout() {
-					//console.log('running layout');
-					grids.forEach(grid => {
-						// get the post relayout number of columns
-						let ncol = getComputedStyle(grid._el).gridTemplateColumns.split(' ').length;
-
-						grid.items.forEach(c => {
-							let new_h = c.getBoundingClientRect().height;
-
-							if (new_h !== +c.dataset.h) {
-								c.dataset.h = new_h;
-								grid.mod++;
-							}
-						});
-
-						// if the number of columns has changed
-						if (grid.ncol !== ncol || grid.mod) {
-							// update number of columns
-							grid.ncol = ncol;
-
-							// revert to initial positioning, no margin
-							grid.items.forEach(c => c.style.removeProperty('margin-top'));
-
-							// if we have more than one column
-							if (grid.ncol > 1) {
-								grid.items.slice(ncol).forEach((c, i) => {
-									let prev_fin = grid.items[i].getBoundingClientRect().bottom, // bottom edge of item above
-											curr_ini = c.getBoundingClientRect().top; // top edge of current item
-									c.style.marginTop = `${prev_fin + grid.gap - curr_ini}px`;
-								});
-							}
-
-							grid.mod = 0;
-						}
-					});
-				}
-				layout();
-				//addEventListener('load', e => {
-				//  layout(); // initial load
-				addEventListener('resize', layout, false); // on resize
-				//}, false);
-			}
-			*/
-		}
-		if (config === "index") {
-			const target = $(".board");
-			const config = {
-				childList: true,
-			};
-
-			function subscriber(mutations) {
-				masonry();
-				//if(!getComputedStyle(document.documentElement).getPropertyValue("--masonry")) {
-				//	masonry();
-				//}
-			}
-			const observer = new MutationObserver(subscriber);
-			observer.observe(target, config);
-		}
-		//on(d, "IndexBuild", masonry);
 		//const isInViewport = (e, {top:t, height:h} = e.getBoundingClientRect()) => t <= innerHeight && t + h >= 0;
 		/*
 		function switchOPimg() {
@@ -1345,9 +1270,6 @@ if (doc.classList.contains('catalog-mode')) {
 	on(d, "IndexRefresh", switchOPimg);
 	on(d, "IndexRefresh", playVids);
 	//on(d, "IndexBuild", switchOPimg);
-		//on(d, "IndexRefresh", masonry);
-               // window.addEventListener('resize', masonry);
-               // masonry();
 }
 */
 
