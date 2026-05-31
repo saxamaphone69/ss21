@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           ss21
 @namespace      https://github.com/saxamaphone69/
-@version        2.5.4
+@version        2.5.5
 @description    a self-centered, fresh attempt at (user)styling 4chan
 @author         sax
 @homepageURL    https://github.com/saxamaphone69/ss21
@@ -2858,6 +2858,14 @@
 			&:hover
 				color alpha(ss21primary, .87)
 	
+	// Oekaki Post replays on /i/
+	// Although, seems that CORS has blocked accessing these replays from within
+	// the normal 4chan environment
+	.postMessage small
+		color var(--text-hint-on-background)
+		a
+			color var(--text-secondary-on-background)
+	
 	// EXIF data table on /p/
 	.exif
 		display none
@@ -3302,20 +3310,11 @@
 	*/
 	
 	// 4CHANX: `.webm` metadata
+	div[data-name="WEBM Metadata"] .description::before
+		content "Please be aware, this feature no longer works on 4chan (and hasn't for many years). While you may have it enabled here, we hide it with CSS. "
+		color ss21red
 	.webm-title
-		& > a::before
-			content 'title'
-		&.loading > a::after
-			content '...'
-		&.error > a:hover::before
-			content 'error'
-		& > span
-			cursor text
-		&.not-found > span::before
-			content 'not found'
-		&:not(:hover) > span,
-		&:hover > span + a
-			display none
+		display none
 	/*
 	// make the icons you can add to the file info a little smaller
 	// XXX: needs better vertical alignment
@@ -3380,7 +3379,6 @@
 				opacity .9
 				display flex
 	
-	//@var checkbox   ss21fileCard         "Turns files into a card as opposed to the classic look" 0
 	if ss21fileInfo == 3
 		.file,
 		.file a,
@@ -3922,21 +3920,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		position absolute
 		top -100rem
 	
-	// 4CHANX: permanent announcement on /qa/
-	.fcx-announcement
-		position fixed
-		z-index 5
-		bottom 1rem
-		left 1rem
-		background-color ss21BackgroundElevated
-		padding .5rem 1rem
-		borderRadius()
-		z-depth(8)
-		a
-			color ss21primary
-			&:hover
-				color shade(ss21primary, 10%)
-	
 	/**
 	* catalogue support 😂👌
 	* what level of css archeticure are you on?
@@ -3968,26 +3951,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	.catalog-post [class^='qmark'] // XXX: due to the way ss21 does qmarks, this looks weird
 		display none
 	
-	// hides small/large thumbnail options when viewing as masonry
-	if ss21catalogueStyle == 2
-		:root.catalog-mode .is_index
-			#index-size
-				display none
-			.navLinks::after
-				content '"Masonry" mode might require an F5 to look good, as it tries to load full image thumbnails. You can also try quickly changing the sorting style. Ignore the bottom of the page...'
-				display block
-				text-align center
-				padding .5rem 1rem
-				borderRadius()
-				background-color rgba(0, 0, 0, .69)
-				tc(@background-color, high)
-				position absolute
-				bottom 0
-				left 50%
-				max-width 25rem
-				transform translateX(-50%) translateY(-75%)
-				pointer-events none
-	
 	// removes the direct link to thread thumbnail and thread stats when
 	// switching between 4chan x index and catalog (it keeps the old html for some reason)
 	:root:not(.catalog-mode)
@@ -3995,10 +3958,6 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		.catalog-stats,
 		.catalog-replies
 			display none
-	
-	if ss21catalogueStyle
-		:root
-			--masonry 1
 	
 	// lots of explanation here for future looking back
 	// next thing we do is reset `.board` a little
@@ -4012,7 +3971,15 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		if ss21catalogueStyle == 2
 			grid-template-columns repeat(6, 1fr)
 			//grid-template-columns repeat(auto-fit, minmax(min(15em, 100%), 1fr))
-			grid-template-rows masonry // lifted from https://css-tricks.com/a-lightweight-masonry-solution/
+			@css {
+				@supports (display: grid-lanes) {
+					display: grid-lanes;
+				}
+				@supports (grid-template-rows: masonry) {
+					grid-template-rows: masonry;
+				}
+			}
+			//grid-template-rows masonry // lifted from https://css-tricks.com/a-lightweight-masonry-solution/
 			justify-content center
 	
 	if ss21catalogueStyle == 2
@@ -4069,16 +4036,14 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 					//margin -1rem -3rem
 					// because menu is a child of the catalog post, the pixels used to calculate where to position it
 					// next to the button you just clicked also get scaled up, so we try to counter the scale here
-					/*
-					.menu-button.active + #menu
-						transform scale(1) translateX(70%) translateY(5%)
-						position absolute
-						top 16px i
-						left auto i
-						right 0 i
-						&.left
-							transform scale(1) translateX(0) translateY(5%)
-					*/
+					//.menu-button.active + #menu
+					//	transform scale(1) translateX(70%) translateY(5%)
+					//	position absolute
+					//	top 16px i
+					//	left auto i
+					//	right 0 i
+					//	&.left
+					//		transform scale(1) translateX(0) translateY(5%)
 				.postMessage
 					max-height none
 					overflow auto
@@ -4093,10 +4058,8 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		width 100%
 		position relative
 	
-	/**
-	* html order is: file, link/thumb, stats, postinfo, postmessage
-	* we switch it to: file, link/thumb, postinfo, postmessage, stats
-	*/
+	// html order is: file, link/thumb, stats, postinfo, postmessage
+	// we switch it to: file, link/thumb, postinfo, postmessage, stats
 	.file
 		// XXX: if you ask me, this is not required and should not be used from the catalogue. even on hover
 		order 1
@@ -4170,13 +4133,13 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 			// XXX: temp solution, make [code] %-based
 			.prettyprint
 				font-size 87.5%
-	/*
-	.catalog-post:has(.postMessage:empty)
-		.catalog-link
-			flex 1
-		.catalog-thumb
-			height 13.5rem i
-	*/
+	
+	//.catalog-post:has(.postMessage:empty)
+	//	.catalog-link
+	//		flex 1
+	//	.catalog-thumb
+	//		height 13.5rem i
+	
 	.catalog-icons:empty
 		display none
 	// XXX: maybe catalogue stats icons
@@ -4231,16 +4194,14 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 		-webkit-box-orient vertical
 		overflow hidden
 		pointer-events none
-		/*
-		tc(black, high)
-		text-shadow 0 1px 2px rgba(0 0 0 .3)
-		background-image linear-gradient(to top, black, transparent)
-		padding .5rem
-		width 100%
-		position absolute
-		top calc(var(--tn-h) * 1px)
-		pointer-events none
-		*/
+		//tc(black, high)
+		//text-shadow 0 1px 2px rgba(0 0 0 .3)
+		//background-image linear-gradient(to top, black, transparent)
+		//padding .5rem
+		//width 100%
+		//position absolute
+		//top calc(var(--tn-h) * 1px)
+		//pointer-events none
 		&::after
 			// get rid of 'by' that normally is applied
 			display none
@@ -4255,12 +4216,10 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='" + hsl(
 	// 4CHANX: if 'show replies' is enabled, on catalogue they are added to
 	// `.catalog-post` upon hovering over `.thread`
 	// XXX: at this stage, the issue is the text is not respecting the max width of each column in the grid
-	/*
-	* https://codepen.io/eddiebluh/pen/EyoWvp
-	* https://codepen.io/shadeed/pen/mdyMmwd/398ccffcd437a2fb042f5ce3bdd68c57
-	* https://ishadeed.com/article/min-max-css/#setting-min-width-to-zero-with-flexbox
-	* https://ishadeed.com/article/css-short-long-content/
-	*/
+	// https://codepen.io/eddiebluh/pen/EyoWvp
+	// https://codepen.io/shadeed/pen/mdyMmwd/398ccffcd437a2fb042f5ce3bdd68c57
+	// https://ishadeed.com/article/min-max-css/#setting-min-width-to-zero-with-flexbox
+	// https://ishadeed.com/article/css-short-long-content/
 	.catalog-replies
 		//display none i
 		order 6
