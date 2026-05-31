@@ -36,7 +36,6 @@ ss21 is a fresh attempt to make a userstyle that looks radically different from 
  - resizes large quote previews to fix the viewport
  - stylises the bottom board list to match the footer aesthetic, including moving the pass link
  - adds a discernible class for index sorting mode
- - if enabled in `ss21`, provides a polyfill for `display: masonry`
  - adds a imperial/metric weight and length unit converter for /fit/
  - adds OPs image/video to the banner for aesthetics
 
